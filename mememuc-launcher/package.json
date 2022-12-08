@@ -1,0 +1,18 @@
+{
+  "name": "Mememuc Launcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "concurrently \"npm start --prefix ../mongoserver\" \"npm start --prefix ../node-backend\" \"npm start --prefix ../react-frontend\"",
+    "startdev": "concurrently \"npm run startdev --prefix ../node-backend\" \"npm start --prefix ../react-frontend\"",
+    "installall": "npm install && cd ../mongoserver && npm install && cd ../node-backend && npm install && cd ../react-frontend && npm install"
+  },
+  "keywords": [],
+  "author": "LMU Mediainformatics Group",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^7.5.0"
+  }
+}
