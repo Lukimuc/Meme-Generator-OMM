@@ -3,3 +3,4 @@ mongoserver/node_modules/
 node-backend/node_modules/
 react-frontend/node_modules/
 react-frontend/src/pages/
+node_modules

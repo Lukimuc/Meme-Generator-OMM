@@ -1,46 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
-import React from "react"
+import React, { Component } from 'react';
+import Signin from './Pages/Signin/Signin';
+import Register from './Pages/Register/Register';
+import Home from './Pages/Home/Home';
 
-import { BrowserRouter as Router, Routes,  Route} from 'react-router-dom'
+class App extends Component {
+  constructor() {
+    super();
+    this.state ={
+      // initial state attributes
+      route: 'signin', // keeps track on where we are on the page 
+      isSignedIn: false,
+      user: { // user with sub-attributes has to be updated by database
+        id: '',
+        name: '',
+        email: '',
+        joined: '',
+      }
+    }
+  }
 
-import Account from "./pages/Account/account"
-import Editor from "./pages/Editor/editor"
-import Login from "./pages/Login/login"
-import Singleview from "./pages/Singleview/singleview"
-import Overview from "./pages/Overview/overview"
 
-function App() {
-  return (
-  /*   <Router>
-      <Routes>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/account" element={<Account/>} />
-        <Route path="/editor" element={<Editor/>} />
-        <Route path="/singleview" element={<Singleview/>} />
-        <Route path="/overview" element={<Overview/>} />
-      </Routes>
-    </Router> */
-  
-    
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-    
-  );
+  onRouteChange = (route) => {
+    this.setState({route: route});
+  }
+
+  render() {
+    return (
+      <>
+        {/* todo Navigation einfügen */}
+
+        { this.state.route === 'home'
+        ? <Home onRouteChange={this.onRouteChange}/>
+        : (this.state.route === 'signin'
+            ? <Signin onRouteChange={this.onRouteChange}/> 
+            : <Register onRouteChange={this.onRouteChange}/>)
+        }
+      </>
+    );
+}
 }
 
 export default App;
