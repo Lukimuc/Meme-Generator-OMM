@@ -12,7 +12,7 @@ import Overview from "./pages/Overview/overview"
 
 function App() {
   return (
-    <Router>
+  /*   <Router>
       <Routes>
         <Route path="/login" element={<Login/>} />
         <Route path="/account" element={<Account/>} />
@@ -20,9 +20,9 @@ function App() {
         <Route path="/singleview" element={<Singleview/>} />
         <Route path="/overview" element={<Overview/>} />
       </Routes>
-    </Router>
+    </Router> */
   
-    /**
+    
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -39,7 +39,7 @@ function App() {
         </a>
       </header>
     </div>
-    */
+    
   );
 }
 
