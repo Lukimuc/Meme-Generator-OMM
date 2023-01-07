@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import Signin from './Pages/Signin/Signin';
 import Register from './Pages/Register/Register';
 import Home from './Pages/Home/Home';
-
+import Rank from './Components/rank'
 import Navigation from './Components/navigation'
+
 
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
+      // initial state attributes
       input: "",
       imageURL: "",
       box: {},
-      // initial state attributes
       route: 'signin', // keeps track on where we are on the page 
       isSignedIn: false,
-      user: { // user with sub-attributes has to be updated by database
+      user: {
         id: '',
         name: '',
         email: '',
@@ -26,6 +27,7 @@ class App extends Component {
     }
   }
 
+  // load individual user data  
   loadUser = (data) => {
     this.setState({
       user: {
@@ -38,9 +40,23 @@ class App extends Component {
     })
   }
 
+  // function who get entries and updates the textfield 
+  onCount = () => {
+    fetch('http://localhost:3001/image', {
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: this.state.user.id
+      })
+    })
+      .then(response => response.json())
+      .then(count => {
+        this.setState(Object.assign(this.state.user, { entries: count }))
+      })
+  }
 
 
-
+  // Used for navigation and to check if user is logged in or not //
   onRouteChange = (route) => {
     if (route === 'signout') {
       this.setState({ isSignedIn: false })
@@ -50,11 +66,16 @@ class App extends Component {
     this.setState({ route: route });
   }
 
+  // ------   render components   ----- // 
   render() {
     const { isSignedIn, route } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        <Rank name={this.state.user.name} entries={this.state.user.entries} />
+        <button
+          onClick={this.onCount}
+        >Count</button>
         {/* If then Statements, ? is executed if true,: is executed if false 
         => If route === 'something' then show these components */}
         {route === 'home'
