@@ -5,6 +5,7 @@ import Home from './Pages/Home/Home';
 
 import Navigation from './Components/navigation'
 
+
 class App extends Component {
   constructor() {
     super();
@@ -21,10 +22,12 @@ class App extends Component {
     }
   }
 
+ 
+
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({ isSignedIn: false})
+      this.setState({ isSignedIn: false })
     } else if (route === 'home') {
       this.setState({ isSignedIn: true })
     }
@@ -32,10 +35,10 @@ class App extends Component {
   }
 
   render() {
-    const {isSignedIn, route} = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
+    const { isSignedIn, route } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {/* If then Statements, ? is executed if true,: is executed if false 
         => If route === 'something' then show these components */}
         {route === 'home'
@@ -44,13 +47,6 @@ class App extends Component {
             ? <Signin onRouteChange={this.onRouteChange} />
             : <Register onRouteChange={this.onRouteChange} />)
         }
-
-
-
-        {/* todo: Wenn signedIn === true, dann wechsle auf home 
-      signedIn === true  */}
-
-
       </>
     );
   }

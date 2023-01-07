@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const bodyParser = require('body-parser');
+var bcrypt = require('bcrypt-nodejs');
+var cors = require('cors');
 
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
@@ -15,6 +16,7 @@ console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const e = require('express');
 
 var app = express();
 
@@ -28,13 +30,15 @@ var app = express();
 */
 
 app.use(express.json());
-const database = {
+app.use(cors());
+const database = { // fake database - just for testing purposes
   users: [
     {
       id: '123',
       name: 'John',
       email: 'john@test.de',
       password: 'test',
+      entries: 0,
       joined: new Date()
     },
     {
@@ -42,17 +46,29 @@ const database = {
       name: 'Sally',
       email: 'sally@test.de',
       password: 'test',
+      entries: 0,
       joined: new Date()
     }
   ]
 }
 
+// register new user -> ID still hard coded
 
-app.get('/', (req, res) => {
-  res.json("2");
+app.post('/register', (req, res) => {
+  const { email, name, password } = req.body;
+
+  database.users.push({
+    id: '125',
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  })
+  res.json(database.users[database.users.length - 1]) // send the user back - change that later
 })
 
-
+// login, check (only!) the first user within fake database on the top 
 app.post('/signin', (req, res) => {
   if (req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password) {
@@ -60,8 +76,58 @@ app.post('/signin', (req, res) => {
   } else {
     res.status(400).json("Error logging in");
   }
-
 })
+
+// get all users out of database - REMOVE LATER
+app.get('/', (req,res) => {
+  res.send(database.users);
+})
+
+
+// get the individual profile with defined IDs
+app.get('/profile/:id', (req, res) => {
+  const { id } = req.params;
+  let found = false;
+  database.users.forEach(user => {
+    if (user.id === id) {
+      found = true;
+      return res.json(user);
+    }
+  })
+  if (!found) {
+    res.status(400).json("not found");
+  }
+})
+
+// add a image to the profile and increase the image entries
+app.put('image', (req, res) => {
+  const { id } = req.body;
+  let found = false;
+  database.users.forEach(user => {
+    if (user.id === id) {
+      found = true;
+      user.entries++;
+      return res.json(user.entries);
+    }
+  })
+  if (!found) {
+    res.status(400).json("not found");
+  }
+})
+
+/* // Passwort verschlüsseln
+
+bcrypt.hash("bacon", null, null, function(err, hash) {
+  // Store hash in your password DB.
+});
+
+// Load hash from your password DB.
+bcrypt.compare("bacon", hash, function(err, res) {
+  // res == true
+});
+bcrypt.compare("veggies", hash, function(err, res) {
+  // res = false
+}); */
 
 
 /* ------------ Lukas Test Ende -------------- */
