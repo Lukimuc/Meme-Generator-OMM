@@ -10,6 +10,9 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      input: "",
+      imageURL: "",
+      box: {},
       // initial state attributes
       route: 'signin', // keeps track on where we are on the page 
       isSignedIn: false,
@@ -18,11 +21,24 @@ class App extends Component {
         name: '',
         email: '',
         joined: '',
+        entries: 0,
       }
     }
   }
 
- 
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        joined: data.joined,
+        entries: data.entries,
+      }
+    })
+  }
+
+
 
 
   onRouteChange = (route) => {
@@ -44,8 +60,8 @@ class App extends Component {
         {route === 'home'
           ? <Home onRouteChange={this.onRouteChange} />
           : (route === 'signin'
-            ? <Signin onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />)
+            ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />)
         }
       </>
     );
