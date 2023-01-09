@@ -6,6 +6,7 @@ var logger = require('morgan');
 var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
 
+
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
 // ### Thus copy paste this block to your project
@@ -33,44 +34,15 @@ app.listen(port, () => console.log('Example app listening on port ' + port))
 
 // Setup  MongoDB:
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
 const url = 'mongodb://localhost:27017';
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
 client.connect()
-
-// async function main() {
-//   /* // Setup  MongoDB:
-//   const MongoClient = require('mongodb').MongoClient;
-//   const assert = require('assert');
-//   const url = 'mongodb://localhost:27017';
-
-//   const dbName = 'memeGeneratorDB';
-//   const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true }); */
-
-//   try {
-//     await client.connect(); // gets back a promise, it waits for it bc of the await keyword
-//     /* await createUser(client,
-//       {
-//         "name": "testUserCreatedbyMethod",
-//         "email": "testUserCreatedbyMethod",
-//         "password": "testUserCreatedbyMethod"
-//       }); */
-
-//     // await findOneUserByEmail(client,"john@test.de");
-
-//     // await updateOneUserByEmail(client,"john@test.de", {entries: 6});
-
-//     //  await deleteOneUserByEmail(client, "testUserCreatedbyMethod")
-//   } catch (error) {
-//     console.error(error);
-//   } finally { // finally: regardles of the outcome it executes and closes the connection
-//     await client.close();
-//   }
-// }
-
-// main().catch(console.error);
 
 async function listDatabases(client) {
   databasesList = await client.db().admin().listDatabases();
@@ -99,9 +71,32 @@ async function findOneUserByEmail(client, email) {
   } return result;
 }
 
+// get a specific User by ID in DB
+async function findOneUserByID(client, id) {
+  const result = await client.db("memeGeneratorDB").collection("users").findOne({ _id: new ObjectID(id) });
+
+  if (result) {
+    console.log(`found a user in the collection with the id ${id}`);
+    //console.log(result);
+    return result;
+  } else {
+    console.log(`No user found with the id ${id}`);
+    return result;
+  }
+}
+
 // update a specific User by email in DB
 async function updateOneUserByEmail(client, email, updatedUser) {
   const result = await client.db("memeGeneratorDB").collection("users").updateOne({ email: email }, { $set: updatedUser });
+
+  console.log(`${result.matchedCount} documents matched the query criteria`);
+  console.log(`${result.modifiedCount} documents were updated`);
+  return result;
+}
+
+// update a specific user by ID
+async function updateOneUserByID(client, id, updatedUser) {
+  const result = await client.db("memeGeneratorDB").collection("users").updateOne({ _id: new ObjectID(id) }, { $set: updatedUser });
 
   console.log(`${result.matchedCount} documents matched the query criteria`);
   console.log(`${result.modifiedCount} documents were updated`);
@@ -136,69 +131,79 @@ app.use(cors());
   / --> GET --> Return ALL User
 */
 
-// register new user -> ID still hard coded
+// register new user
 app.post('/register', (req, res) => {
-  const { email, name, password } = req.body;
+  const { email, firstname, lastname, password } = req.body; // get input from frontend 
+  const hash = bcrypt.hashSync(password);
+
   newUser = {
-    "name": name,
+    "firstname": firstname,
+    "lastname": lastname,
     "email": email,
-    "password": password,
+    "password": hash,
     "entries": 0,
-    "pwHash": "",
     "userCreated": new Date()
   }
   createUser(client, newUser);
-  res.json("Success: New User created")
+  res.json(newUser);
 })
 
-// login, check (only!) the first user within fake database on the top 
-app.post('/signin', (req, res) => {
-  
-  if (req.body.email === database.users[0].email &&
+// OLD DOESNT WORK - login, check (only!) the first user within fake database on the top 
+app.post('/signin', async (req, res) => {
+const inputEmail = req.body.email;
+
+const user = await findOneUserByEmail(client, inputEmail);
+
+const isValid = await bcrypt.compareSync(req.body.password, user.pwHash);
+if (isValid){
+  res.json(user);
+} else {
+  res.status(400).json("Wrong Credentials");
+}
+
+
+  /* if (req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password) {
     res.json(database.users[0]);
   } else {
     res.status(400).json("Error logging in");
-  }
+  } */
 })
 
 // get all users out of database - REMOVE LATER
-app.get('/', async (req, res) => {
-  //res.send(database.users);
-  const result = await findOneUserByEmail(client, "john@test.de")
-  console.log(result);
+app.get('/', (req, res) => {
+  const { email } = req.body; // get user by email currently REPLACE THAT LATER
+
+  const result = findOneUserByEmail(client, email)
+  //console.log(result);
   res.json(result);
 })
 
-// get the individual profil with defined IDs
-app.get('/profile/:id', (req, res) => {
-  const { id } = req.params;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  })
-  if (!found) {
-    res.status(400).json("not found");
+// get the individual profile with defined IDs
+app.get('/profile/:id', async (req, res) => {
+  const { id } = req.body;  // get which id should be used for profile
+
+  try {
+    const user = await findOneUserByID(client, id); // get's back a User as Object 
+    // do something with the user ...
+    console.log("result " + Object.entries(user));
+    console.log("email:" + user.email);
+
+    res.json(user); // server response to frontend
+
+  } catch (error) {
+    console.log("Error in app.get('profile/id': " + error);
+    res.status(400).json("Error in app.get('profile/id': " + error);
   }
 })
 
 // add a image to the profile and increase the image entries
-app.put('/image', (req, res) => {
+app.put('/image', async (req, res) => {
   const { id } = req.body;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.id === id) {
-      found = true;
-      user.entries++;
-      return res.json(user.entries);
-    }
-  })
-  if (!found) {
-    res.status(400).json("not found");
-  }
+  const user = await findOneUserByID(client, id);
+  
+  updateOneUserByID(client, id, {entries: user.entries+1}) 
+  res.json(user.entries+1);
 })
 
 /* ------------ Lukas Test Ende -------------- */
