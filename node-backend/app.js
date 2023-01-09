@@ -24,9 +24,6 @@ var app = express(); */
 
 /* ------------ Lukas Test -------------- */
 
-// mongoDB Test
-// app.js (or index.js)
-//const express = require('express')
 const app = express()
 const port = 3002
 
@@ -40,16 +37,7 @@ const url = 'mongodb://localhost:27017';
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
 client.connect()
-
-async function listDatabases(client) {
-  databasesList = await client.db().admin().listDatabases();
-
-  console.log("Databases:");
-  databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
 
 // create User Document in DB
 async function createUser(client, newUser) {
@@ -119,10 +107,6 @@ async function deleteOneUserByEmail(client, email) {
   return result;
 }
 
-
-app.use(express.json());
-app.use(cors());
-
 /* Endpoints: 
   /register  ---> Post --> Return: User 
   /signin route --> Post --> Return:  succes /fail
@@ -130,8 +114,10 @@ app.use(cors());
   /image ---> PUT --> Change Counter, Returns Entries Number 
   / --> GET --> Return ALL User
 */
+app.use(express.json());
+app.use(cors());
 
-// register new user
+// REGISTER new user
 app.post('/register', (req, res) => {
   const { email, firstname, lastname, password } = req.body; // get input from frontend 
   const hash = bcrypt.hashSync(password);
@@ -148,35 +134,25 @@ app.post('/register', (req, res) => {
   res.json(newUser);
 })
 
-// OLD DOESNT WORK - login, check (only!) the first user within fake database on the top 
+// LOGIN a existing User
 app.post('/signin', async (req, res) => {
-const inputEmail = req.body.email;
+  const inputEmail = req.body.email;
+  const inputPassword = req.body.password;
 
-const user = await findOneUserByEmail(client, inputEmail);
-
-const isValid = await bcrypt.compareSync(req.body.password, user.pwHash);
-if (isValid){
-  res.json(user);
-} else {
-  res.status(400).json("Wrong Credentials");
-}
-
-
-  /* if (req.body.email === database.users[0].email &&
-    req.body.password === database.users[0].password) {
-    res.json(database.users[0]);
-  } else {
-    res.status(400).json("Error logging in");
-  } */
+  try {
+    const user = await findOneUserByEmail(client, inputEmail);
+    if (user != null) {
+      const isValid = bcrypt.compareSync(inputPassword, user.password); // generate hash password with bcrypth
+      if (isValid) { // if pw matches
+        res.json(user); // send user to frontend
+      } else { res.status(400).json("Wrong Credentials"); }
+    } else {res.status(400).json("Please fill in both the email field as well as the password");}
+  } catch (error) { console.log("app.post/signin error: " + error); }
 })
 
 // get all users out of database - REMOVE LATER
 app.get('/', (req, res) => {
-  const { email } = req.body; // get user by email currently REPLACE THAT LATER
-
-  const result = findOneUserByEmail(client, email)
-  //console.log(result);
-  res.json(result);
+  res.json("Empty Route app.get/");
 })
 
 // get the individual profile with defined IDs
@@ -201,9 +177,9 @@ app.get('/profile/:id', async (req, res) => {
 app.put('/image', async (req, res) => {
   const { id } = req.body;
   const user = await findOneUserByID(client, id);
-  
-  updateOneUserByID(client, id, {entries: user.entries+1}) 
-  res.json(user.entries+1);
+
+  updateOneUserByID(client, id, { entries: user.entries + 1 })
+  res.json(user.entries + 1);
 })
 
 /* ------------ Lukas Test Ende -------------- */
