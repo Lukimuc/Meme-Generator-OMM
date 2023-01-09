@@ -52,6 +52,7 @@ npm run installall
 installs the dependencies of all (sub)projects
 
 ```
+cd mememuc-launcher && npm run installall && npm start
 cd node-backend && npm run startdev
 ```
 starts the backend project. It will connect to a local MongoDB instance (assuming any is running on your local machine) at the default port `27017`.

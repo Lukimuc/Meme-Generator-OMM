@@ -19,7 +19,8 @@ class App extends Component {
       isSignedIn: false,
       user: {
         id: '',
-        name: '',
+        firstname: '',
+        lastname: '',
         email: '',
         joined: '',
         entries: 0,
@@ -32,7 +33,8 @@ class App extends Component {
     this.setState({
       user: {
         id: data.id,
-        name: data.name,
+        firstname: data.firstname,
+        lastname: data.lastname,
         email: data.email,
         joined: data.joined,
         entries: data.entries,
@@ -72,7 +74,7 @@ class App extends Component {
     return (
       <>
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
-        <Rank name={this.state.user.name} entries={this.state.user.entries} />
+        <Rank firstname={this.state.user.firstname} entries={this.state.user.entries} />
         <button
           onClick={this.onCount}
         >Count</button>
