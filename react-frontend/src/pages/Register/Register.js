@@ -1,97 +1,165 @@
 import React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme();
 
 class Register extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      name: ''
-    }
-  }
-
-  onNameChange = (event) => {
-    this.setState({name: event.target.value})
-  }
-
-  onEmailChange = (event) => {
-    this.setState({email: event.target.value})
-  }
-
-  onPasswordChange = (event) => {
-    this.setState({password: event.target.value})
-  }
-
-  onSubmitSignIn = () => {
-    fetch('http://localhost:3002/register', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            password: '',
+            firstname: '',
+            lastname: ''
         }
-      })
-  }
+    }
 
-  render() {
-    return (
-      <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-        <main className="pa4 black-80">
-          <div className="measure">
-            <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-              <legend className="f1 fw6 ph0 mh0">Register</legend>
-              <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                <input
-                  className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                  type="text"
-                  name="name"
-                  id="name"
-                  onChange={this.onNameChange}
-                />
-              </div>
-              <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                <input
-                  className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                  type="email"
-                  name="email-address"
-                  id="email-address"
-                  onChange={this.onEmailChange}
-                />
-              </div>
-              <div className="mv3">
-                <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                <input
-                  className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                  type="password"
-                  name="password"
-                  id="password"
-                  onChange={this.onPasswordChange}
-                />
-              </div>
-            </fieldset>
-            <div className="">
-              <input
-                onClick={this.onSubmitSignIn}
-                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
-                type="submit"
-                value="Register"
-              />
-            </div>
-          </div>
-        </main>
-      </article>
-    );
-  }
+    onFirstnameChange = (event) => {
+        this.setState({ firstname: event.target.value })
+        console.log(this.state.firstname);
+    }
+
+    onLastnameChange = (event) => {
+        this.setState({ lastname: event.target.value })
+        console.log(this.state.lastname);
+    }
+
+    onEmailChange = (event) => {
+        this.setState({ email: event.target.value })
+    }
+
+    onPasswordChange = (event) => {
+        this.setState({ password: event.target.value })
+    }
+
+    onSubmitSignIn = (event) => {
+        event.preventDefault();
+        fetch('http://localhost:3002/register', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password,
+                firstname: this.state.firstname,
+                lastname: this.state.lastname
+            })
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user) {
+                    this.props.loadUser(user)
+                    this.props.onRouteChange('home');
+                }
+            })
+    }
+
+    render() {
+        return (
+            <ThemeProvider theme={theme}>
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <Box
+                        sx={{
+                            marginTop: 8,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign up
+                        </Typography>
+                        <Box component="form" noValidate sx={{ mt: 3 }}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="firstName"
+                                        required
+                                        fullWidth
+                                        id="firstName"
+                                        label="First Name"
+                                        autoFocus
+                                        onChange={this.onFirstnameChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="lastName"
+                                        label="Last Name"
+                                        name="lastName"
+                                        autoComplete="family-name"
+                                        onChange={this.onLastnameChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        onChange={this.onEmailChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="new-password"
+                                        onChange={this.onPasswordChange}
+                                    />
+                                </Grid>
+
+                            </Grid>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={this.onSubmitSignIn}
+                            >
+                                Sign Up
+                            </Button>
+                            <Grid container justifyContent="flex-end">
+                                <Grid item>
+                                    <Link href="#" variant="body2"> TODO
+                                        Already have an account? Sign in
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Box>
+
+                </Container>
+            </ThemeProvider>
+
+
+
+        );
+    }
 }
 
 export default Register;
