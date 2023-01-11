@@ -89,6 +89,7 @@ const Editor = () => {
                                     onClick={ () => { selectShape(text.key) }}
                                     onTextClick={() => { 
                                         //eventuell muss auch hier der text übergeben werden
+                                        //index herausfinden und text überschreiben
                                         selectShape(text.key) }}
                                 />
                             );
