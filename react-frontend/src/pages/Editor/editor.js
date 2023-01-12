@@ -1,169 +1,145 @@
 import React, { useState } from 'react'
-import { Stage, Layer, Text, Image } from 'react-konva';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid'; // Grid version 1
-import DownloadIcon from '@mui/icons-material/Download';
-import ShareIcon from '@mui/icons-material/Share';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
+import { Stage, Layer, Text } from 'react-konva';
+import My_Image from './my_image';
+import My_Text from './my_text';
 
-class URLImage extends React.Component {
-    state = {
-      image: null,
-    };
 
-    componentDidMount() {
-      this.loadImage();
-    }
-    componentDidUpdate(oldProps) {
-      if (oldProps.src !== this.props.src) {
-        this.loadImage();
-      }
-    }
-    componentWillUnmount() {
-      this.image.removeEventListener('load', this.handleLoad);
-    }
-    loadImage() {
-      // save to "this" to remove "load" handler on unmount
-      this.image = new window.Image();
-      this.image.src = this.props.src;
-      this.image.addEventListener('load', this.handleLoad);
-    }
-    handleLoad = () => {
-      // after setState react-konva will update canvas and redraw the layer
-      // because "image" property is changed
-      this.setState({
-        image: this.image,
-      });
-      // if you keep same image object during source updates
-      // you will have to update layer manually:
-      // this.imageNode.getLayer().batchDraw();
-    };
 
-         
-    render() {
-      return (
-    
-        <Image
-          x={this.props.x}
-          y={this.props.y}
-          image={this.state.image}
-          ref={(node) => {
-            this.imageNode = node;
-          }}
-          draggable={true}
-        />
-        
-      );
-    }
-  }
 const Editor = () => {
-    //const dragUrl = React.useRef();
-    const stageRef = React.useRef();
 
-    //const width = window.innerWidth
-    const height = window.innerHeight
+    // Variablen für Texte
+    const [input_text, setInputs_Text] = useState()
+    const [mytexts, setMytexts] = useState([])
 
-    const [inputtext, setInputtext] = useState()
-    const [inputs, setInputs] = useState([])
-    const [imagesrc, setImageSrc] = useState()
+    // Variables changing text
+    const [width, setWidth] = useState(400);
+    const [height, setHeight] = useState(400);
+    // Variablen für images
+    const [input_image, setInput_Image] = useState()
     const [images, setImages] = useState([])
 
+
+
+    // Selecting shapes
+    const [selectedId, selectShape] = useState(null);
+    const checkDeselect = (e) => {
+        // deselect when clicked on empty area
+        const clickedOnEmpty = e.target === e.target.getStage();
+        if (clickedOnEmpty) {
+          selectShape(null);
+        }
+    };
+
     return (
-        
         <div>
             <div>
-                
+                Hier wird der Editor sein:
             </div>
-          
-            <Grid container p={10} paddingLeft={20}>
-            <Grid item md={8}>
             <div style={{
                 display: "block",
-               /* float: "left",*/
+                float: "left",
                 border: "5px outset blue",
-                height: height,
-                /*width: "50%",*/
+                height: "100%",
+                width: "50%",
                 }}
             >
                 <Stage 
-                
-                    width={window.innerHeight}
+                    width={window.innerWidth / 2}
                     height={window.innerHeight}
                     style={{
                         border: "1px outset red",
                     }}
-                    ref={stageRef}>
+                    onMouseDown={checkDeselect}
+                    onTouchStart={checkDeselect}
+                 >
                     <Layer>
-                   
-                        {inputs.map( (input) => { return <Text key={input} text={input} draggable={true} />}) }
-                        {images.map( (image) => { return <URLImage src={image} /> }) }
+                        {images.map( (img, i) => {
+                            return (
+                                <My_Image 
+                                    key={"Image_" + i}
+                                    imageUrl={img.src}
+                                    isSelected={img.key === selectedId}
+                                    onSelect={() => { selectShape(img.key) }}
+                                    onChange={newAttrs => {
+                                        const imgs = images.slice();
+                                        imgs[i] = newAttrs;
+                                    }}
+                                    width={i === 0 ? window.innerWidth * 0.5 : img.width}
+                                    height={i === 0 ? window.innerHeight: img.height}
+                                />
+                            );
+                        })}
+                        {mytexts.map( (text, i) => {
+                            return(
+                                <My_Text 
+                                    key={"Text_" + i}
+                                    x={50}
+                                    y={50}
+                                    text={text.text}
+                                    colour="#FFDAE1"
+                                    onTextChange={
+                                        // Hier muss der Text angepasst werden , dass er sich ändert
+                                        (value) => text.text=value}
+                                    width={width}
+                                    height={height}
+                                    selected={text.key === selectedId}
+                                    onTextResize={(newWidth, newHeight) => {
+                                        setWidth(newWidth);
+                                        setHeight(newHeight);
+                                    }}
+                                    onClick={ () => { selectShape(text.key) }}
+                                    onTextClick={(newSelected) => { 
+                                        //eventuell muss auch hier der text übergeben werden
+                                        //index herausfinden und text überschreiben
+                                        console.log("Der werd wurde ausgewählt: " + newSelected)
+                                        selectShape(text.key) }}
+                                />
+                            );
+                        })}
                     </Layer>
                 </Stage>
             </div>
-                       </Grid>
-
-                       <Grid item md={4} style={{ backgroundColor: 'lightgrey'}}>
             <div>
-            <p style={{
-                fontSize: 40,
-                textAlign: 'center',
-                }}>Editor</p>
-               
-                <form style={{
-marginLeft: 30
-            }}>
-                    <label >Add new text</label><br/>
-                    <TextField id="outlined-basic" type="text" value={inputtext || ""} onChange={(e) => setInputtext(e.target.value)} style={{
-                   backgroundColor: 'white', 
-                   borderRadius:'0.25rem', marginBottom: 10 }}/><br/>
-                    <Button id="submitText" variant="contained" onClick={(e) => {
+                <form>
+                    <label>Text hinzufügen</label><br/>
+                    <input type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}/><br/>
+                    <button onClick={(e) => {
                         e.preventDefault();
-                        setInputs( arr => [...arr, inputtext])
-                    }}>Submit Text</Button>
+                        setMytexts( arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])
+                    }}>Submit</button>
                     <br/>
                     <img
                         alt="lion"
                         src="https://konvajs.org/assets/lion.png"
                         draggable="true"
                         onClick={(e) => {
-                            setImageSrc(e.target.src)
+                            e.preventDefault();
+                            setInput_Image(e.target.src)
                         }}
+                        stroke="black"
+                    />
+                    <img 
+                        alt="yoda"
+                        src="https://konvajs.org/assets/yoda.jpg"
+                        draggable="true"
+                        onClick={(e) => {
+                            setInput_Image(e.target.src)
+                        }}
+                        stroke="black"
                     />
                     <br/>
-
-                    <Button id="submitImage" display='none' variant="contained" onClick={(e) => {
+                    <button onClick={(e) => {
                         e.preventDefault();
-                        setImages( img => [...img, imagesrc])
-                    }}>Submit Image</Button>
-                    <p>{inputtext}</p>
-                    <Grid md={6} marginBottom={2}>
-                    <Button id="download" variant="contained">Download <DownloadIcon /></Button>
-                    </Grid><Grid md={6} marginBottom={2}>
-                    <Button variant="contained">Share <ShareIcon /></Button>
-                    </Grid>
+                        setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])
+                        
+                    }}>Submit Image</button>
+                    <p>{input_text}</p>
+                    <p>{input_image}</p>
+                    
                 </form>
-
-                
             </div>
-            </Grid>
-            </Grid>
-            
         </div>
-
         )
     }
-export default Editor;
-/* = ({template, onClick}) => {
-    return (
-        <img 
-        key={template.id} 
-        style={{width: 200}}
-        src={template.url} 
-        alt={template.name}
-        onClick={onClick}
-      />
 
-    )
-    
-}*/
+export default Editor
