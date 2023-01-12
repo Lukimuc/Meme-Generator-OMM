@@ -1,36 +1,94 @@
-import logo from './logo.svg';
-import React, { useEffect, useState, Component } from "react";
-import './App.css';
-import { BrowserRouter as Router, Routes,  Route} from 'react-router-dom'
-import { AppBar } from '@mui/material'
-import Account from "./pages/Account/account"
-import Card from "./pages/Card/card"
-import Editor from "./pages/Editor/editor"
-import Login from "./pages/Login/login"
-import Singleview from "./pages/Singleview/singleview"
-import Overview from "./pages/Overview/overview"
-import MenuAppBar from "./pages/AppBar/appbar"
+import React, { Component } from 'react';
+import Signin from './Pages/Signin/Signin';
+import Register from './Pages/Register/Register';
+import Home from './Pages/Home/Home';
+import Rank from './Components/rank'
+import Navigation from './Components/navigation'
 
-function App() {
 
-return (  
-  <div>
-     <Router>
-  <MenuAppBar/>
-    <Routes>
-      <Route path="/login" element={<Login/>} />
-      <Route path="/account" element={<Account/>} />
-      <Route path="/editor" element={<Editor/>} />
-      <Route path="/singleview" element={<Singleview/>} />
-      <Route path="/overview" element={<Overview/>} />
-      <Route path="/appbar" element={<AppBar/>} />
-      <Route path="/card" element={<Card/>} />
-    </Routes>
-  </Router>
-    </div>
 
-);
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      // initial state attributes
+      input: "",
+      imageURL: "",
+      box: {},
+      route: 'signin', // keeps track on where we are on the page 
+      isSignedIn: false,
+      user: {
+        id: '',
+        firstname: '',
+        lastname: '',
+        email: '',
+        joined: '',
+        entries: 0,
+      }
+    }
+  }
 
+  // load individual user data  
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        joined: data.joined,
+        entries: data.entries,
+      }
+    })
+  }
+
+  // function who get entries and updates the textfield 
+  onCount = () => {
+    fetch('http://localhost:3001/image', {
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: this.state.user.id
+      })
+    })
+      .then(response => response.json())
+      .then(count => {
+        this.setState(Object.assign(this.state.user, { entries: count }))
+      })
+  }
+
+
+  // Used for navigation and to check if user is logged in or not //
+  onRouteChange = (route) => {
+    if (route === 'signout') {
+      this.setState({ isSignedIn: false })
+    } else if (route === 'home') {
+      this.setState({ isSignedIn: true })
+    }
+    this.setState({ route: route });
+  }
+
+  // ------   render components   ----- // 
+  render() {
+    const { isSignedIn, route } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
+    return (
+      <>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        <Rank firstname={this.state.user.firstname} entries={this.state.user.entries} />
+        <button
+          onClick={this.onCount}
+        >Count</button>
+        {/* If then Statements, ? is executed if true,: is executed if false 
+        => If route === 'something' then show these components */}
+        {route === 'home'
+          ? <Home onRouteChange={this.onRouteChange} />
+          : (route === 'signin'
+            ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />)
+        }
+      </>
+    );
+  }
 }
 
 export default App;
