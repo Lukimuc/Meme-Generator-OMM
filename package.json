@@ -1,9 +1,10 @@
-{
-  "dependencies": {
-    
-  },
-
+{  
   "devDependencies":{
     "nodemon": "^2.0.20"
+  }
+
+  "dependencies": {
+    "konva": "^8.3.14",
+    "react-konva": "^18.2.3"
   }
 }
