@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Signin from './Pages/Signin/Signin';
-import Register from './Pages/Register/Register';
-import Home from './Pages/Home/Home';
+import Signin from './pages/Signin/Signin';
+import Register from './pages/Register/Register';
+import Home from './pages/Home/Home';
 import Rank from './Components/rank'
 import Navigation from './Components/navigation'
 
