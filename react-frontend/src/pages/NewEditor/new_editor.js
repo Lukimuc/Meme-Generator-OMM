@@ -71,7 +71,7 @@ const New_Editor = () => {
             {images.map( (img, i) => {
                 return (
                     <Img 
-                    key={i}
+                    key={"Image_" + i}
                     imageUrl={img.image}
                     isSelected={img.id === selectedId}
                     onSelect={() => {

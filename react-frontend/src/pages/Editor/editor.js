@@ -56,7 +56,7 @@ const Editor = () => {
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 
-                                    key={i}
+                                    key={"Image_" + i}
                                     imageUrl={img.src}
                                     isSelected={img.key === selectedId}
                                     onSelect={() => { selectShape(img.key) }}
@@ -72,6 +72,7 @@ const Editor = () => {
                         {mytexts.map( (text, i) => {
                             return(
                                 <My_Text 
+                                    key={"Text_" + i}
                                     x={50}
                                     y={50}
                                     text={text.text}
@@ -87,9 +88,10 @@ const Editor = () => {
                                         setHeight(newHeight);
                                     }}
                                     onClick={ () => { selectShape(text.key) }}
-                                    onTextClick={() => { 
+                                    onTextClick={(newSelected) => { 
                                         //eventuell muss auch hier der text übergeben werden
                                         //index herausfinden und text überschreiben
+                                        console.log("Der werd wurde ausgewählt: " + newSelected)
                                         selectShape(text.key) }}
                                 />
                             );
