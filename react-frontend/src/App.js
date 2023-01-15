@@ -30,7 +30,7 @@ class App extends Component {
 
   // load individual user data  
   loadUser = (data) => {
-    
+
     console.log("load User executed", data)
     this.setState({
       isSignedIn: true, // if there is a ID, set isSignedIn to true
@@ -48,19 +48,19 @@ class App extends Component {
 
 
   // Used for navigation and to check if user is logged in or not //
-  
+
 
   render() {
-    const { isSignedIn, user} = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
+    const { isSignedIn, user } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
         <BrowserRouter>
-          <Navigation isSignedIn={isSignedIn}  />
-          
+          <Navigation isSignedIn={isSignedIn} />
+
           <Routes>
 
             <Route path="/" element={
-              <Home  />
+              <Home />
             } />
             <Route path='/signin' element={
               <Signin loadUser={this.loadUser} />
@@ -68,7 +68,7 @@ class App extends Component {
             <Route path='/register' element={
               <Register loadUser={this.loadUser} />
             } />
-            <Route path='/profile/' element={<Profile user={user}/>} />
+            <Route path='/profile/' element={<Profile user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
           </Routes>
@@ -91,7 +91,7 @@ export default App;
   //       <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
   //       <Rank firstname={this.state.user.firstname} entries={this.state.user.entries} />
   //       <Profile onRouteChange={this.onRouteChange}></Profile>
-  //       {/* If then Statements, ? is executed if true,: is executed if false 
+  //       {/* If then Statements, ? is executed if true,: is executed if false
   //       => If route === 'something' then show these components */}
   //      {/*  {route === 'home'
   //         ? <Home onRouteChange={this.onRouteChange} />
