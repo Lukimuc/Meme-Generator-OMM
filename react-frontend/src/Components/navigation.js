@@ -45,7 +45,7 @@ const Navigation = ({isSignedIn }) => {
 
                         {isSignedIn
                             ?
-                            <Link to="/home"><Button  color="inherit">Signout</Button></Link>
+                            <Link to="/"><Button  color="inherit" onClick={() => window.location.reload()}>Signout</Button></Link>
                             : <Link to="/signin"><Button  color="inherit">Login</Button></Link>
                         }
                     </Toolbar>

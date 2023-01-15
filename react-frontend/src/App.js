@@ -33,7 +33,7 @@ class App extends Component {
     
     console.log("load User executed", data)
     this.setState({
-      isSignedIn: data.id != null, // if there is a ID, set isSignedIn to true
+      isSignedIn: true, // if there is a ID, set isSignedIn to true
       user: {
         id: data.id,
         firstname: data.firstname,
