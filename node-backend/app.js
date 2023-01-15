@@ -134,6 +134,23 @@ app.post('/register', (req, res) => {
   res.json(newUser);
 })
 
+// register by google
+app.post('/registerGoogle', (req, res) => {
+  const { email, firstname, lastname} = req.body; // get input from frontend 
+  
+
+  newUser = {
+    "firstname": firstname,
+    "lastname": lastname,
+    "email": email,
+    "password": "",
+    "entries": 0,
+    "userCreated": new Date()
+  }
+  createUser(client, newUser);
+  res.json(newUser);
+})
+
 // LOGIN a existing User
 app.post('/signin', async (req, res) => {
   const inputEmail = req.body.email;

@@ -12,15 +12,66 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from "jwt-decode";
+import { useEffect } from 'react';
 
 const theme = createTheme();
 
 const Register = (props) => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const navigate = useNavigate();
+
+    
+
+    // Google Login
+
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "361084581920-fefopqdbtsuusk3a8mcbhuea7li535rl.apps.googleusercontent.com",
+            callback: handleGoogleResponse
+        }
+        )
+
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv"),
+            { theme: "outline", size: "large" }
+        );
+    }, [])
+
+    function handleGoogleResponse(response) {
+        console.log("Encoded JWT ID token " + response.credential);
+        var userGoogleObject = jwt_decode(response.credential);
+        console.log(userGoogleObject);
+        
+        // register on mongoDB
+        fetch('http://localhost:3002/registerGoogle', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: userGoogleObject.email,
+                
+                firstname: userGoogleObject.given_name,
+                lastname: userGoogleObject.family_name,
+            })
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user) {
+                    props.loadUser(user);
+                    console.log()
+                    navigate("/");
+                }
+            })
+
+
+    }
+
 
     const onFirstnameChange = (event) => {
         setFirstname(event.target.value);
@@ -56,6 +107,7 @@ const Register = (props) => {
             .then(user => {
                 if (user) {
                     props.loadUser(user);
+                    console.log()
                     navigate("/");
                 }
             })
@@ -126,6 +178,8 @@ const Register = (props) => {
                                     onChange={onPasswordChange}
                                 />
                             </Grid>
+                            <div id="signInDiv"></div>
+
 
                         </Grid>
                         <Button

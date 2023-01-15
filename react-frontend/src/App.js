@@ -54,6 +54,7 @@ class App extends Component {
     const { isSignedIn, user } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
         <BrowserRouter>
           <Navigation isSignedIn={isSignedIn} />
 

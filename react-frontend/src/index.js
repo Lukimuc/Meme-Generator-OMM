@@ -4,10 +4,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+
+// 361084581920-fefopqdbtsuusk3a8mcbhuea7li535rl.apps.googleusercontent.com
+// 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
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+
+
   <React.StrictMode>
-    <App />
+
+    
+      <App />
+    
   </React.StrictMode>
 );
 

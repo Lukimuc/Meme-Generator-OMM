@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from "jwt-decode";
 
 
 const theme = createTheme();
@@ -20,7 +22,7 @@ const SignIn = (props) => {
     const [signInEmail, setSignInEmail] = useState();
     const [signInPassword, setSignInPassword] = useState();
     const navigate = useNavigate();
-    
+
 
     const onEmailChange = (event) => {
         setSignInEmail(event.target.value);
@@ -44,8 +46,8 @@ const SignIn = (props) => {
             .then(user => {
                 if (user) {
                     props.loadUser(user);
-                    
-                    navigate("/", {state: {key: "value"}})
+
+                    navigate("/", { state: { key: "value" } })
                 }
             })
     }
@@ -105,6 +107,7 @@ const SignIn = (props) => {
                         >
                             Login
                         </Button>
+                        
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
@@ -127,5 +130,5 @@ const SignIn = (props) => {
             </Container>
         </ThemeProvider>
     );
-} 
+}
 export default SignIn;
