@@ -12,13 +12,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
-
+import { useEffect } from 'react';
 
 const theme = createTheme();
 
 const SignIn = (props) => {
+    // -------  Login via Form Input --------- //
     const [signInEmail, setSignInEmail] = useState();
     const [signInPassword, setSignInPassword] = useState();
     const navigate = useNavigate();
@@ -51,6 +51,44 @@ const SignIn = (props) => {
                 }
             })
     }
+
+    // -------  Login via Google --------- //
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "361084581920-fefopqdbtsuusk3a8mcbhuea7li535rl.apps.googleusercontent.com",
+            callback: handleGoogleResponse
+        }
+        )
+
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv2"),
+            { theme: "outline", size: "large", text:"signin_with",shape: "pill" }
+        );
+    }, [])
+
+    function handleGoogleResponse(response) {
+        var userGoogleObject = jwt_decode(response.credential);
+        //console.log(userGoogleObject);
+
+        // load user data into state
+        fetch('http://localhost:3001/signinGoogle', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: userGoogleObject.email,
+            })
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user) {
+                    props.loadUser(user);
+                    navigate("/", { state: { key: "value" } })
+                }
+            })
+
+    }
+    // -------  Render Login Form + Google Button --------- //
 
     return (
         <ThemeProvider theme={theme}>
@@ -107,13 +145,10 @@ const SignIn = (props) => {
                         >
                             Login
                         </Button>
-                        
+
+
                         <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
+                            <Grid item ><div id="signInDiv2"></div> </Grid>
                             <Grid item>
                                 <Link to="/register">
                                     <Typography variant="body2" style={{ cursor: 'pointer' }} >

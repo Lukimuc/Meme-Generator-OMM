@@ -20,57 +20,13 @@ const theme = createTheme();
 
 const Register = (props) => {
 
+    // -------  Register via Form Input --------- //
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const navigate = useNavigate();
-
-    
-
-    // Google Login
-
-    useEffect(() => {
-        /* global google */
-        google.accounts.id.initialize({
-            client_id: "361084581920-fefopqdbtsuusk3a8mcbhuea7li535rl.apps.googleusercontent.com",
-            callback: handleGoogleResponse
-        }
-        )
-
-        google.accounts.id.renderButton(
-            document.getElementById("signInDiv"),
-            { theme: "outline", size: "large" }
-        );
-    }, [])
-
-    function handleGoogleResponse(response) {
-        console.log("Encoded JWT ID token " + response.credential);
-        var userGoogleObject = jwt_decode(response.credential);
-        console.log(userGoogleObject);
-        
-        // register on mongoDB
-        fetch('http://localhost:3002/registerGoogle', {
-            method: 'post',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: userGoogleObject.email,
-                
-                firstname: userGoogleObject.given_name,
-                lastname: userGoogleObject.family_name,
-            })
-        })
-            .then(response => response.json())
-            .then(user => {
-                if (user) {
-                    props.loadUser(user);
-                    console.log()
-                    navigate("/");
-                }
-            })
-
-
-    }
 
 
     const onFirstnameChange = (event) => {
@@ -112,6 +68,50 @@ const Register = (props) => {
                 }
             })
     }
+
+    // -------  Register via Google --------- //
+
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "361084581920-fefopqdbtsuusk3a8mcbhuea7li535rl.apps.googleusercontent.com",
+            callback: handleGoogleResponse
+        }
+        )
+
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv"),
+            { theme: "filled_blue", size: "large", text: "signup_with",shape: "pill"}
+        );
+    }, [])
+
+    function handleGoogleResponse(response) {
+        var userGoogleObject = jwt_decode(response.credential);
+        console.log(userGoogleObject);
+
+        // register on mongoDB
+        fetch('http://localhost:3002/registerGoogle', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: userGoogleObject.email,
+
+                firstname: userGoogleObject.given_name,
+                lastname: userGoogleObject.family_name,
+            })
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user) {
+                    props.loadUser(user);
+                    console.log()
+                    navigate("/");
+                }
+            })
+    }
+
+    // -------  Render Form + Google Button --------- //
+
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -178,7 +178,7 @@ const Register = (props) => {
                                     onChange={onPasswordChange}
                                 />
                             </Grid>
-                            <div id="signInDiv"></div>
+                            
 
 
                         </Grid>
@@ -191,6 +191,7 @@ const Register = (props) => {
                         >
                             Sign Up
                         </Button>
+                        <div id="signInDiv"></div>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link to="/signin">
