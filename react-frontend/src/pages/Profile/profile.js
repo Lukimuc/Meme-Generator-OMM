@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 const Profile = (props) => {
 
-
     // ------   get User Data   ----- // 
     if (props.isSignedIn === true) {
         return (

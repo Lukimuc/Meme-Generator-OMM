@@ -68,7 +68,7 @@ class App extends Component {
             <Route path='/register' element={
               <Register loadUser={this.loadUser} />
             } />
-            <Route path='/profile/' element={<Profile user={user} />} />
+            <Route path='/profile/' element={<Profile isSignedIn={isSignedIn} user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
           </Routes>
