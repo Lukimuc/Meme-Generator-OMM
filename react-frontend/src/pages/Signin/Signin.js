@@ -11,14 +11,16 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
 
 const theme = createTheme();
 
 const SignIn = (props) => {
-    const [signInEmail, setSignInEmail] = useState("");
-    const [signInPassword, setSignInPassword] = useState("");
+    const [signInEmail, setSignInEmail] = useState();
+    const [signInPassword, setSignInPassword] = useState();
     const navigate = useNavigate();
+    
 
     const onEmailChange = (event) => {
         setSignInEmail(event.target.value);
@@ -42,8 +44,8 @@ const SignIn = (props) => {
             .then(user => {
                 if (user) {
                     props.loadUser(user);
-                    props.onRouteChange('home');
-                    navigate("/")
+                    
+                    navigate("/", {state: {key: "value"}})
                 }
             })
     }

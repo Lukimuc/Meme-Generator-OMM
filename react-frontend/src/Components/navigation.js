@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
-const Navigation = ({ onRouteChange, isSignedIn }) => {
+const Navigation = ({isSignedIn }) => {
 
     return (
 
@@ -43,15 +43,11 @@ const Navigation = ({ onRouteChange, isSignedIn }) => {
                             <Button color="inherit">Editor</Button>
                         </Link>
 
-                        <Link to="/editornew">
-                            <Button color="inherit">Editor New</Button>
-                        </Link>
-                        
-
                         {isSignedIn
-                            ? 
-                            <Link to ="/home"><Button onClick={() => onRouteChange('signout')} color="inherit">Signout</Button></Link>
-                            :<Link to="/signin"><Button onClick={() => onRouteChange('signin')} color="inherit">Login</Button></Link>}
+                            ?
+                            <Link to="/home"><Button  color="inherit">Signout</Button></Link>
+                            : <Link to="/signin"><Button  color="inherit">Login</Button></Link>
+                        }
                     </Toolbar>
                 </AppBar>
             </Box>

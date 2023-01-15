@@ -56,8 +56,7 @@ const Register = (props) => {
             .then(user => {
                 if (user) {
                     props.loadUser(user);
-                    props.onRouteChange('home');
-                    navigate("/home");
+                    navigate("/");
                 }
             })
     }
