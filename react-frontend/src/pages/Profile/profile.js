@@ -11,10 +11,6 @@ const Profile = (props) => {
             <Paper elevation={1} style={{ padding: "25px", margin: "20px" }}>
                 <Typography variant="h5">Profile</Typography>
                 <Box>
-                    <Typography variant="subtitle2" style={{ display: "inline" }}>ID </Typography>
-                    <p style={{ display: "inline" }}>ID</p>
-                </Box>
-                <Box>
                     <Typography variant="subtitle2" style={{ display: "inline" }}>E-Mail </Typography>
                     <p style={{ display: "inline" }}>{props.user.email}</p>
                 </Box>
