@@ -227,15 +227,19 @@ app.put('/image', async (req, res) => {
 }) */
 
 // create Meme
-app.post(("/meme"), (req, res) => {
-  const {  } = req.body; // TODO get input from frontend 
+app.post(("/meme"), async (req, res) => {
+  const {email } = req.body; // TODO get input from frontend 
+  user = await findOneUserByEmail(client, email);
+  
 
   newMeme = {
     "title": "test",
     "image_encoded": "test",
     "status": "public",
-    "likes":0,
+    "likes": 0,
     "memeCreated": new Date(),
+    "CreatorID": user._id,
+    "CreatorMail": user.email,
   }
   createMeme(client, newMeme);
   res.json(newMeme);
