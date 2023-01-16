@@ -1,25 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Stage, Layer, Text } from 'react-konva';
 import My_Image from './my_image';
 import My_Text from './my_text';
-
-
-
+import {Meme} from '../Home/Meme';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 const Editor = () => {
-
     // Variablen für Texte
     const [input_text, setInputs_Text] = useState()
     const [mytexts, setMytexts] = useState([])
-
     // Variables changing text
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(400);
     // Variablen für images
     const [input_image, setInput_Image] = useState()
     const [images, setImages] = useState([])
-
-
-
+     //Variablen für Memes
+     const [template, setTemplate] = useState(null);
+     const [templates, setTemplates] = useState(null);
     // Selecting shapes
     const [selectedId, selectShape] = useState(null);
     const checkDeselect = (e) => {
@@ -29,25 +29,37 @@ const Editor = () => {
           selectShape(null);
         }
     };
-
+    useEffect(() => {
+        fetchMemes();
+      }, []);
+    
+      const fetchMemes = async () => {
+        try {
+          const response = await fetch("https://api.imgflip.com/get_memes")
+          const data = await response.json();
+          setTemplates(data.data.memes);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      
     return (
         <div>
-            <div>
-                Hier wird der Editor sein:
-            </div>
+            <Grid container paddingLeft={10} paddingTop={10} paddingRight={10} spacing={1}>
+<Grid item md={8}>
             <div style={{
                 display: "block",
-                float: "left",
-                border: "5px outset blue",
-                height: "100%",
-                width: "50%",
+               /* float: "left",*/
+                border: "5px outset grey",
+               /* height: "100%",
+                width: "50%",*/
                 }}
             >
                 <Stage 
                     width={window.innerWidth / 2}
                     height={window.innerHeight}
                     style={{
-                        border: "1px outset red",
+                        border: "1px outset grey",
                     }}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
@@ -69,6 +81,7 @@ const Editor = () => {
                                 />
                             );
                         })}
+                        
                         {mytexts.map( (text, i) => {
                             return(
                                 <My_Text 
@@ -98,17 +111,50 @@ const Editor = () => {
                         })}
                     </Layer>
                 </Stage>
+                
             </div>
+            </Grid>
+            <Grid item md={4}>
+                <h1 textAlign='center'>Editor</h1>
+                <p>Choose your text and meme template and check in your desired text and images with the "submit" button afterwards!</p>
             <div>
-                <form>
-                    <label>Text hinzufügen</label><br/>
-                    <input type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}/><br/>
-                    <button onClick={(e) => {
+                    <TextField style={{paddingBottom:10}} label="Add text" type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}></TextField>
+                    <br/>
+                    <Button variant="contained" onClick={(e) => {
                         e.preventDefault();
                         setMytexts( arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])
-                    }}>Submit</button>
+                    }}>Submit Text</Button>
                     <br/>
-                    <img
+               
+                  {/*}  {template && <Meme template={template} name={template.name}  />}*/}
+  {/*vorher war template statt templates? whats the difference???}*/}
+  {/*<Grid container spacing={2}>*/}
+  <Box style={{maxHeight: '30vh', overflow: 'auto', paddingTop:10}}>
+  <Grid container>
+        {templates && templates.map((template) => {
+             return (
+                       <Grid item md={3} key={template.id}>
+             <Meme
+             template={template}
+             width={90}
+             onClick={(e) => {
+                e.preventDefault();
+                setInput_Image(e.target.src);
+                setTemplate(template);
+            }}
+              /* onClick={() => {
+                 setTemplate(template);
+               }}*/
+             />
+             
+             </Grid>
+        
+        )
+            }
+        )}
+</Grid>
+</Box>
+                  {/*  <img
                         alt="lion"
                         src="https://konvajs.org/assets/lion.png"
                         draggable="true"
@@ -127,19 +173,27 @@ const Editor = () => {
                         }}
                         stroke="black"
                     />
+                    */}
+                  {/*}  </Grid> */}
                     <br/>
-                    <button onClick={(e) => {
+                    <Button variant="contained" onClick={(e) => {
                         e.preventDefault();
                         setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])
-                        
-                    }}>Submit Image</button>
+                       
+                    }}>Submit Image</Button>
                     <p>{input_text}</p>
                     <p>{input_image}</p>
                     
-                </form>
+   
             </div>
+            </Grid>
+            </Grid>
+            
         </div>
+        
         )
+        
+        
     }
-
+    
 export default Editor

@@ -134,7 +134,24 @@ app.post('/register', (req, res) => {
   res.json(newUser);
 })
 
-// LOGIN a existing User
+// register by google
+app.post('/registerGoogle', (req, res) => {
+  const { email, firstname, lastname } = req.body; // get input from frontend 
+
+
+  newUser = {
+    "firstname": firstname,
+    "lastname": lastname,
+    "email": email,
+    "password": "",
+    "entries": 0,
+    "userCreated": new Date()
+  }
+  createUser(client, newUser);
+  res.json(newUser);
+})
+
+// LOGIN a existing User via Form
 app.post('/signin', async (req, res) => {
   const inputEmail = req.body.email;
   const inputPassword = req.body.password;
@@ -146,7 +163,18 @@ app.post('/signin', async (req, res) => {
       if (isValid) { // if pw matches
         res.json(user); // send user to frontend
       } else { res.status(400).json("Wrong Credentials"); }
-    } else {res.status(400).json("Please fill in both the email field as well as the password");}
+    } else { res.status(400).json("Please fill in both the email field as well as the password"); }
+  } catch (error) { console.log("app.post/signin error: " + error); }
+})
+
+app.post('/signinGoogle', async (req, res) => {
+  const inputEmail = req.body.email;
+  try {
+    const user = await findOneUserByEmail(client, inputEmail);
+
+    if (user != null) {
+      res.json(user); // send user to frontend
+    } else { res.status(400).json("Somethings wrong with Google Login"); }
   } catch (error) { console.log("app.post/signin error: " + error); }
 })
 

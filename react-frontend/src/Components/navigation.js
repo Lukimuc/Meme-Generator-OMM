@@ -6,8 +6,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Navigation = ({ onRouteChange, isSignedIn }) => {
+
+const Navigation = ({isSignedIn }) => {
 
     return (
 
@@ -27,9 +30,27 @@ const Navigation = ({ onRouteChange, isSignedIn }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Meme Generator
                         </Typography>
+                        <Link to="/profile">
+                            <Button color="inherit">Profile</Button>
+                        </Link>
+                        <Link to="/register">
+                            <Button color="inherit">Registrieren</Button>
+                        </Link>
+                        <Link to="/">
+                            <Button color="inherit">Home</Button>
+                        </Link>
+                        <Link to="/editor">
+                            <Button color="inherit">Editor</Button>
+                        </Link>
+                        <Link to="/testLukas">
+                            <Button color="inherit">testLukas</Button>
+                        </Link>
+
                         {isSignedIn
-                            ? <Button onClick={() => onRouteChange('signout')} color="inherit">Signout</Button>
-                            : <Button onClick={() => onRouteChange('signin')} color="inherit">Login</Button>}
+                            ?
+                            <Link to="/"><Button  color="inherit" onClick={() => window.location.reload()}>Signout</Button></Link>
+                            : <Link to="/signin"><Button  color="inherit">Login</Button></Link>
+                        }
                     </Toolbar>
                 </AppBar>
             </Box>
