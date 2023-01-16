@@ -73,7 +73,7 @@ class App extends Component {
             <Route path='/profile/' element={<Profile isSignedIn={isSignedIn} user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
-            <Route path='/testLukas' element={<TestLukas />} />
+            <Route path='/testLukas' element={<TestLukas user={user}/>} />
 
           </Routes>
         </BrowserRouter>
