@@ -42,6 +42,9 @@ const Navigation = ({isSignedIn }) => {
                         <Link to="/editor">
                             <Button color="inherit">Editor</Button>
                         </Link>
+                        <Link to="/testLukas">
+                            <Button color="inherit">testLukas</Button>
+                        </Link>
 
                         {isSignedIn
                             ?

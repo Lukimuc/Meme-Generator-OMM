@@ -8,7 +8,8 @@ import Profile from './pages/Profile/profile';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Singleview } from './pages/Singleview/singleview';
 import Editor from './pages/Editor/editor';
-import New_Editor from './pages/NewEditor/new_editor'
+import New_Editor from './pages/NewEditor/new_editor';
+import TestLukas from './pages/TestLukas/TestLukas';
 
 
 class App extends Component {
@@ -72,6 +73,8 @@ class App extends Component {
             <Route path='/profile/' element={<Profile isSignedIn={isSignedIn} user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
+            <Route path='/testLukas' element={<TestLukas />} />
+
           </Routes>
         </BrowserRouter>
       </>
