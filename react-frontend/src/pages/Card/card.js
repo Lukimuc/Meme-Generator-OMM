@@ -22,7 +22,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Link } from "react-router-dom";
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-
 const ExpandMore = styled((props) => {
   const { expand } = props;
 })(({ theme, expand }) => ({
@@ -33,32 +32,20 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-
-export default function RecipeReviewCard() {
-
- 
+export default function MemeCard(props) {
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
-    return <IconButton aria-label="add to favorites"></IconButton>
+    return <IconButton></IconButton>
   };
-
-  const countLikes = () => {
-    var buttonPressed = true;
-    /* if logged in: add it to a list with liked memes*/
-  }
-
   /*only runs after first render*/
   /*fetching memes*/
   const [templates, setTemplates] = useState([]);
   const [template, setTemplate] = useState(null);
-
  
   const [count, setCount] = useState(0);
-
   const [memeLimit, setMemeLimit] = useState(12);
   const limitedTemplates = templates.slice(0, memeLimit);
-
   const [searchValue, setSearchValue] = useState('');
   const filteredTemplates = limitedTemplates.filter(template => template.name.toLowerCase().includes(searchValue.toLowerCase()));
   
@@ -69,12 +56,10 @@ export default function RecipeReviewCard() {
       .then(response => setTemplates(response.data.memes))
     );
   }, []);
-
   /*const limitedTemplates = templates.slice((page - 1) * 12, page * 12);*/
   const handleLoadMore = () => {
     setMemeLimit (memeLimit+12);
   };
-
   return (
     <div>
       <h1 style={{display: 'flex', justifyContent: 'center'}}>Check out already created memes</h1>
@@ -118,25 +103,32 @@ onChange={handleChange} */
             <Card style={{ maxWidth: 345, maxHeight: 600 }}>
               <CardHeader
                 avatar={
-                  <Avatar style={{ bgcolor: red[500] }} aria-label="recipe">
+                  <Avatar>
                     R
                   </Avatar>
                 }
                 title={template.name}
                /* subheader="Create Date:"*/
               />
-              <CardMedia style={{alignItems: 'center'}}>
-              <Link to="/singleview">
-                <img style={{maxHeight: 350}}
-                  src={template.url}
-                  
-                  title={template.name}
-                  onClick={() => {
+             {/* <Link to={{pathname: '/singleview', state: {id: template.id}}}> */}
+             
+              <CardMedia style={{alignItems: 'center'} } onClick={() => {
+                    setTemplate(template);
+                  }}>
+                     <Link key={template.id} to={{pathname:`/memes/${template.id}`,  state:{template: template}}}>
+        
+            {/*}  <Link key={template.id} to={`/memes/${template.id}`}>*/}
+                <Meme
+                template={template}
+               
+               /*   onClick={() => {
                     setTemplate(template);
                   }
-                  }/>
-</Link>
+                  }*//>
+                   </Link>
               </CardMedia>
+             
+              
               <CardContent>
               <Typography variant="body2" color="text.secondary">
         <b>  {count} {count === 1 ? "Like" : "Likes"} </b>
@@ -149,19 +141,18 @@ onChange={handleChange} */
         }}
       />
       <p>Count is: {count}</p>*/}
-    <IconButton aria-label="add to favorites" onClick={() => setCount(count + 1)}>
+      
+    <IconButton onClick={() => setCount(count + 1)}>
       <ThumbUpIcon/>
     </IconButton>
-    <IconButton aria-label="add to favorites" onClick={() => setCount(count - 1)}>
+    <IconButton onClick={() => setCount(count - 1)}>
       <ThumbDownIcon />
     </IconButton>
     <IconButton aria-label="share">
       <InsertCommentRoundedIcon />
     </IconButton>
-
     
     {/*<Button variant="contained" style={{ position:'relative', float:'right'}}>Edit Meme</Button>*/}
-
   </CardActions>
             </Card>
           </Grid>
@@ -171,9 +162,19 @@ onChange={handleChange} */
     </Grid>
     <div style={{display: 'flex', justifyContent: 'center', padding:40 }}>  
     <Button variant="contained" style={{backgroundColor:'red'}} onClick={handleLoadMore}>Load more Memes</Button>
+    <Link to="/editor">
+<Fab color="primary" aria-label="add"  style={{
+                        margin: 0,
+                        top: 'auto',
+                        right: 20,
+                        bottom: 20,
+                        left: 'auto',
+                        position: 'fixed',
+                    }}>
+  <AddIcon />
+</Fab>
+</Link>  
     </div>
     </div>
-
   );
       }   
-  
