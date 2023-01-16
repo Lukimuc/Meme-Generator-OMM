@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
-
+var Grid = require('gridfs-stream');
 
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
@@ -37,12 +37,28 @@ const url = 'mongodb://localhost:27017';
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect()
+client.connect().then(() => {
+  console.log("Connected successfully to server");
+
+
+});
+
+// Setup Filestream (we use this to upload a Image to the DB)
+
+
 
 // create User Document in DB
 async function createUser(client, newUser) {
   const result = await client.db("memeGeneratorDB").collection("users").insertOne(newUser);
   console.log(`New User created with the ID ${result.insertedID}`);
+
+  return result;
+}
+
+// create Meme Document in DB
+async function createMeme(client, newMeme) {
+  const result = await client.db("memeGeneratorDB").collection("memes").insertOne(newMeme);
+  console.log(`New Meme created with the ID ${result.insertedID}`);
 
   return result;
 }
@@ -201,13 +217,28 @@ app.get('/profile/:id', async (req, res) => {
   }
 })
 
-// add a image to the profile and increase the image entries
+/* // add a image to the profile and increase the image entries
 app.put('/image', async (req, res) => {
   const { id } = req.body;
   const user = await findOneUserByID(client, id);
 
   updateOneUserByID(client, id, { entries: user.entries + 1 })
   res.json(user.entries + 1);
+}) */
+
+// create Meme
+app.post(("/meme"), (req, res) => {
+  const {  } = req.body; // TODO get input from frontend 
+
+  newMeme = {
+    "title": "test",
+    "image_encoded": "test",
+    "status": "public",
+    "likes":0,
+    "memeCreated": new Date(),
+  }
+  createMeme(client, newMeme);
+  res.json(newMeme);
 })
 
 /* ------------ Lukas Test Ende -------------- */

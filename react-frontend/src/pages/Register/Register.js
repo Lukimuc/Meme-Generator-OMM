@@ -81,7 +81,7 @@ const Register = (props) => {
 
         google.accounts.id.renderButton(
             document.getElementById("signInDiv"),
-            { theme: "filled_blue", size: "large", text: "signup_with",shape: "pill"}
+            { theme: "filled_blue", size: "large", text: "signup_with", shape: "pill" }
         );
     }, [])
 
@@ -178,7 +178,7 @@ const Register = (props) => {
                                     onChange={onPasswordChange}
                                 />
                             </Grid>
-                            
+
 
 
                         </Grid>
