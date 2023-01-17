@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const MemeLukas = (props) => {
     const { meme } = props;
     const [imageSrc, setImageSrc] = useState("");
-    const [text, setText] = useState(`Title: ${meme.title} Status: ${meme.status} Likes: ${meme.likes} Created: ${meme.memeCreated} Creator ID: ${meme.CreatorID} Creator Email: ${meme.CreatorMail}`);
+    const [text, setText] = useState(`Title: ${meme.title} Image Description ${meme.imageDescription} Status: ${meme.status} Likes: ${meme.likes} Created: ${meme.memeCreated} Creator ID: ${meme.CreatorID} Creator Email: ${meme.CreatorMail}`); // is read out by the voice in this order and only this variables
 
     // decode Image 
     useEffect(() => {
@@ -24,14 +24,16 @@ const MemeLukas = (props) => {
 
     return (
         <div>
-            <button onClick={handleSpeakClick}>Speak</button>
             <h2>{meme.title}</h2>
+            <p>imageDecription: {meme.imageDescription}</p>
             <p>Status: {meme.status}</p>
             <p>Likes: {meme.likes}</p>
             <p>Created: {meme.memeCreated}</p>
             <p>Creator ID: {meme.CreatorID}</p>
             <p>Creator Email: {meme.CreatorMail}</p>
+            
             <img src={imageSrc} alt={meme.title} />
+            <button onClick={handleSpeakClick}>Speak</button>
         </div>
 
     );
