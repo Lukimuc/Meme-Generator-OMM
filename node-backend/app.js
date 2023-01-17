@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
-var Grid = require('gridfs-stream');
+
 
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
@@ -46,9 +46,6 @@ client.connect().then(() => {
 });
 
 
-
-
-
 // create User Document in DB
 async function createUser(client, newUser) {
   const result = await client.db("memeGeneratorDB").collection("users").insertOne(newUser);
@@ -75,7 +72,6 @@ async function findOneUserByID(client, id) {
 
   if (result) {
     console.log(`found a user in the collection with the id ${id}`);
-    //console.log(result);
     return result;
   } else {
     console.log(`No user found with the id ${id}`);
@@ -118,7 +114,7 @@ async function deleteOneUserByEmail(client, email) {
 }
 
 
-// Memes
+// ---- Memes ----
 // create Meme Document in DB
 async function createMeme(client, newMeme) {
   const result = await client.db("memeGeneratorDB").collection("memes").insertOne(newMeme);
@@ -126,7 +122,6 @@ async function createMeme(client, newMeme) {
 
   return result;
 }
-
 
 // find all created Memes on DB
 async function findAllMemes(client) {
@@ -168,8 +163,6 @@ async function findMemeByMemeID(client, memeID) {
 }
 
 
-
-
 /* Endpoints: 
   /register  ---> Post --> Return: User 
   /signin route --> Post --> Return:  succes /fail
@@ -197,7 +190,7 @@ app.post('/register', (req, res) => {
   res.json(newUser);
 })
 
-// register by google
+// REGISTER via google
 app.post('/registerGoogle', (req, res) => {
   const { email, firstname, lastname } = req.body; // get input from frontend 
 
@@ -263,7 +256,6 @@ app.get('/profile/:id', async (req, res) => {
 app.post(("/memes"), async (req, res) => {
   const { email, image_encoded } = req.body; // TODO get input from frontend 
   user = await findOneUserByEmail(client, email);
-
 
   newMeme = {
     "title": "test",

@@ -66,7 +66,7 @@ function TestLukas(props) {
     })
       .then(response => response.json())
       .then(meme => {
-        document.getElementById("specificMemeID").innerHTML = "meme.id "+ meme._id+ " meme.title "+ meme.title+ " meme.likes "+ meme.likes+ " meme.CreatorID "+meme.CreatorID;
+        document.getElementById("specificMemeID").innerHTML = "meme.id " + meme._id + " meme.title " + meme.title + " meme.likes " + meme.likes + " meme.CreatorID " + meme.CreatorID;
         console.log(meme);
       })
   }

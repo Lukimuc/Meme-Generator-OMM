@@ -13,14 +13,14 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Navigation = ({ isSignedIn, user }) => {
-const profileLink = "/profile/"+"1"
+    const profileLink = "/profile/" + "1"
 
     if (isSignedIn) {
-        const profileLink = "/profile/"+user.id; // for individual profile 
-    } 
-    
-    
-    
+        const profileLink = "/profile/" + user.id; // for individual profile 
+    }
+
+
+
     return (
 
         <>
