@@ -100,7 +100,7 @@ function TestLukas(props) {
       <br />
       <br />
       <button onClick={createMeme}>Create picture  / "Meme" on server </button>
-      <button onClick={getMeme}> Get all Memes from server </button>
+      <button onClick={getMemes}> Get all Memes from server </button>
       <br /><br />
       {/* get a specific Meme by MemeID: */}
       <label>Enter Meme ID - Siehe DB - Memes - _id:</label>
