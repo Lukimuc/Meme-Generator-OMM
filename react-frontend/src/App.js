@@ -25,7 +25,7 @@ class App extends Component {
         email: '',
         joined: '',
         entries: 0,
-      }
+      }, isOnline: true
     }
   }
 
@@ -55,6 +55,10 @@ class App extends Component {
     const { isSignedIn, user } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
+      <div>
+        {!this.state.isOnline && <div>You are currently offline</div>}
+        {/* Your application content */}
+      </div>
       <script src="https://accounts.google.com/gsi/client" async defer></script>
         <BrowserRouter>
           <Navigation isSignedIn={isSignedIn} user={user}/>
@@ -81,6 +85,27 @@ class App extends Component {
     );
   }
 
+
+  // ------- Feature 21 Basic -  Offline Capabilities ------ //
+  componentDidMount() {
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('online', this.handleOnline);
+    window.removeEventListener('offline', this.handleOffline);
+  }
+
+  handleOnline = () => {
+    this.setState({ isOnline: true });
+  }
+
+  handleOffline = () => {
+    this.setState({ isOnline: false });
+  }
+
+  // ------- Feature 21 Basic - End ------ //
 
 }
 
