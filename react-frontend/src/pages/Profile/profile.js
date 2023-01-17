@@ -7,22 +7,22 @@ import MemeLukas from '../TestLukas/MemeLukas';
 
 const Profile = (props) => {
     const [memesfromServer, setMemesFromServer] = useState([]);
-    const profileLink = "profile/"+props.user.id;
-    
+    const profileLink = "profile/" + props.user.id;
+
 
     useEffect(() => {
         getProfileMemes(); // call the function to get the memes from the server
     }, []);
 
     const getProfileMemes = () => {
-        fetch('http://localhost:3002/'+profileLink, {
+        fetch('http://localhost:3002/' + profileLink, {
             method: 'get',
             headers: { 'Content-Type': 'application/json' },
-            
+
         })
             .then(response => response.json())
             .then(memes => {
-                if(memes.memes) setMemesFromServer(memes.memes); // set the state of memesfromServer to the received memes
+                if (memes.memes) setMemesFromServer(memes.memes); // set the state of memesfromServer to the received memes
             });
     }
 
@@ -71,7 +71,7 @@ const Profile = (props) => {
                                 <Grid item md={4}>
                                     <MemeLukas key={meme._id} meme={meme} />
                                 </Grid>
-                            ))} 
+                            ))}
 
                         </Grid>
                     </Box>

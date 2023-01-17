@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Signin from './pages/Signin/Signin';
 import Register from './pages/Register/Register';
 import Home from './pages/Home/Home';
-import Rank from './Components/rank';
 import Navigation from './Components/navigation';
 import Profile from './pages/Profile/profile';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';

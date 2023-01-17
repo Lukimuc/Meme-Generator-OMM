@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
-var Grid = require('gridfs-stream');
+
 
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
