@@ -26,7 +26,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import Fab from '@mui/material/Fab';
 import {Meme} from './Meme'
 
-
+/*
 const ExpandMore = styled((props) => {
   const { expand } = props;
 })(({ theme, expand }) => ({
@@ -35,7 +35,7 @@ const ExpandMore = styled((props) => {
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shortest,
   }),
-}));
+}));*/
 
 export default function Home(props) {
   const [expanded, setExpanded] = React.useState(false);

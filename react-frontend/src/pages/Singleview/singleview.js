@@ -3,10 +3,6 @@ import { useParams } from "react-router-dom";
 import  { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles';
 import Box, {img} from '@mui/material/Box';
-import CardMedia from '@mui/material/CardMedia';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import Avatar from '@mui/material/Avatar';
 import MobileStepper from '@mui/material/MobileStepper';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -17,7 +13,7 @@ import {Meme} from '../Home/Meme';
 /*import {Likes} from '../Components/likes';*/
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Grid from '@mui/material/Grid';
-import TextareaValidator from './TextareaValidator.js';
+import TextareaValidator from '../../Components/TextareaValidator.js';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { useLocation } from 'react-router-dom';
@@ -61,8 +57,6 @@ export function Singleview(template) {
     }
   ];
   
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
     /*
     let match = useMatch("/memes/:id");
     let memeId;
@@ -70,11 +64,6 @@ export function Singleview(template) {
       memeId = match.params.id;
     }*/
     
-  const handleCommentSubmit = (event) => {
-      event.preventDefault();
-      setComments([...comments, newComment]);
-      setNewComment('');
-  }
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const maxSteps = steps.length;
@@ -119,9 +108,7 @@ export function Singleview(template) {
       return (
         
        <div>
-        
-          <Grid container spacing={2} paddingLeft={30} paddingTop={10} paddingRight={30}style={{ }}>
-            
+          <Grid container spacing={2} paddingLeft={30} paddingTop={10} paddingRight={30}style={{ }}> 
             <Grid item md={8}>
             <h1> Meme ID - gelesen aus URL: {id}</h1>
         <Box sx={{ maxWidth: 600, flexGrow: 1}}>
@@ -192,29 +179,10 @@ export function Singleview(template) {
       <Grid item md={4}>
         {/*{template.name}*/}
      {/*<Likes /*likes={likes}*/}
-       Likes: Platzhalter <br/>
+      <h2> Likes: Platzhalter </h2> <br/>
        <Link to="/editor"><Button variant="contained">Edit this template</Button></Link>
        <h2> Comments: </h2>
-      <div style={{
-      paddingTop: 10,
-      paddingBottom: 10
-     }}>
-     <Card>
-     <CardHeader
-                  avatar={
-                    <Avatar  aria-label="recipe">
-                      User
-                    </Avatar>
-                  }
-                  title={
-                    "User123"
-                  }
-                  subheader={
-                    "Das ist ein Beispielkommentar"
-                  }
-                />
-              </Card>
-
+    
              {/*} Code for Mapping Comments later on
               <div>
               {comments.map((comment, index) => (
@@ -222,15 +190,15 @@ export function Singleview(template) {
               ))}
               </div>*/}
 
-              </div>
               You need to login to comment. Sign in <Link to="/signin"> here </Link> <br/>
-             <TextareaValidator 
-           style={{paddingBottom: 30}}
+           {/*   <Comments/>**/}
+             <TextareaValidator/>
+          {/*} style={{paddingBottom: 30}}
               id="newComment"
               label="Add a comment"
-             /* value={newComment}
+              value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-            onSubmit={handleCommentSubmit}*//>
+            onSubmit={handleCommentSubmit}*/}
       </Grid>
       </Grid>
                   </div>
