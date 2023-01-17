@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-
+import MemeLukas from "./MemeLukas";
 
 function TestLukas(props) {
   const [base64, setBase64] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const [encodedImage, setEncodedImage] = useState("");
-
+  const [memesfromServer, setMemesFromServer] = useState([]);
 
 
   // Verschlüsseln
@@ -16,7 +16,7 @@ function TestLukas(props) {
     reader.onload = () => {
       setEncodedImage((prev) => {
         const updatedImage = reader.result
-        console.log(updatedImage); // this should give you the expected result
+        console.log(updatedImage);
         return updatedImage;
       });
     };
@@ -32,8 +32,7 @@ function TestLukas(props) {
   };
 
   const createMeme = (event) => {
-    console.log("inside createdMeme", encodedImage);
-    fetch('http://localhost:3002/meme', {
+    fetch('http://localhost:3002/memes', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -48,8 +47,16 @@ function TestLukas(props) {
   }
 
   const getMeme = (event) => {
-    event.preventDefault();
+    fetch('http://localhost:3002/memes', {
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(response => response.json())
+      .then(memes => {
+        setMemesFromServer(memes);  // set the state of memesfromServer to the received memes
+      })
   }
+
 
   return (
     <>
@@ -79,9 +86,14 @@ function TestLukas(props) {
       <br />
       <br />
       <button onClick={createMeme}>Create picture  / "Meme" on server </button>
-      <button onClick={getMeme}> Get Meme from server </button>
+      <button onClick={getMeme}> Get all Memes from server </button>
+
+      {/*   // iterate over the .json and create Meme Components */}
+      {memesfromServer.map((meme) => (
+        <MemeLukas key={meme._id} meme={meme} />
+      ))}
     </>
-);
+  );
 }
 
 export default TestLukas;

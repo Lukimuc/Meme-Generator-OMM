@@ -43,7 +43,7 @@ client.connect().then(() => {
 
 });
 
-// Setup Filestream (we use this to upload a Image to the DB)
+
 
 
 
@@ -51,14 +51,6 @@ client.connect().then(() => {
 async function createUser(client, newUser) {
   const result = await client.db("memeGeneratorDB").collection("users").insertOne(newUser);
   console.log(`New User created with the ID ${result.insertedID}`);
-
-  return result;
-}
-
-// create Meme Document in DB
-async function createMeme(client, newMeme) {
-  const result = await client.db("memeGeneratorDB").collection("memes").insertOne(newMeme);
-  console.log(`New Meme created with the ID ${result.insertedID}`);
 
   return result;
 }
@@ -122,6 +114,33 @@ async function deleteOneUserByEmail(client, email) {
   console.log(`${result.deletedCount} documents got deleted`);
   return result;
 }
+
+
+// Memes
+// create Meme Document in DB
+async function createMeme(client, newMeme) {
+  const result = await client.db("memeGeneratorDB").collection("memes").insertOne(newMeme);
+  console.log(`New Meme created with the ID ${result.insertedID}`);
+
+  return result;
+}
+
+
+// find all created Memes on DB
+async function findAllMemes(client) {
+  const cursor = await client.db("memeGeneratorDB").collection("memes").find();
+  const result = await cursor.toArray();
+
+  if (result.length > 0) {
+    console.log(`Memes found`);
+  } else {
+    console.log(`No memes found`);
+  }
+  return result;
+}
+
+
+
 
 /* Endpoints: 
   /register  ---> Post --> Return: User 
@@ -227,22 +246,28 @@ app.put('/image', async (req, res) => {
 }) */
 
 // create Meme
-app.post(("/meme"), async (req, res) => {
-  const {email, image_encoded} = req.body; // TODO get input from frontend 
+app.post(("/memes"), async (req, res) => {
+  const { email, image_encoded } = req.body; // TODO get input from frontend 
   user = await findOneUserByEmail(client, email);
-  
+
 
   newMeme = {
     "title": "test",
-    "image_encoded": image_encoded,
     "status": "public",
     "likes": 0,
     "memeCreated": new Date(),
     "CreatorID": user._id,
     "CreatorMail": user.email,
+    "image_encoded": image_encoded,
   }
   createMeme(client, newMeme);
   res.json(newMeme);
+})
+
+// get all memes on db
+app.get(("/memes"), async (req, res) => {
+  memes = await findAllMemes(client);
+  res.json(memes);
 })
 
 /* ------------ Lukas Test Ende -------------- */
