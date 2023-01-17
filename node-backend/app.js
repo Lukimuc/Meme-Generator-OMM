@@ -263,6 +263,7 @@ app.post(("/memes"), async (req, res) => {
     "CreatorID": user._id,
     "CreatorMail": user.email,
     "image_encoded": image_encoded,
+    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader"
   }
   createMeme(client, newMeme);
   res.json(newMeme);
