@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const MemeLukas = (props) => {
     const { meme } = props;
     const [imageSrc, setImageSrc] = useState("");
-
+    const [text, setText] = useState(`Title: ${meme.title} Status: ${meme.status} Likes: ${meme.likes} Created: ${meme.memeCreated} Creator ID: ${meme.CreatorID} Creator Email: ${meme.CreatorMail}`);
 
     // decode Image 
     useEffect(() => {
@@ -17,8 +17,14 @@ const MemeLukas = (props) => {
         setImageSrc(URL.createObjectURL(blob));
     }, [meme.image_encoded]);
 
+    function handleSpeakClick() {
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+    }
+
     return (
         <div>
+            <button onClick={handleSpeakClick}>Speak</button>
             <h2>{meme.title}</h2>
             <p>Status: {meme.status}</p>
             <p>Likes: {meme.likes}</p>
@@ -27,6 +33,7 @@ const MemeLukas = (props) => {
             <p>Creator Email: {meme.CreatorMail}</p>
             <img src={imageSrc} alt={meme.title} />
         </div>
+
     );
 };
 
