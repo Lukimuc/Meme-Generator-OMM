@@ -6,7 +6,7 @@ function TestLukas(props) {
   const [imageSrc, setImageSrc] = useState("");
   const [encodedImage, setEncodedImage] = useState("");
   const [memesfromServer, setMemesFromServer] = useState([]);
-
+  const [memeId, setMemeId] = useState(""); // get meme by MemeID Textfield
 
   // Verschlüsseln
   const handleEncode = async (e) => {
@@ -46,7 +46,8 @@ function TestLukas(props) {
       })
   }
 
-  const getMeme = (event) => {
+  // Plural
+  const getMemes = (event) => {
     fetch('http://localhost:3002/memes', {
       method: 'get',
       headers: { 'Content-Type': 'application/json' },
@@ -54,6 +55,19 @@ function TestLukas(props) {
       .then(response => response.json())
       .then(memes => {
         setMemesFromServer(memes);  // set the state of memesfromServer to the received memes
+      })
+  }
+
+  // Singular
+  const getMeme = (event) => {
+    fetch(`http://localhost:3002/memes/${memeId}`, {
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(response => response.json())
+      .then(meme => {
+        document.getElementById("specificMemeID").innerHTML = "meme.id "+ meme._id+ " meme.title "+ meme.title+ " meme.likes "+ meme.likes+ " meme.CreatorID "+meme.CreatorID;
+        console.log(meme);
       })
   }
 
@@ -87,15 +101,28 @@ function TestLukas(props) {
       <br />
       <button onClick={createMeme}>Create picture  / "Meme" on server </button>
       <button onClick={getMeme}> Get all Memes from server </button>
+      <br /><br />
+      {/* get a specific Meme by MemeID: */}
+      <label>Enter Meme ID - Siehe DB - Memes - _id:</label>
+      <br />
+      <input
+        type="text"
+        value={memeId}
+        onChange={(e) => setMemeId(e.target.value)}
+      />
+      <br /><br />
+      <button onClick={getMeme}>Get specific Meme</button>
+      <div id="specificMemeID"></div>
+      <br />
 
       {/*   // iterate over the .json and create Meme Components */}
       {memesfromServer.map((meme) => (
         <MemeLukas key={meme._id} meme={meme} />
       ))}
+
     </>
   );
 }
 
 export default TestLukas;
-
 

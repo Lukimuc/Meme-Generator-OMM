@@ -139,9 +139,22 @@ async function findAllMemes(client) {
   return result;
 }
 
-async function findMemeByUserID(client, id) {
-  const cursor = await client.db("memeGeneratorDB").collection("memes").find({CreatorID: ObjectID(id)});
+async function findMemesByUserID(client, userID) {
+  const cursor = await client.db("memeGeneratorDB").collection("memes").find({ CreatorID: ObjectID(userID) });
   const result = await cursor.toArray();
+
+  if (result.length > 0) {
+    console.log(`Memes found`);
+    console.log(result);
+  } else {
+    console.log(`No memes found`);
+  }
+  return result;
+}
+
+async function findMemeByMemeID(client, memeID) {
+  const result = await client.db("memeGeneratorDB").collection("memes").findOne({ _id: ObjectID(memeID) });
+
 
   if (result.length > 0) {
     console.log(`Memes found`);
@@ -227,18 +240,13 @@ app.post('/signinGoogle', async (req, res) => {
   } catch (error) { console.log("app.post/signin error: " + error); }
 })
 
-// get all users out of database - REMOVE LATER
-app.get('/', (req, res) => {
-  res.json("Empty Route app.get/");
-})
-
 // get the individual profile with defined IDs and their created memes
 app.get('/profile/:id', async (req, res) => {
   const id = req.params.id
-  
+
   try {
     const user = await findOneUserByID(client, id); // get's back a User as Object 
-    const memes = await findMemeByUserID(client, id); // get's back all Memes created by the user
+    const memes = await findMemesByUserID(client, id); // get's back all Memes created by the user
     // do something with the user ...
     const data = Object.assign({}, user, { memes });
     res.json(data); // server response to frontend
@@ -248,15 +256,6 @@ app.get('/profile/:id', async (req, res) => {
     res.status(400).json("Error in app.get('profile/id': " + error);
   }
 })
-
-/* // add a image to the profile and increase the image entries
-app.put('/image', async (req, res) => {
-  const { id } = req.body;
-  const user = await findOneUserByID(client, id);
-
-  updateOneUserByID(client, id, { entries: user.entries + 1 })
-  res.json(user.entries + 1);
-}) */
 
 // create Meme
 app.post(("/memes"), async (req, res) => {
@@ -283,13 +282,32 @@ app.get(("/memes"), async (req, res) => {
   res.json(memes);
 })
 
-// get memes by specific user
+// get a specific Meme by MemeID
+app.get(("/memes/:id"), async (req, res) => {
+  const id = req.params.id
+
+  try {
+    const meme = await findMemeByMemeID(client, id);
+    res.json(meme); // server response to frontend
+
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error in app.get('/meme/:id'': " + error);
+  }
+})
+
+
+
+
+/* DO WE USE THIS? // get memes by specific user
 app.get(("/memes/:userID"), async (req, res) => {
   const {id} = req.body;
   console.log(id);
   memes = await findAllMemes(client);
   res.json(memes);
-})
+}) */
+
+
 
 /* ------------ Lukas Test Ende -------------- */
 
