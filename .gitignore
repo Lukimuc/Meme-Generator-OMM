@@ -3,3 +3,4 @@ mongoserver/node_modules/
 node-backend/node_modules/
 react-frontend/node_modules/
 node_modules
+.idea
