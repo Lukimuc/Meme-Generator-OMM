@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Grid, Typography, Paper, Box, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import MemeLukas from '../TestLukas/MemeLukas';
+
 
 
 const Profile = (props) => {
+    const [memesfromServer, setMemesFromServer] = useState([]);
+    const profileLink = "profile/"+props.user.id;
+    
+
+    useEffect(() => {
+        getProfileMemes(); // call the function to get the memes from the server
+    }, []);
+
+    const getProfileMemes = () => {
+        fetch('http://localhost:3002/'+profileLink, {
+            method: 'get',
+            headers: { 'Content-Type': 'application/json' },
+            
+        })
+            .then(response => response.json())
+            .then(memes => {
+                if(memes.memes) setMemesFromServer(memes.memes); // set the state of memesfromServer to the received memes
+            });
+    }
+
 
     // ------   get User Data   ----- // 
     if (props.isSignedIn === true) {
@@ -44,6 +66,13 @@ const Profile = (props) => {
                             <Grid item md={4}>
                                 <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 5</Box>
                             </Grid>
+
+                            {memesfromServer.map((meme) => (
+                                <Grid item md={4}>
+                                    <MemeLukas key={meme._id} meme={meme} />
+                                </Grid>
+                            ))} 
+
                         </Grid>
                     </Box>
                 </Paper>

@@ -10,8 +10,12 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
-const Navigation = ({isSignedIn }) => {
 
+
+const Navigation = ({ isSignedIn, user }) => {
+
+    const profileLink = "/profile/"+user.id; // for individual profile 
+    
     return (
 
         <>
@@ -30,7 +34,7 @@ const Navigation = ({isSignedIn }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Meme Generator
                         </Typography>
-                        <Link to="/profile">
+                        <Link to={profileLink}>
                             <Button color="inherit">Profile</Button>
                         </Link>
                         <Link to="/register">
@@ -48,8 +52,8 @@ const Navigation = ({isSignedIn }) => {
 
                         {isSignedIn
                             ?
-                            <Link to="/"><Button  color="inherit" onClick={() => window.location.reload()}>Signout</Button></Link>
-                            : <Link to="/signin"><Button  color="inherit">Login</Button></Link>
+                            <Link to="/"><Button color="inherit" onClick={() => window.location.reload()}>Signout</Button></Link>
+                            : <Link to="/signin"><Button color="inherit">Login</Button></Link>
                         }
                     </Toolbar>
                 </AppBar>

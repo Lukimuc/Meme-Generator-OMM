@@ -36,11 +36,11 @@ class App extends Component {
     this.setState({
       isSignedIn: true, // if there is a ID, set isSignedIn to true
       user: {
-        id: data.id,
+        id: data._id,
         firstname: data.firstname,
         lastname: data.lastname,
         email: data.email,
-        joined: data.joined,
+        userCreated: data.userCreated,
         entries: data.entries,
       }
     })
@@ -57,7 +57,7 @@ class App extends Component {
       <>
       <script src="https://accounts.google.com/gsi/client" async defer></script>
         <BrowserRouter>
-          <Navigation isSignedIn={isSignedIn} />
+          <Navigation isSignedIn={isSignedIn} user={user}/>
 
           <Routes>
 
@@ -70,7 +70,7 @@ class App extends Component {
             <Route path='/register' element={
               <Register loadUser={this.loadUser} />
             } />
-            <Route path='/profile/' element={<Profile isSignedIn={isSignedIn} user={user} />} />
+            <Route path='/profile/:id' element={<Profile isSignedIn={isSignedIn} user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
             <Route path='/testLukas' element={<TestLukas user={user}/>} />
