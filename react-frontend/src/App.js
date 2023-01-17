@@ -8,7 +8,6 @@ import Profile from './pages/Profile/profile';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Singleview } from './pages/Singleview/singleview';
 import Editor from './pages/Editor/editor';
-import New_Editor from './pages/NewEditor/new_editor';
 import TestLukas from './pages/TestLukas/TestLukas';
 
 
@@ -57,7 +56,6 @@ class App extends Component {
       <>
       <div>
         {!this.state.isOnline && <div>You are currently offline</div>}
-        {/* Your application content */}
       </div>
       <script src="https://accounts.google.com/gsi/client" async defer></script>
         <BrowserRouter>
@@ -110,24 +108,3 @@ class App extends Component {
 }
 
 export default App;
-
-
-  // ------   render components  backup ----- // 
-  // render() {
-  //   const { isSignedIn, route } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
-  //   return (
-  //     <>
-  //       <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
-  //       <Rank firstname={this.state.user.firstname} entries={this.state.user.entries} />
-  //       <Profile onRouteChange={this.onRouteChange}></Profile>
-  //       {/* If then Statements, ? is executed if true,: is executed if false
-  //       => If route === 'something' then show these components */}
-  //      {/*  {route === 'home'
-  //         ? <Home onRouteChange={this.onRouteChange} />
-  //         : (route === 'signin'
-  //           ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-  //           : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />)
-  //       } */}
-  //     </>
-  //   );
-  // }
