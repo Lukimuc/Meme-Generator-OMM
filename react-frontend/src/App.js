@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Singleview } from './pages/Singleview/singleview';
 import Editor from './pages/Editor/editor';
 import TestLukas from './pages/TestLukas/TestLukas';
+import VoiceControls from './pages/TestLukas/TextInput';
 
 
 class App extends Component {
@@ -75,7 +76,7 @@ class App extends Component {
             <Route path='/memes/:id' element={<Singleview />} />
             <Route path='/editor' element={<Editor />} />
             <Route path='/testLukas' element={<TestLukas user={user}/>} />
-
+            <Route path='/voicecontrols' element={<VoiceControls/>} />
           </Routes>
         </BrowserRouter>
       </>

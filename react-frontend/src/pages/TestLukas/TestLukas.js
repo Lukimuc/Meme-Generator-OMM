@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MemeLukas from "./MemeLukas";
+import TextInput from "./TextInput";
 
 function TestLukas(props) {
   const [base64, setBase64] = useState("");
@@ -74,6 +75,9 @@ function TestLukas(props) {
 
   return (
     <>
+
+
+   
       <h1>Base64 Image</h1>
 
       <label>Upload & Encode Image:</label>
