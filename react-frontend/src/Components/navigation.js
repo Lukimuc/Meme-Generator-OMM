@@ -52,7 +52,10 @@ const Navigation = ({ isSignedIn, user }) => {
                             <Button color="inherit">Editor</Button>
                         </Link>
                         <Link to="/testLukas">
-                            <Button color="inherit">testLukas</Button>
+                            <Button color="inherit">Meme testLukas</Button>
+                        </Link>
+                        <Link to="/voicecontrols">
+                            <Button color="inherit">VoiceControl Test</Button>
                         </Link>
 
                         {isSignedIn
