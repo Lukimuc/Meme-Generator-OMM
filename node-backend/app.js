@@ -35,6 +35,8 @@ const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
 const url = 'mongodb://0.0.0.0:27017';
 
+const apiMemeRouter = require("./routes/api/meme");
+
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect().then(() => {
@@ -289,7 +291,7 @@ app.get(("/memes/:id"), async (req, res) => {
   }
 })
 
-
+app.use("/api/meme", apiMemeRouter);
 
 
 /* DO WE USE THIS? // get memes by specific user
