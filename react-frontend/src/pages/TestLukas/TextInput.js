@@ -4,6 +4,7 @@ const VoiceControls = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [buttonClicked, setButtonClicked] = useState("");
     const [transcript, setTranscript] = useState("");
+    const [textFieldText, setTextFieldText] = useState("");
     const [playback, setPlayback] = useState(false);
     const [isTextFieldSelected, setIsTextFieldSelected] = useState(false);
 
@@ -28,7 +29,6 @@ const VoiceControls = () => {
                 if (newTranscript === "back" || newTranscript === " back") {
                     setButtonClicked("Back");
                 } else if (newTranscript === "pause" || newTranscript === "play" || newTranscript === " play" || newTranscript === " pause") {
-
                     setPlayback(!playback);
                     setButtonClicked(newTranscript);
                 } else if (newTranscript === "next" || newTranscript === " next") {
@@ -37,6 +37,7 @@ const VoiceControls = () => {
                     setIsTextFieldSelected(true);
                 } else if (newTranscript === "deselect" || newTranscript === " deselect" || newTranscript === " die select") {
                     setIsTextFieldSelected(false);
+                    setTextFieldText(transcript);
                 }
             };
         }
@@ -58,8 +59,12 @@ const VoiceControls = () => {
             <input
                 type="text"
                 onFocus={() => setIsTextFieldSelected(true)}
-                onBlur={() => setIsTextFieldSelected(false)}
-                value={isTextFieldSelected ? transcript : ""}
+                onBlur={() => {
+                    setIsTextFieldSelected(false);
+                    setTextFieldText(transcript);
+                }
+                }
+                value={isTextFieldSelected ? transcript : textFieldText}
                 style={isTextFieldSelected ? { borderColor: "blue" } : {}}
             />
             <div>Transcript: {transcript} </div>
@@ -69,3 +74,4 @@ const VoiceControls = () => {
 };
 
 export default VoiceControls;
+
