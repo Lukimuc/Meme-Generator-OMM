@@ -19,27 +19,28 @@ const VoiceControls = () => {
             recognition.start();
             recognition.onresult = event => {
                 let current = event.resultIndex;
-                let transcript = event.results[current][0].transcript.toLowerCase();
+                let newTranscript = event.results[current][0].transcript.toLowerCase();
                 if (isTextFieldSelected) {
-                    setTranscript(transcript);
+                    setTranscript(newTranscript);
+                } else {
+                    setTranscript(transcript + " " + newTranscript);
                 }
-                if (transcript === "back" || transcript === " back") {
+                if (newTranscript === "back" || newTranscript === " back") {
                     setButtonClicked("Back");
-                } else if (transcript === "pause" || transcript === "play" || transcript === " play" || transcript === " pause") {
+                } else if (newTranscript === "pause" || newTranscript === "play" || newTranscript === " play" || newTranscript === " pause") {
+
                     setPlayback(!playback);
-                    setButtonClicked(transcript);
-                } else if (transcript === "next" || transcript === " next") {
+                    setButtonClicked(newTranscript);
+                } else if (newTranscript === "next" || newTranscript === " next") {
                     setButtonClicked("Next");
-                } else if (transcript === "select" || transcript === " select") {
+                } else if (newTranscript === "select" || newTranscript === " select") {
                     setIsTextFieldSelected(true);
-                } else if (transcript === "deselect" || transcript === " deselect" || transcript === " die select") {
+                } else if (newTranscript === "deselect" || newTranscript === " deselect" || newTranscript === " die select") {
                     setIsTextFieldSelected(false);
                 }
             };
         }
-    };
-
-    return (
+    }; return (
         <div>
             <button onClick={startRecording}>
                 {isRecording ? "Stop Recording" : "Start Recording"}
@@ -58,13 +59,13 @@ const VoiceControls = () => {
                 type="text"
                 onFocus={() => setIsTextFieldSelected(true)}
                 onBlur={() => setIsTextFieldSelected(false)}
-                onChange={(e) => setTranscript(e.target.value)}
-                value={transcript}
-                style={isTextFieldSelected ? {borderColor: "blue"} : {}}
+                value={isTextFieldSelected ? transcript : ""}
+                style={isTextFieldSelected ? { borderColor: "blue" } : {}}
             />
             <div>Transcript: {transcript} </div>
             <div>Button clicked: {buttonClicked} </div>
-        </div>);
+        </div>
+    );
 };
 
-export default VoiceControls;
+export default VoiceControls;
