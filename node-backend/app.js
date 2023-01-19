@@ -33,7 +33,7 @@ app.listen(port, () => console.log('Example app listening on port ' + port))
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://0.0.0.0:27017';
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
