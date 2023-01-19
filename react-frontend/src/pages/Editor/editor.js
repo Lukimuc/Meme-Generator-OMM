@@ -19,13 +19,13 @@ const Editor = () => {
     const [formcomponent, setFormComponent] = useState(<Image_Form/>)
 
     // Variablen für Texte
-    const [input_text, setInputs_Text] = useState()
+    //const [input_text, setInputs_Text] = useState()
     const [mytexts, setMytexts] = useState([])
     // Variables changing text
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(400);
     // Variablen für images
-    const [input_image, setInput_Image] = useState()
+    //const [input_image, setInput_Image] = useState()
     const [images, setImages] = useState([])
      //Variablen für Memes
      const [template, setTemplate] = useState(null);
@@ -39,6 +39,7 @@ const Editor = () => {
           selectShape(null);
         }
     };
+    {/** 
     useEffect(() => {
         fetchMemes();
       }, []);
@@ -52,6 +53,7 @@ const Editor = () => {
           console.log(error);
         }
     };
+    */}
 
     function handleKeyDown(e) {
         if (e.key === 'Backspace') {
@@ -64,18 +66,23 @@ const Editor = () => {
 
     function clickbutton (tmp) {
         if(tmp === "Images") {
-            setFormComponent(<Image_Form/>)
+            setFormComponent(
+                <Image_Form
+                    push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
+                />
+            )
         }else if(tmp === "Texts") {
             setFormComponent(
-            <Text_Form
-                push_text={ (input_text) => setMytexts(arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])}
-            />
+                <Text_Form
+                    push_text={ (input_text) => setMytexts(arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])}
+                />
             )
         }else if (tmp === "Save") {
             setFormComponent(Save_Form)
         }else {
             setFormComponent(<p>Error</p>)
         }
+        console.log(images)
         
 
     }
@@ -102,13 +109,23 @@ const Editor = () => {
                     onTouchStart={checkDeselect}
                  >
                     <Layer>
+                        <Text 
+                            text="simple_text"
+                            fontSize={30}
+                            fontFamily= "fantasy"
+                            fontStyle="bold"
+                            fill="green"
+                            draggable={true}
+                        />
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 
                                     key={"Image_" + i}
                                     imageUrl={img.src}
                                     isSelected={img.key === selectedId}
-                                    onSelect={() => { selectShape(img.key) }}
+                                    onSelect={() => { 
+                                        selectShape(img.key)
+                                        console.log(selectedId) }}
                                     onChange={newAttrs => {
                                         const imgs = images.slice();
                                         imgs[i] = newAttrs;
@@ -171,6 +188,7 @@ const Editor = () => {
                   {/*}  {template && <Meme template={template} name={template.name}  />}*/}
   {/*vorher war template statt templates? whats the difference???}*/}
   {/*<Grid container spacing={2}>*/}
+  {/** 
   <Box style={{maxHeight: '30vh', overflow: 'auto', paddingTop:10}}>
   <Grid container>
         {templates && templates.map((template) => {
@@ -184,9 +202,9 @@ const Editor = () => {
                 setInput_Image(e.target.src);
                 setTemplate(template);
             }}
-              /* onClick={() => {
+               onClick={() => {
                  setTemplate(template);
-               }}*/
+               }}
              />
              
              </Grid>
@@ -196,6 +214,7 @@ const Editor = () => {
         )}
 </Grid>
 </Box>
+**/}
                   {/*  <img
                         alt="lion"
                         src="https://konvajs.org/assets/lion.png"
@@ -217,14 +236,18 @@ const Editor = () => {
                     />
                     */}
                   {/*}  </Grid> */}
+                  {/** 
                     <br/>
                     <Button variant="contained" onClick={(e) => {
                         e.preventDefault();
                         setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])
                        
                     }}>Submit Image</Button>
-                    <p>{input_text}</p>
-                    <p>{input_image}</p>
+                   
+                     *  <p>{input_text}</p>
+                     *  <p>{input_image}</p>
+                     
+                     */}
                     
    
             </div>
