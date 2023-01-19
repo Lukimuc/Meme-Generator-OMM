@@ -7,7 +7,17 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+
+import Image_Form from './Form_Components/image_form_component';
+import Text_Form from './Form_Components/text_form_component';
+import Save_Form from './Form_Components/save_component';
+
+
 const Editor = () => {
+
+    // Variable für Editor Forms
+    const [formcomponent, setFormComponent] = useState(<Image_Form/>)
+
     // Variablen für Texte
     const [input_text, setInputs_Text] = useState()
     const [mytexts, setMytexts] = useState([])
@@ -33,7 +43,7 @@ const Editor = () => {
         fetchMemes();
       }, []);
     
-      const fetchMemes = async () => {
+    const fetchMemes = async () => {
         try {
           const response = await fetch("https://api.imgflip.com/get_memes")
           const data = await response.json();
@@ -41,10 +51,37 @@ const Editor = () => {
         } catch (error) {
           console.log(error);
         }
-      };
+    };
+
+    function handleKeyDown(e) {
+        if (e.key === 'Backspace') {
+            console.log("Backspace key is pressed")
+            console.log("Das Selectec shape ist: " + selectedId)
+            setImages(images.filter( (img) => img.key !== selectedId))
+            setMytexts(mytexts.filter( (text) => text.key !== selectedId))
+        }
+    }
+
+    function clickbutton (tmp) {
+        if(tmp === "Images") {
+            setFormComponent(<Image_Form/>)
+        }else if(tmp === "Texts") {
+            setFormComponent(
+            <Text_Form
+                push_text={ (input_text) => setMytexts(arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])}
+            />
+            )
+        }else if (tmp === "Save") {
+            setFormComponent(Save_Form)
+        }else {
+            setFormComponent(<p>Error</p>)
+        }
+        
+
+    }
       
     return (
-        <div>
+        <div onKeyDown={handleKeyDown} tabIndex={0}>
             <Grid container paddingLeft={10} paddingTop={10} paddingRight={10} spacing={1}>
 <Grid item md={8}>
             <div style={{
@@ -116,14 +153,19 @@ const Editor = () => {
             </Grid>
             <Grid item md={4}>
                 <h1 textAlign='center'>Editor</h1>
-                <p>Choose your text and meme template and check in your desired text and images with the "submit" button afterwards!</p>
+                <button onClick={() => { clickbutton("Images") }}> Images </button>
+                <button onClick={() => { clickbutton("Texts") }}> Texts </button>
+                <button onClick={() => { clickbutton("Save") }}> Save </button>
             <div>
-                    <TextField style={{paddingBottom:10}} label="Add text" type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}></TextField>
+                        {formcomponent}
+                    {/**
+                     * <TextField style={{paddingBottom:10}} label="Add text" type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}></TextField>
                     <br/>
                     <Button variant="contained" onClick={(e) => {
                         e.preventDefault();
                         setMytexts( arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])
                     }}>Submit Text</Button>
+                */}
                     <br/>
                
                   {/*}  {template && <Meme template={template} name={template.name}  />}*/}
