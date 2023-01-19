@@ -14,7 +14,14 @@ const Text_Form = ({push_text}) => {
             <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
-                push_text(input_text)
+                push_text(
+                    {
+                        text:input_text,
+                        fontFamily:"Arial",
+                        fontStyle:"bolt",
+                        fill:"orange"
+                    }
+                )
             }}>Submit Text</Button>
         </div>
     );

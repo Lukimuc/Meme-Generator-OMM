@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Stage, Layer, Text } from 'react-konva';
-import My_Image from './my_image';
-import My_Text from './my_text';
-import {Meme} from '../Home/Meme';
+
+import My_Image from './Konva_Components/my_image';
+import My_Text from './Konva_Components/my_text';
+import Editiere_Text from './editire_text';
+
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 
 import Image_Form from './Form_Components/image_form_component';
 import Text_Form from './Form_Components/text_form_component';
@@ -16,22 +15,30 @@ import Save_Form from './Form_Components/save_component';
 const Editor = () => {
 
     // Variable für Editor Forms
-    const [formcomponent, setFormComponent] = useState(<Image_Form/>)
-
-    // Variablen für Texte
-    //const [input_text, setInputs_Text] = useState()
+    const [formcomponent, setFormComponent] = useState(<Image_Form
+        push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
+    />)
+    const [changeText, setChangeText] = useState(<p>Hier werdn die Texte manipuliert</p>)
     const [mytexts, setMytexts] = useState([])
-    // Variables changing text
-    const [width, setWidth] = useState(400);
-    const [height, setHeight] = useState(400);
-    // Variablen für images
-    //const [input_image, setInput_Image] = useState()
     const [images, setImages] = useState([])
-     //Variablen für Memes
-     const [template, setTemplate] = useState(null);
-     const [templates, setTemplates] = useState(null);
     // Selecting shapes
     const [selectedId, selectShape] = useState(null);
+
+    useEffect( () => {
+       const tmp = mytexts.findIndex( (text) => text.key === selectedId)
+       console.log("Der text mit der Id wurde gefunden: " + tmp)
+       if (tmp >= 0){
+            setChangeText(
+                <Editiere_Text
+                    text_attr={mytexts[tmp]}
+                />
+            )
+       }else {  
+            setChangeText(<p>Hier werdn die Texte manipuliert</p>)
+       }
+       
+    })
+
     const checkDeselect = (e) => {
         // deselect when clicked on empty area
         const clickedOnEmpty = e.target === e.target.getStage();
@@ -57,8 +64,6 @@ const Editor = () => {
 
     function handleKeyDown(e) {
         if (e.key === 'Backspace') {
-            console.log("Backspace key is pressed")
-            console.log("Das Selectec shape ist: " + selectedId)
             setImages(images.filter( (img) => img.key !== selectedId))
             setMytexts(mytexts.filter( (text) => text.key !== selectedId))
         }
@@ -74,31 +79,42 @@ const Editor = () => {
         }else if(tmp === "Texts") {
             setFormComponent(
                 <Text_Form
-                    push_text={ (input_text) => setMytexts(arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])}
+                    push_text={ (input) => {
+                        setMytexts(arr => [...arr, {
+                        text:input.text,
+                        fontFamily:input.fontFamily,
+                        fontStyle:input.fontStyle,
+                        fill:input.fill,
+                        key:"Text_" + mytexts.length}])} 
+                    }    
                 />
             )
+            
         }else if (tmp === "Save") {
             setFormComponent(Save_Form)
         }else {
             setFormComponent(<p>Error</p>)
         }
-        console.log(images)
-        
+    }
 
+    const delete_all = () => {
+        console.log("Clear Button was clickt")
+        setImages([])
+        setMytexts([])
     }
       
     return (
         <div onKeyDown={handleKeyDown} tabIndex={0}>
             <Grid container paddingLeft={10} paddingTop={10} paddingRight={10} spacing={1}>
-<Grid item md={8}>
-            <div style={{
-                display: "block",
-               /* float: "left",*/
-                border: "5px outset grey",
-               /* height: "100%",
-                width: "50%",*/
-                }}
-            >
+                <Grid item md={8}>
+                <div style={{
+                    display: "block",
+                    /* float: "left",*/
+                    border: "5px outset grey",
+                    /* height: "100%",
+                    width: "50%",*/
+                    }}
+                >
                 <Stage 
                     width={window.innerWidth / 2}
                     height={window.innerHeight}
@@ -107,15 +123,26 @@ const Editor = () => {
                     }}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
-                 >
+                >
                     <Layer>
-                        <Text 
-                            text="simple_text"
-                            fontSize={30}
-                            fontFamily= "fantasy"
-                            fontStyle="bold"
-                            fill="green"
-                            draggable={true}
+                        <My_Text
+                            key={"text1"}
+                            attr={
+                                {
+                                    text: "Beispieltest",
+                                    fontFamily: "fantasy",
+                                    fontStyle:"bold",
+                                    fill:"green",
+                                }
+                            }
+                            isSelected={"text1" === selectedId}
+                            onSelect={() => { 
+                                selectShape("text1")
+                                 }}
+                            onChange={newAttrs => {
+                                const imgs = images.slice();
+                                //imgs[i] = newAttrs;
+                            }}
                         />
                         {images.map( (img, i) => {
                             return (
@@ -125,7 +152,7 @@ const Editor = () => {
                                     isSelected={img.key === selectedId}
                                     onSelect={() => { 
                                         selectShape(img.key)
-                                        console.log(selectedId) }}
+                                       }}
                                     onChange={newAttrs => {
                                         const imgs = images.slice();
                                         imgs[i] = newAttrs;
@@ -140,26 +167,22 @@ const Editor = () => {
                             return(
                                 <My_Text 
                                     key={"Text_" + i}
-                                    x={50}
-                                    y={50}
-                                    text={text.text}
-                                    colour="#FFDAE1"
-                                    onTextChange={
-                                        // Hier muss der Text angepasst werden , dass er sich ändert
-                                        (value) => text.text=value}
-                                    width={width}
-                                    height={height}
-                                    selected={text.key === selectedId}
-                                    onTextResize={(newWidth, newHeight) => {
-                                        setWidth(newWidth);
-                                        setHeight(newHeight);
+                                    attr={
+                                        {
+                                            text: text.text,
+                                            fontFamily: text.fontFamily,
+                                            fontStyle:text.fontStyle,
+                                            fill:text.fill,
+                                        }
+                                    }
+                                    isSelected={text.key === selectedId}
+                                    onSelect={() => { 
+                                        selectShape(text.key)
+                                         }}
+                                    onChange={newAttrs => {
+                                        const imgs = images.slice();
+                                        //imgs[i] = newAttrs;
                                     }}
-                                    onClick={ () => { selectShape(text.key) }}
-                                    onTextClick={(newSelected) => { 
-                                        //eventuell muss auch hier der text übergeben werden
-                                        //index herausfinden und text überschreiben
-                                        console.log("Der werd wurde ausgewählt: " + newSelected)
-                                        selectShape(text.key) }}
                                 />
                             );
                         })}
@@ -173,84 +196,19 @@ const Editor = () => {
                 <button onClick={() => { clickbutton("Images") }}> Images </button>
                 <button onClick={() => { clickbutton("Texts") }}> Texts </button>
                 <button onClick={() => { clickbutton("Save") }}> Save </button>
-            <div>
-                        {formcomponent}
-                    {/**
-                     * <TextField style={{paddingBottom:10}} label="Add text" type="text" value={input_text || ""} onChange={(e) => setInputs_Text(e.target.value)}></TextField>
-                    <br/>
-                    <Button variant="contained" onClick={(e) => {
-                        e.preventDefault();
-                        setMytexts( arr => [...arr, {text:input_text,key:"Text_" + mytexts.length}])
-                    }}>Submit Text</Button>
-                */}
-                    <br/>
+                {formcomponent}
+                {changeText}
+                <button onClick={() => delete_all()}> Clear </button>
+
+                    
                
-                  {/*}  {template && <Meme template={template} name={template.name}  />}*/}
-  {/*vorher war template statt templates? whats the difference???}*/}
-  {/*<Grid container spacing={2}>*/}
-  {/** 
-  <Box style={{maxHeight: '30vh', overflow: 'auto', paddingTop:10}}>
-  <Grid container>
-        {templates && templates.map((template) => {
-             return (
-                       <Grid item md={3} key={template.id}>
-             <Meme
-             template={template}
-             width={90}
-             onClick={(e) => {
-                e.preventDefault();
-                setInput_Image(e.target.src);
-                setTemplate(template);
-            }}
-               onClick={() => {
-                 setTemplate(template);
-               }}
-             />
-             
-             </Grid>
-        
-        )
-            }
-        )}
-</Grid>
-</Box>
-**/}
-                  {/*  <img
-                        alt="lion"
-                        src="https://konvajs.org/assets/lion.png"
-                        draggable="true"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setInput_Image(e.target.src)
-                        }}
-                        stroke="black"
-                    />
-                    <img 
-                        alt="yoda"
-                        src="https://konvajs.org/assets/yoda.jpg"
-                        draggable="true"
-                        onClick={(e) => {
-                            setInput_Image(e.target.src)
-                        }}
-                        stroke="black"
-                    />
-                    */}
-                  {/*}  </Grid> */}
-                  {/** 
-                    <br/>
-                    <Button variant="contained" onClick={(e) => {
-                        e.preventDefault();
-                        setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])
-                       
-                    }}>Submit Image</Button>
-                   
-                     *  <p>{input_text}</p>
-                     *  <p>{input_image}</p>
-                     
-                     */}
+                        {/*}  {template && <Meme template={template} name={template.name}  />}*/}
+                        {/*vorher war template statt templates? whats the difference???}*/}
+                         {/*<Grid container spacing={2}>*/}
+  
                     
    
-            </div>
+           
             </Grid>
             </Grid>
             

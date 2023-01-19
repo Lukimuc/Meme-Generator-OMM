@@ -48,10 +48,12 @@ const Image_Form = ({push_image}) => {
                 )})}
             </Grid>
             </Box>
+            <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
                 push_image(input_image)                       
             }}>Submit Image</Button>
+            <p> {input_image} </p>
         </div>
     );
 
