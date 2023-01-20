@@ -9,7 +9,8 @@ import { Singleview } from './pages/Singleview/singleview';
 import Editor from './pages/Editor/editor';
 import TestLukas from './pages/TestLukas/TestLukas';
 import VoiceControls from './pages/TestLukas/TextInput';
-
+import Stream from './pages/TestLukas/stream';
+import Viewer from './pages/TestLukas/viewer';
 
 class App extends Component {
   constructor() {
@@ -77,6 +78,8 @@ class App extends Component {
             <Route path='/editor' element={<Editor />} />
             <Route path='/testLukas' element={<TestLukas user={user}/>} />
             <Route path='/voicecontrols' element={<VoiceControls/>} />
+            <Route path='/stream' element={<Stream></Stream>} />
+            <Route path='/viewer' element={<Viewer></Viewer>} />
           </Routes>
         </BrowserRouter>
       </>
