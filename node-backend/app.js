@@ -427,6 +427,16 @@ io.on('connection', (socket) => {
     });
 });
 
+io.on('connection', (socket) => {
+  console.log('a user connected to video stream');
+
+  socket.on('streaming', (data) => {
+      //console.log("received streaming data: ", data);
+      io.emit('streaming', data);
+  });
+});
+
+
 http.listen(8080, () => console.log('listening on http://localhost:8080') );
 
 module.exports = app;
