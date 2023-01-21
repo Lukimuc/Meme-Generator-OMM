@@ -192,7 +192,7 @@ async function updateMemeByMemeID(client, memeID, req) {
     return updatedMeme;
   } else {
     console.log(`No changes applied`)
-    return ;
+    return;
   }
 }
 
@@ -204,7 +204,8 @@ async function updateMemeByMemeID(client, memeID, req) {
   / --> GET --> Return ALL User
 */
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+));
 
 // REGISTER new user
 app.post('/register', (req, res) => {
@@ -339,7 +340,29 @@ app.put(("/memes/:id"), async (req, res) => {
 })
 
 
+// Streaming Server - HTTPS - Feature 18
 
+const fs = require('fs');
+const server = require('https').createServer({
+  key: fs.readFileSync(__dirname + "/server.key"),
+  cert: fs.readFileSync(__dirname + "/server.cert")
+});
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+
+io.on('connection', socket => {
+  console.log("a user connected");
+
+  socket.on('streaming', (data) => {
+    //console.log("received streaming data: ", data);
+    io.emit('streaming', data);
+  });
+});
+
+server.listen(8080);
 
 /* DO WE USE THIS? // get memes by specific user
 app.get(("/memes/:userID"), async (req, res) => {
@@ -412,32 +435,6 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });*/
 
-const http = require('http').createServer();
-app.use(cors());
-const io = require('socket.io')(http, {
-    cors: { origin: "*" }
-});
-
-io.on('connection', (socket) => {
-    console.log('a user connected');
-
-    socket.on('message', (message) =>     {
-        console.log(message);
-        io.emit('message', `${socket.id.substr(0,2)} said ${message}` );   
-    });
-});
-
-io.on('connection', (socket) => {
-  console.log('a user connected to video stream');
-
-  socket.on('streaming', (data) => {
-      //console.log("received streaming data: ", data);
-      io.emit('streaming', data);
-  });
-});
-
-
-http.listen(8080, () => console.log('listening on http://localhost:8080') );
 
 module.exports = app;
 
