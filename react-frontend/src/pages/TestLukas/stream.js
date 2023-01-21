@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 
-
-
 const socket = io('ws://localhost:8080');
 
 function Stream() {
@@ -19,19 +17,30 @@ function Stream() {
       .catch(error => {
         console.log(`Could not access the camera. Error: ${error.name}`);
       });
+    return () => {
+      // cleanup the stream when the component unmounts
+      videoRef.current.srcObject = null;
+    }
   }, []);
+
+  useEffect(() => {
+    if (!streaming) return;
+    const context = canvasRef.current.getContext("2d");
+    let intervalId;
+    intervalId = setInterval(() => {
+      context.drawImage(videoRef.current, 0, 0, 640, 480);
+      socket.emit("streaming", canvasRef.current.toDataURL("image/webp"));
+    }, 40);
+
+    return () => {
+      // cleanup the interval when the component unmounts or the "stopStream" button is clicked
+      clearInterval(intervalId);
+    };
+  }, [streaming]);
 
   const startStream = () => {
     setMessage("Streaming: ON");
     setStreaming(true);
-    const context = canvasRef.current.getContext("2d");
-    const intervalId = setInterval(() => {
-      context.drawImage(videoRef.current, 0, 0, 640, 480);
-      socket.emit("streaming", canvasRef.current.toDataURL("image/webp"));
-    }, 40);
-    return () => {
-      clearInterval(intervalId);
-    };
   };
 
   const stopStream = () => {
