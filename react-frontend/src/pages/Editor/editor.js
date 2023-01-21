@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Stage, Layer, Text } from 'react-konva';
 
 import My_Image from './Konva_Components/my_image';
@@ -14,6 +14,24 @@ import Save_Form from './Form_Components/save_component';
 
 const Editor = () => {
 
+    const [imageUrl, setImageUrl] = useState('');
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+
+    const stageRef = useRef(null);
+
     // Variable für Editor Forms
     const [formcomponent, setFormComponent] = useState(<Image_Form
         push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
@@ -24,20 +42,12 @@ const Editor = () => {
     // Selecting shapes
     const [selectedId, selectShape] = useState(null);
 
+    
     useEffect( () => {
-       const tmp = mytexts.findIndex( (text) => text.key === selectedId)
-       console.log("Der text mit der Id wurde gefunden: " + tmp)
-       if (tmp >= 0){
-            setChangeText(
-                <Editiere_Text
-                    text_attr={mytexts[tmp]}
-                />
-            )
-       }else {  
-            setChangeText(<p>Hier werdn die Texte manipuliert</p>)
-       }
-       
+        console.log("My_Images ist:" + JSON.stringify(images))
+        console.log("My_Texts ist: " + JSON.stringify(mytexts))
     })
+   
 
     const checkDeselect = (e) => {
         // deselect when clicked on empty area
@@ -45,6 +55,7 @@ const Editor = () => {
         if (clickedOnEmpty) {
           selectShape(null);
         }
+        check_text_clickt()
     };
     {/** 
     useEffect(() => {
@@ -85,18 +96,50 @@ const Editor = () => {
                         fontFamily:input.fontFamily,
                         fontStyle:input.fontStyle,
                         fill:input.fill,
-                        key:"Text_" + mytexts.length}])} 
-                    }    
+                        key:"Text_" + input.counter}])
+                        
+                    } } 
+                    count= {mytexts.length}   
                 />
             )
             
+            
         }else if (tmp === "Save") {
-            setFormComponent(Save_Form)
+            setFormComponent(<Save_Form
+                stageRef={stageRef}
+            />)
         }else {
             setFormComponent(<p>Error</p>)
         }
     }
 
+    const handleChangeText = (array, index, attr) => {
+        const newArray = [...array];
+        newArray[index].text = attr.text;
+        newArray[index].fontFamily = attr.fontFamily
+        newArray[index].fontStyle = attr.fontStyle
+        newArray[index].fill = attr.fill
+        return newArray
+    }
+
+    const check_text_clickt = (id) => {
+        //console.log("check Text clickt called mit der ID: " + selectedId)
+        const tmp = mytexts.findIndex( (text) => text.key === id)
+        if (tmp >= 0){
+            setChangeText(
+                <Editiere_Text
+                    text_attr={mytexts[tmp]}
+                    onClick={ (key, attr) => {
+                        const index = mytexts.findIndex( (text) => text.key === key)
+                        setMytexts(handleChangeText(mytexts, index, attr))
+                    }}
+                />
+            )
+        }else {  
+            setChangeText(<p>Hier werdn die Texte manipuliert</p>)
+        }
+    }
+ 
     const delete_all = () => {
         console.log("Clear Button was clickt")
         setImages([])
@@ -123,6 +166,7 @@ const Editor = () => {
                     }}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
+                    ref={stageRef}
                 >
                     <Layer>
                         <My_Text
@@ -144,6 +188,18 @@ const Editor = () => {
                                 //imgs[i] = newAttrs;
                             }}
                         />
+                        <My_Image 
+                                    key={"KEY" }
+                                    imageUrl={imageUrl}
+                                    isSelected={"KEY" === selectedId}
+                                    onSelect={() => { 
+                                        selectShape("KEY")
+                                       }}
+                                    onChange={newAttrs => {
+                                        const imgs = images.slice();
+                                        imgs[0] = newAttrs;
+                                    }}
+                                />
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 
@@ -178,6 +234,7 @@ const Editor = () => {
                                     isSelected={text.key === selectedId}
                                     onSelect={() => { 
                                         selectShape(text.key)
+                                        check_text_clickt(text.key)
                                          }}
                                     onChange={newAttrs => {
                                         const imgs = images.slice();
@@ -192,6 +249,7 @@ const Editor = () => {
             </div>
             </Grid>
             <Grid item md={4}>
+                <input type="file" onChange={handleFileSelect} />
                 <h1 textAlign='center'>Editor</h1>
                 <button onClick={() => { clickbutton("Images") }}> Images </button>
                 <button onClick={() => { clickbutton("Texts") }}> Texts </button>

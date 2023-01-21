@@ -17,6 +17,7 @@ const My_Text = ({ shapeProps, isSelected, onSelect, onChange, attr }) => {
   return (
     <React.Fragment>
       <Text
+        crossOrigin="anonymous"
         text={attr.text}
         fontFamily={attr.fontFamily}
         fontStyle={attr.fontStyle}

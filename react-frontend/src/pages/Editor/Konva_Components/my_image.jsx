@@ -16,6 +16,7 @@ const My_Image = ({ shapeProps, isSelected, onSelect, onChange, imageUrl, width,
   return (
     <React.Fragment>
       <Image
+        crossOrigin = "Anonymous"
         onClick={onSelect}
         image={image}
         ref={shapeRef}

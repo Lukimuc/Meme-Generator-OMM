@@ -3,9 +3,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 
-const Text_Form = ({push_text}) => {
+const Text_Form = ({push_text, count}) => {
 
     const [input_text, setInputs_Text] = useState()
+    const [counter, setCounter] = useState(count)
 
     return(
         <div>
@@ -19,9 +20,11 @@ const Text_Form = ({push_text}) => {
                         text:input_text,
                         fontFamily:"Arial",
                         fontStyle:"bolt",
-                        fill:"orange"
+                        fill:"orange",
+                        counter: counter
                     }
                 )
+                setCounter(counter + 1)
             }}>Submit Text</Button>
         </div>
     );
