@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import base64 from 'base64-js';
 
 
 const MemeLukas = (props) => {
@@ -8,6 +9,8 @@ const MemeLukas = (props) => {
 
     // decode Image 
     useEffect(() => {
+        
+      /*  const data = base64.decode(meme.image_encoded.split(',')[1]);*/
         const data = atob(meme.image_encoded.split(',')[1]);
         const buffer = new ArrayBuffer(data.length);
         const view = new Uint8Array(buffer);
@@ -25,16 +28,8 @@ const MemeLukas = (props) => {
 
     return (
         <div>
-            <h2>{meme.title}</h2>
-            <p>imageDecription: {meme.imageDescription}</p>
-            <p>Status: {meme.status}</p>
-            <p>Likes: {meme.likes}</p>
-            <p>Created: {meme.memeCreated}</p>
-            <p>Creator ID: {meme.CreatorID}</p>
-            <p>Creator Email: {meme.CreatorMail}</p>
-            
             <img src={imageSrc} alt={meme.title} />
-            <button onClick={handleSpeakClick}>Speak</button>
+           {/*} <button onClick={handleSpeakClick}>Speak</button>*/}
         </div>
 
     );

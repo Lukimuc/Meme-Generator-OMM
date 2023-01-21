@@ -19,15 +19,67 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { useLocation } from 'react-router-dom';
 import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
-export function Singleview(template) {
-    const { id } = useParams();
+export function Singleview () {
 
+  //getting String
+  const location = useLocation();
+  const linkURL = location.pathname;
+  const [,id] = linkURL.split("/memes/");
+  const [memesfromServer, setMemesFromServer] = useState([]);
+  const [currentId, setCurrentId] = useState(id);
+const [nextId, setNextId] = useState(null);
+  const navigate = useNavigate();
+
+console.log(id); // Output: "63c9c134f5f20d30d87b6da7"
+const [memefromServer, setMemeFromServer] = useState([]);
+    
+
+    const getMeme = (event) => { //meme._id
+      fetch(`http://localhost:3002/memes/${id}`, {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(response => response.json())
+        .then(meme => {
+          console.log(meme);
+       setMemeFromServer(meme);
+        })
+    } //{console.log(memeId)}
+
+    const getMemes = (event) => {
+      fetch('http://localhost:3002/memes', {
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(response => response.json())
+        .then(memes => {
+          setMemesFromServer(memes);  // set the state of memesfromServer to the received memes
+        });}
+
+    useEffect(() => {
+      fetch(`http://localhost:3002/memes/${id}`)
+        .then(response => response.json())
+        .then(meme => {
+          setMemeFromServer(meme);
+        
+        });
+    }, [id]);
+    
+    useEffect(() => {
+   //  setMemeId(memeId);
+      getMeme(); // call the function to get the memes from the server
+      getMemes();
+      console.log(memesfromServer);
+  }, []);
+
+  
     /* const {template} = props;
   const [memeImgUrl, setMemeImgUrl] = useState('');*/
- /* const [template, setTemplate] = useState({});*/
-  const [templates, setTemplates] = useState({});
+ /* const [template, setTemplate] = useState({});
+  const [templates, setTemplates] = useState({});*/
   /*
   useEffect(() => {
     fetch(`https://api.imgflip.com/get_memes/${id}`)
@@ -38,14 +90,22 @@ export function Singleview(template) {
       setTemplates(data.url);
   }, [id]);
   */
-  const showRandom = () => {
-   /*Depending on which method we are using: attaching a random ID on the URL to load another meme*/
+  const getRandomId = async () => {
+    const response = await fetch('http://localhost:3002/memes');
+    const memes = await response.json();
+    const ids = memes.map(meme => meme._id);
+    const randomIndex = Math.floor(Math.random() * ids.length);
+    return ids[randomIndex];
   }
+
+  const showRandom = async () => {
+    const randomId = await getRandomId();
+  window.location.href = `/memes/${randomId}`;}
 
   const steps = [
     {
-      label: '{template.name}',
-      imgPath: '{template.url}'
+      label: memefromServer.title,
+      imgPath: memefromServer.image_encoded
     },
     {
       label: 'Templatename 2',
@@ -56,18 +116,30 @@ export function Singleview(template) {
       imgPath:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
     }
   ];
+
+  /*
+  const newSteps = memesfromServer.map(meme => {
+    return {
+      label: meme.title,
+      imgPath: meme.image_encoded
+    }
+  });
   
+  steps.push(...newSteps);*/
     /*
     let match = useMatch("/memes/:id");
     let memeId;
     if (match && match.params) {
       memeId = match.params.id;
     }*/
-    
+
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const maxSteps = steps.length;
     const handleNext = () => {
+      const currentIndex = memesfromServer.findIndex(meme => id === currentId);
+      setNextId(memesfromServer[currentIndex + 1].id);
+      setCurrentId(nextId);
      /* setActiveStep((prevActiveStep) => prevActiveStep + 1);*/
      /* if [activeStep] == null {
         prevActiveStep == 1;
@@ -85,6 +157,7 @@ export function Singleview(template) {
     const clearAutoplay = (interval) => {
       clearInterval(interval);
     }
+
    /* useEffect(() => {
       setInterval(handleNext, 5000)
     }, [])*/
@@ -106,11 +179,10 @@ export function Singleview(template) {
       /*  const { memes } = this.props;*/
       
       return (
-        
        <div>
           <Grid container spacing={2} paddingLeft={30} paddingTop={10} paddingRight={30}style={{ }}> 
             <Grid item md={8}>
-            <h1> Meme ID - gelesen aus URL: {id}</h1>
+           {/*} <h1> Meme ID - gelesen aus URL: {id}</h1>*/}
         <Box sx={{ maxWidth: 600, flexGrow: 1}}>
         <Paper
           square
@@ -130,14 +202,16 @@ export function Singleview(template) {
   <img src={steps[activeStep].imgPath} alt={steps[activeStep].label} 
          style={{ display: 'block', maxWidth: 1000, width:'100%', overflow: 'hidden' }}
        
-  />
+  />  
+   {/*} <img src={memesfromServer[activeIndex].image_encoded} alt={memesfromServer[activeIndex].title} />*/}
  {/*} {template && <Meme template={template} name={template.name}  />}
    
         <Meme template={template}/> 
   {template && <img src={template.url} />}
         {template && <p>{template.name}</p>}*/}
 <div>
-  <img src={template.url} alt={template.name}/>
+ {/*} <img src={template.url} alt={template.name}/>*/}
+ {/*} <SelectedMemeContainer selectedMeme={selectedMeme} />*/}
 </div>
   {/*<img src={template.imgPath} alt={props.template.name} />*/}
     </Box>
@@ -172,14 +246,14 @@ export function Singleview(template) {
           }
         />
       </Box>
-      <Button variant="contained" onClick={showRandom()} style={{margin:10}}>Random meme</Button>
+      <Button variant="contained" onClick={showRandom} style={{margin:10}}>Random meme</Button>
             <Button variant="contained" /*onClick={autoPlay()} */style={{margin:10}}>Start Autoplay ▶</Button>
             <Button variant="contained" /*onClick={clearAutoplay()}*/ style={{margin:10}}>Stop Autoplay ||</Button>
       </Grid>
       <Grid item md={4}>
         {/*{template.name}*/}
-     {/*<Likes /*likes={likes}*/}
-      <h2> Likes: Platzhalter </h2> <br/>
+    
+      <h2>  Likes: {memefromServer.likes} </h2> <br/>
        <Link to="/editor"><Button variant="contained">Edit this template</Button></Link>
        <h2> Comments: </h2>
     
@@ -204,8 +278,3 @@ export function Singleview(template) {
                   </div>
       )
             };
-
-
-
-
- 
