@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
 
 
+
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
 // ### Thus copy paste this block to your project
@@ -201,14 +202,49 @@ async function findMemeByMemeID(client, memeID) {
 
 
   if (result.length > 0) {
-    console.log(`Memes found`);
+    console.log(`Meme found`);
     console.log(result);
   } else {
-    console.log(`No memes found`);
+    console.log(`No meme found`);
   }
   return result;
 }
 
+async function updateMemeByMemeID(client, memeID, req) {
+  const { title, status, likes, imageDescription } = req.body;
+  let changes = {}
+
+  if (title !== undefined) {
+    changes.title = title;
+  }
+
+  if (status !== undefined) {
+    changes.status = status;
+  }
+
+  if (likes !== undefined) {
+    changes.likes = likes;
+  }
+
+  if (imageDescription !== undefined) {
+    changes.imageDescription = imageDescription;
+  }
+
+  console.log("changes", changes);
+
+  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    { $set: changes });
+
+  if (result.modifiedCount > 0) {
+    console.log("Meme has been updated: ", result.modifiedCount);
+    updatedMeme = findMemeByMemeID(client, memeID)
+    console.log("updated Meme",updatedMeme._id)
+    return updatedMeme;
+  } else {
+    console.log(`No changes applied`)
+    return;
+  }
+}
 
 /* Endpoints: 
   /register  ---> Post --> Return: User 
@@ -233,10 +269,9 @@ app.put(("/memes/:id"), async (req, res) => {
 })
 
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+app.use(cors(
+));
+
 
 // REGISTER new user
 app.post('/register', (req, res) => {
@@ -357,8 +392,44 @@ app.get(("/memes/:id"), async (req, res) => {
   }
 })
 
-app.use("/api/meme", apiMemeRouter);
 
+// update a specific Meme by MemeID
+app.put(("/memes/:id"), async (req, res) => {
+  const id = req.params.id
+
+  try {
+    const updatedMeme = await updateMemeByMemeID(client, id, req);
+    res.json(updatedMeme); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error in app.get('/meme/:id'': " + error);
+  }
+})
+
+
+// Streaming Server - HTTPS - Feature 18
+
+const fs = require('fs');
+const server = require('https').createServer({
+  key: fs.readFileSync(__dirname + "/server.key"),
+  cert: fs.readFileSync(__dirname + "/server.cert")
+});
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+
+io.on('connection', socket => {
+  console.log("a user connected");
+
+  socket.on('streaming', (data) => {
+    //console.log("received streaming data: ", data);
+    io.emit('streaming', data);
+  });
+});
+
+server.listen(8080);
 
 /* DO WE USE THIS? // get memes by specific user
 app.get(("/memes/:userID"), async (req, res) => {
@@ -446,6 +517,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });*/
+
 
 module.exports = app;
 

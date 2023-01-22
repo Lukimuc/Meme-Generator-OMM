@@ -57,6 +57,9 @@ const Navigation = ({ isSignedIn, user }) => {
                         <Link to="/voicecontrols">
                             <Button color="inherit">VoiceControl Test</Button>
                         </Link>
+                        <Link to="/stream">
+                            <Button color="inherit">Stream Test</Button>
+                        </Link>
 
                         {isSignedIn
                             ?

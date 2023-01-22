@@ -16,7 +16,8 @@
     "jade": "~1.11.0",
     "monk": "7.3.3",
     "morgan": "~1.9.1",
-    "njwt": "^1.0.0"
+    "njwt": "^1.0.0",
+    "socket.io-client": "^4.5.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
