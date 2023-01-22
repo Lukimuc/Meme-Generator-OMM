@@ -29,6 +29,7 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useLocation } from "react-router-dom";
+import { CardActionArea } from "@mui/material";
 
 const Home = (props) => {
 
@@ -58,6 +59,7 @@ const Home = (props) => {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
 }*/
+
 
 //updates likes onClick
 const updateLikes = (id) => { //meme._id
@@ -119,7 +121,7 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
   return (
     <div>
       <h1 style={{display: 'flex', justifyContent: 'center'}}>Check out already created memes</h1>
-      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
+      <Typography style={{display: 'flex', justifyContent: 'center'}}>This overview shows the oldest memes first by default.</Typography> {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
 <Grid container>
 <Grid item xs={4} paddingLeft={5}>
 <Typography gutterBottom>Show memes with X likes</Typography>
@@ -170,18 +172,20 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
                 title={meme.title}
                 subheader={`Created: ` + meme.memeCreated}
               />
-              <CardMedia style={{alignItems: 'center'} }>
+              <CardMedia style={{alignItems: 'center',  width: '350px', height:'350px'}}>
                           <Link key={meme.id} to={`/memes/${meme._id}`}>    
-            <MemeLukas key={meme._id} meme={meme} />
+            <MemeLukas style={{alignItems: 'center',  width: '250px', height:'250px'}} key={meme._id} meme={meme} />
                              </Link>
                             {console.log("meme.id", meme._id)} 
                  </CardMedia>
-              <CardContent>
+              <CardContent style={{backgroundColor: 'white'}}>
+              
              {/*}   <Button variant="contained"onClick={handleSpeakClick}>Speak</Button>*/}
               <Typography variant="body2" color="text.secondary">
           
-          <b>  <p> {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </p></b>
+          <b>  {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </b>
         </Typography>
+
         </CardContent>
               <CardActions disableSpacing>
     <IconButton onClick={() =>  {

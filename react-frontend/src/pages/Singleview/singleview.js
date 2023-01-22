@@ -29,11 +29,16 @@ export function Singleview() {
   const [memesfromServer, setMemesFromServer] = useState([]);
   const [currentId, setCurrentId] = useState(id);
   const [nextId, setNextId] = useState(null);
+  const [prevId, setPrevId] = useState(null);
   const navigate = useNavigate();
+  const [autoplay, setAutoplay] = useState(false);
+
+const [intervalId, setIntervalId] = useState(null);
 
   console.log(id); // Output: "63c9c134f5f20d30d87b6da7"
   const [memefromServer, setMemeFromServer] = useState([]);
 
+  const notNullMemes = memesfromServer.filter((meme) => meme._id !== null);
   const getMeme = (event) => {
     //meme._id
     fetch(`http://localhost:3002/memes/${id}`, {
@@ -55,9 +60,28 @@ export function Singleview() {
       .then((response) => response.json())
       .then((memes) => {
         setMemesFromServer(memes); // set the state of memesfromServer to the received memes
+        setCurrentId(memes[0]._id);
       });
   };
 
+  const nextMemeId = () => {
+    const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+    const nextIndex = currentIndex + 1;
+   // setNextId(memesfromServer[nextIndex]._id);
+   navigate(`/memes/${nextId}`);
+    if(nextIndex > memesfromServer.length -1) nextIndex = 0;
+    setNextId(notNullMemes[nextIndex]._id);
+  }
+  
+  const prevMemeId = () => {
+    const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+    const prevIndex = (currentIndex - 1);
+  //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
+  //  setPrevId(memesfromServer[prevIndex]._id);
+
+    if(prevIndex < 0) prevIndex = memesfromServer.length -1;
+    setPrevId(memesfromServer[prevIndex]._id);
+  }
   useEffect(() => {
     fetch(`http://localhost:3002/memes/${id}`)
       .then((response) => response.json())
@@ -70,8 +94,13 @@ export function Singleview() {
     //  setMemeId(memeId);
     getMeme(); // call the function to get the memes from the server
     getMemes();
-    console.log(memesfromServer);
-  }, []);
+ /*   if(autoplay) {
+      const id = setInterval(handleNextClick, 5000);
+      setIntervalId(id);
+  }return () => {
+    clearInterval(intervalId);*/
+}, [])
+
 
   const getRandomId = async () => {
     const response = await fetch("http://localhost:3002/memes");
@@ -86,12 +115,23 @@ export function Singleview() {
     window.location.href = `/memes/${randomId}`;
   };
 
+  const handleNextClick = () => {
+    navigate(`/memes/${nextId}`);
+    setCurrentId(nextId);
+    nextMemeId();
+    prevMemeId();
+}
+
+const handleAutoplay = () => {
+  setAutoplay(!autoplay);
+}
+
   const steps = [
     {
       label: memefromServer.title,
       imgPath: memefromServer.image_encoded,
-    },
-    {
+    }
+    /*{
       label: "Templatename 2",
       imgPath:
         "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
@@ -100,12 +140,13 @@ export function Singleview() {
       label: "Templatename3",
       imgPath:
         "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250",
-    },
+    },*/
   ];
 
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = steps.length;
+
   const handleNext = () => {
     const currentIndex = memesfromServer.findIndex((meme) => id === currentId);
     setNextId(memesfromServer[currentIndex + 1].id);
@@ -116,20 +157,46 @@ export function Singleview() {
   };
 
   const handleBack = () => {
+    const currentIndex = memesfromServer.findIndex((meme) => id === currentId);
+    setNextId(memesfromServer[currentIndex - 1].id);
+    setCurrentId(prevId);
+    setActiveStep((prevActiveStep) =>
+      prevActiveStep === maxSteps - 1 ? 0 : prevActiveStep - 1
+    );
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+
   };
-  const autoPlay = () => {
-    const interval = setInterval(handleNext, 10000);
-    return interval;
-  };
-  const clearAutoplay = (interval) => {
-    clearInterval(interval);
-  };
+
+  /*
+  setInterval(function(){
+    navigate(`/memes/${nextId}`);
+    setCurrentId(nextId);
+    nextMemeId();
+}, 4000);*/
+
+const handleStartInterval = () => {
+  setIntervalId(setInterval(() => {
+    navigate(`/memes/${nextId}`);
+    setCurrentId(nextId);
+    nextMemeId();
+  }, 4000));
+};
+
+const handleStopInterval = () => {
+  clearInterval(intervalId);
+};
 
   /* useEffect(() => {
       setInterval(handleNext, 5000)
     }, [])*/
 
+    const changeId = (direction) => {
+      if (direction === 'next') {
+          setCurrentId(nextId);
+      } else {
+          setCurrentId(prevId);
+      }
+  }
   return (
     <div>
       <Grid
@@ -154,7 +221,7 @@ export function Singleview() {
                 bgcolor: "background.default",
               }}
             >
-              <Typography>{steps[activeStep].label}</Typography>
+             {/*} <Typography>{steps[activeStep].label}</Typography>*/}
             </Paper>
             <Box
               style={{ width: "600px" }}
@@ -171,16 +238,20 @@ export function Singleview() {
                 }}
               />
             </Box>
-            <MobileStepper
-              variant="text"
+         <MobileStepper
+         variant="none"
               steps={maxSteps}
               position="static"
               activeStep={activeStep}
               nextButton={
+                <Link to={`/memes/${nextId}`}>
                 <Button
                   size="small"
-                  onClick={handleNext}
-                  disabled={activeStep === maxSteps - 1}
+                  onClick={() => {
+                    setCurrentId(nextId);
+                    nextMemeId();
+                  }}
+                 // disabled={activeStep === maxSteps - 1}
                 >
                   Next
                   {theme.direction === "rtl" ? (
@@ -189,12 +260,17 @@ export function Singleview() {
                     <KeyboardArrowRight />
                   )}
                 </Button>
-              }
+                </Link>
+                  }
               backButton={
+                <Link to={`/memes/${prevId}`}>
                 <Button
                   size="small"
-                  onClick={handleBack}
-                  disabled={activeStep === 0}
+                  onClick={() => {
+                    setCurrentId(prevId);
+                    prevMemeId();
+
+                  }}
                 >
                   {theme.direction === "rtl" ? (
                     <KeyboardArrowRight />
@@ -203,6 +279,7 @@ export function Singleview() {
                   )}
                   Back
                 </Button>
+                </Link>
               }
             />
           </Box>
@@ -213,15 +290,15 @@ export function Singleview() {
           >
             Random meme
           </Button>
-          <Button
-            variant="contained"
-            /*onClick={autoPlay()} */ style={{ margin: 10 }}
-          >
+        
+          <Button variant="contained"
+           onClick={handleStartInterval}>
             Start Autoplay ▶
           </Button>
+          
           <Button
             variant="contained"
-            /*onClick={clearAutoplay()}*/ style={{ margin: 10 }}
+            onClick={handleStopInterval} style={{ margin: 10 }}
           >
             Stop Autoplay ||
           </Button>
