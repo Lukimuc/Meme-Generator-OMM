@@ -189,6 +189,7 @@ async function updateMemeByMemeID(client, memeID, req) {
   if (result.modifiedCount > 0) {
     console.log("Meme has been updated: ", result.modifiedCount);
     updatedMeme = findMemeByMemeID(client, memeID)
+    console.log("updated Meme",updatedMeme._id)
     return updatedMeme;
   } else {
     console.log(`No changes applied`)

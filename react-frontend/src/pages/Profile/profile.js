@@ -77,7 +77,7 @@ const Profile = (props) => {
                             
 
                             {memesfromServer.map((meme) => (
-                                meme.status === 'public'
+                                meme.status === 'public' || meme.status === 'private'
                                 ?
                                 <Grid item md={4}>
                                     <MemeLukas key={meme._id} meme={meme} />

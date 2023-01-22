@@ -12,11 +12,13 @@ const MemeLukas = (props) => {
     const [imageDescription, setImageDescription] = useState(meme.imageDescription);
     const [status, setStatus] = useState(meme.status);
 
+
     // check if it's a draft and store it in a variable for the render
     var draft = false;
     if (meme.status === 'draft') {
         draft = true
     }
+
 
     // decode Image 
     useEffect(() => {
@@ -40,6 +42,40 @@ const MemeLukas = (props) => {
 
     function handleEditMode() {
         setEditMode(!editMode);
+    }
+
+    function handleToggleStatus() {
+        if (status === 'private') {
+            setStatus('public');
+            fetch(`http://localhost:3002/memes/${meme._id}`, {
+                method: 'put',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    status: "public"
+                })
+            })
+                .then(response => response.json())
+                .then(updatedMeme => {
+                    console.log(updatedMeme);
+                    setStatus(updatedMeme.status);
+                });
+        }
+
+        if (status === 'public') {
+            setStatus('private');
+            fetch(`http://localhost:3002/memes/${meme._id}`, {
+                method: 'put',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    status: "private"
+                })
+            })
+                .then(response => response.json())
+                .then(updatedMeme => {
+                    console.log(updatedMeme);
+                    setStatus(updatedMeme.status);
+                });
+        }
     }
 
     function saveDraft() {
@@ -72,12 +108,12 @@ const MemeLukas = (props) => {
                 <p>Created: {meme.memeCreated}</p>
                 <p>Creator ID: {meme.CreatorID}</p>
                 <p>Creator Email: {meme.CreatorMail}</p>
-
                 <img src={imageSrc} alt={meme.title} />
+
                 {draft ?
                     <button onClick={handleEditMode}>Edit Draft</button>
                     : <p></p>}
-
+                <button onClick={handleToggleStatus}>{status === 'private' ? 'Make Public' : 'Make Private'}</button>
                 <button onClick={handleSpeakClick}>Voice Control</button>
             </div>
 
@@ -101,7 +137,7 @@ const MemeLukas = (props) => {
                         />
                     </p>
                     <p>
-                        Status:
+                        Status (there's private, draft, public):
                         <input
                             type="text"
                             value={status}
