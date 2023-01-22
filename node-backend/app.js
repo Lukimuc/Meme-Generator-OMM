@@ -54,6 +54,18 @@ async function createUser(client, newUser) {
   return result;
 }
 
+//find Memes marked as public
+async function getPublicMemes(client) {
+  const result = await client.db("memeGeneratorDB").collection("memes").find({status:"public"}).toArray();
+  if (result.length > 0) {
+    console.log(`${result.length} public memes found`);
+    return result;
+  } else {
+    console.log(`No public memes found`);
+    return result;
+  }
+}
+
 // get a specific User by email in DB
 async function findOneUserByEmail(client, email) {
   const result = await client.db("memeGeneratorDB").collection("users").findOne({ 'email': email });
@@ -149,6 +161,41 @@ async function findMemesByUserID(client, userID) {
   return result;
 }
 
+async function updateMemeByMemeID(client, memeID, req) {
+  const { title, status, likes, imageDescription } = req.body;
+  let changes = {}
+
+  if (title !== undefined) {
+    changes.title = title;
+  }
+
+  if (status !== undefined) {
+    changes.status = status;
+  }
+
+  if (likes !== undefined) {
+    changes.likes = likes;
+  }
+
+  if (imageDescription !== undefined) {
+    changes.imageDescription = imageDescription;
+  }
+
+  console.log("changes", changes);
+
+  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    { $set: changes });
+
+  if (result.modifiedCount > 0) {
+    console.log("Meme has been updated: ", result.modifiedCount);
+    updatedMeme = findMemeByMemeID(client, memeID)
+    return updatedMeme;
+  } else {
+    console.log(`No changes applied`)
+    return ;
+  }
+}
+
 async function findMemeByMemeID(client, memeID) {
   const result = await client.db("memeGeneratorDB").collection("memes").findOne({ _id: ObjectID(memeID) });
 
@@ -170,8 +217,26 @@ async function findMemeByMemeID(client, memeID) {
   /image ---> PUT --> Change Counter, Returns Entries Number 
   / --> GET --> Return ALL User
 */
+
+// update a specific Meme by MemeID
+app.put(("/memes/:id"), async (req, res) => {
+  const id = req.params.id
+
+
+  try {
+    const updatedMeme = await updateMemeByMemeID(client, id, req);
+    res.json(updatedMeme); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error in app.get('/meme/:id'': " + error);
+  }
+})
+
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 
 // REGISTER new user
 app.post('/register', (req, res) => {
@@ -283,6 +348,7 @@ app.get(("/memes/:id"), async (req, res) => {
 
   try {
     const meme = await findMemeByMemeID(client, id);
+    
     res.json(meme); // server response to frontend
 
   } catch (error) {
@@ -302,6 +368,22 @@ app.get(("/memes/:userID"), async (req, res) => {
   res.json(memes);
 }) */
 
+
+app.put('/memes/:id/like', (req, res) => {
+  // retrieve the id of the meme to update from the request
+  const id = req.params.id;
+  
+  // find the meme in the database and update the likes count
+  client.db("memeGeneratorDB").collection("memes").updateOne({ _id: new ObjectID(id) }, { $inc: { likes: 1 } })
+    .then(result => {
+      console.log(`Meme with id ${id} updated`);
+      res.send({ success: true });
+    })
+    .catch(err => {
+      console.log(err);
+      res.send({ success: false });
+    });
+});
 
 
 /* ------------ Lukas Test Ende -------------- */

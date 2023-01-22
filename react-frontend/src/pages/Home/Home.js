@@ -9,7 +9,6 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
 import InsertCommentRoundedIcon from '@mui/icons-material/InsertCommentRounded';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,7 +28,6 @@ import MemeLukas from '../TestLukas/MemeLukas';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
-import RangeSlider from './HomeSlider';
 import { useLocation } from "react-router-dom";
 
 const Home = (props) => {
@@ -52,6 +50,8 @@ const Home = (props) => {
   const location = useLocation();
   const linkURL = location.pathname;
   const [,id] = linkURL.split("/memes/");
+
+  //speech function
  /* const [text, setText] = useState(`Title: ${props.meme.title} Image Description ${props.meme.imageDescription} Status: ${props.meme.status} Likes: ${props.meme.likes} Created: ${props.meme.memeCreated} Creator ID: ${props.meme.CreatorID} Creator Email: ${props.meme.CreatorMail}`); // is read out by the voice in this order and only this variables*/
  /*
   function handleSpeakClick() {
@@ -59,6 +59,7 @@ const Home = (props) => {
     window.speechSynthesis.speak(utterance);
 }*/
 
+//updates likes onClick
 const updateLikes = (id) => { //meme._id
   console.log(id);
   fetch(`http://localhost:3002/memes/${id}/like`, {
@@ -72,7 +73,7 @@ const updateLikes = (id) => { //meme._id
    setLikes(data.likes);
     })
     .catch(error => console.error(error));
-} //{console.log(memeId)}
+}
 
 //getTheMemes
   useEffect(() => {
@@ -96,55 +97,14 @@ const updateLikes = (id) => { //meme._id
       })
   }
 
- /* const handleMemeClick = (meme) => {
-    fetch(`http://localhost:3002/memes/${memeId}`, {
-        method: 'get',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    .then(response => response.json())
-    .then(meme => {
-        setSelectedMeme(meme);
-        window.history.push(`/meme/${meme.id}`);
-    })
-}
-*/
-
   const handleSliderChange = (event2, newValue) => {
    setValue(newValue);
    setMinLikes(newValue);
 };
 
-//filter by minimum likes 
-/*const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= minLikes);*/
 
 //filter by likes 
-
-const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
-
-/*
-  function handleLikeClick() {
-    setLikes(likes + 1);
-    fetch(`http://localhost:3002/memes/${props.meme._id}/like`, {
-      method: 'PUT'
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => console.log(error));
-  }*/
-
- /* const marks = [
-    {
-      value: 0,
-      label: '100',
-    },
-    {
-      value: 100,
-      label: '100',
-    }
-  ];
-  */
+const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
 
   //Load more Memes
   const handleLoadMore = () => {
@@ -155,15 +115,6 @@ const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2
   const sortedMemes = [...memesfromServer].sort((a, b) => {
     return new Date(b.memeCreated) - new Date(a.memeCreated);
   });
-
-//Filter Memes by Likes
-/*  function valuetext(value) {
-    return `${value}°C`;
-  }*/
-
- /*   const filterMemes = (value) => {
-      return props.memesfromServer.filter(meme => meme.likes >= value[0] && meme.likes <= value[1])
-    }*/
 
   return (
     <div>
@@ -182,12 +133,7 @@ const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2
 <Select
   labelId="demo-simple-select-label"
   id="demo-simple-select"
-  size="small"
-   /*Filterbox, erst einblenden, wenn es eine Methode gibt, da sonst Error}
-  value={}
-  label="Age"
-onChange={handleChange} */
-> 
+  size="small"> 
   <MenuItem onClick={() => setMemesFromServer(sortedMemes)}>New memes first</MenuItem>
 </Select>
 </FormControl> 
@@ -210,7 +156,7 @@ onChange={handleChange} */
 </Grid>
         </Grid>
     <Grid container spacing={2} style={{padding:30}}>
-    {filteredTemplates2.map((meme, index) => {
+    {filteredTemplatesbyLikes.map((meme, index) => {
      /* {filteredTemplates.map((template) => {*/
         return (
           <Grid item xs={3} /*key={meme._id}*/ key={index}>
@@ -224,25 +170,12 @@ onChange={handleChange} */
                 title={meme.title}
                 subheader={`Created: ` + meme.memeCreated}
               />
-             {/* <Link to={{pathname: '/singleview', state: {id: template.id}}}> */}
-             
               <CardMedia style={{alignItems: 'center'} }>
-                    
-                    {/*} <Link key={meme._id} to={{pathname:`/memes/${meme._id}`,  state:{template: template}}}>*/}
-        
-              <Link key={meme.id} to={`/memes/${meme._id}`}>    
-            <MemeLukas key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*//>{/*onClick={handleMemeClick(meme)*/}
-                 { /*  setTemplate(template);*/}
+                          <Link key={meme.id} to={`/memes/${meme._id}`}>    
+            <MemeLukas key={meme._id} meme={meme} />
                              </Link>
                             {console.log("meme.id", meme._id)} 
-           {/*}     <Meme
-                template={template}}
-               
-               /*   onClick={() => {
-                    setTemplate(template);
-                  }
-                  }*/}
-              </CardMedia>
+                 </CardMedia>
               <CardContent>
              {/*}   <Button variant="contained"onClick={handleSpeakClick}>Speak</Button>*/}
               <Typography variant="body2" color="text.secondary">
@@ -251,27 +184,16 @@ onChange={handleChange} */
         </Typography>
         </CardContent>
               <CardActions disableSpacing>
-              {/*<Counter
-        onCountChange={(count) => {
-          setCount(count)
-        }}
-      />
-      <p>Count is: {count}</p>*/}
-      {/*} <IconButton onClick={handleLikeClick}>
-      <ThumbUpIcon/>
-    </IconButton>*/}
     <IconButton onClick={() =>  {
     updateLikes(meme._id, meme.likes + 1);
     setCount(meme.likes ++);
     }}>
-   
       <ThumbUpIcon/>
     </IconButton>
     <IconButton onClick={() => setCount(count - 1)}>
       <ThumbDownIcon />
     </IconButton>
-    {/*<Button variant="contained" style={{ position:'relative', float:'right'}}>Edit Meme</Button>*/}
-  </CardActions>
+    </CardActions>
             </Card>
           </Grid>
         );
