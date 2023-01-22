@@ -46,7 +46,6 @@ const Home = (props) => {
   const [selectedMeme, setSelectedMeme] = useState(null);
   const [value2, setValue] = React.useState([0, 100]);
   
-
   const [searchValue, setSearchValue] = useState('');
   const filteredTemplates = limitedTemplates.filter(meme => meme.title.toLowerCase().includes(searchValue.toLowerCase()));
 
@@ -60,8 +59,9 @@ const Home = (props) => {
     window.speechSynthesis.speak(utterance);
 }*/
 
-const updateLikes = (memeId) => { //meme._id
-  fetch(`http://localhost:3002/memes/${id}`, {
+const updateLikes = (id) => { //meme._id
+  console.log(id);
+  fetch(`http://localhost:3002/memes/${id}/like`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', 
     body: JSON.stringify({likes: likes + 1}) }
@@ -246,8 +246,8 @@ onChange={handleChange} */
               <CardContent>
              {/*}   <Button variant="contained"onClick={handleSpeakClick}>Speak</Button>*/}
               <Typography variant="body2" color="text.secondary">
-        <b>  {count} 
-        <p>Likes: {meme.likes}</p> {count === 1 ? "Like" : "Likes"} </b>
+          
+          <b>  <p> {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </p></b>
         </Typography>
         </CardContent>
               <CardActions disableSpacing>
@@ -260,7 +260,10 @@ onChange={handleChange} */
       {/*} <IconButton onClick={handleLikeClick}>
       <ThumbUpIcon/>
     </IconButton>*/}
-    <IconButton onClick={() =>  updateLikes(meme._id, meme.likes + 1)}>
+    <IconButton onClick={() =>  {
+    updateLikes(meme._id, meme.likes + 1);
+    setCount(meme.likes ++);
+    }}>
    
       <ThumbUpIcon/>
     </IconButton>
