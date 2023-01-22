@@ -13,25 +13,63 @@ import FormatItalic from '@mui/icons-material/FormatItalic';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
 import { useEffect, useState } from "react";
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import Avatar from '@mui/material/Avatar';
+import { Link } from 'react-router-dom';
 
-export default function TextareaValidator() {
+export default function TextareaValidator(props) {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState('normal');
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  /*Setting Comments*/
+  const [comment, setComment] = useState([]);
   const [comments, setComments] = useState([]);
-const [newComment, setNewComment] = useState('');
-  const handleCommentSubmit = (event) => {
-    event.preventDefault();
-    setComments([...comments, newComment]);
-    setNewComment('');
-}
+const [newComment, setNewComment] = useState([]);
+
+    /*functions*/
+    const onClickHandler = () => {
+    /*  if (props.isSignedIn === true) {*/
+      setComments((comments) => [...comments, newComment]);
+    /* setNewComment();*/
+  }
+
+    const onChangeHandler = (e) => {
+     setComment(e.target.value);
+      setNewComment(e.target.value);
+      }
+    
 
   return (
+    <div>
+        {comments.map((text, index) => (
+  <Card key={index} style={{
+    marginTop: 10,
+    marginBottom: 10
+  }}>
+  <CardHeader
+               avatar={
+                 <Avatar>
+                 User  {/*{props.user.firstname}*/}
+                 </Avatar>
+               }
+               title={
+                 "User123"
+               }
+               subheader={
+              text
+               }
+             />
+           </Card>
+      ))}
+
     <FormControl>
       <FormLabel>Your comment</FormLabel>
       <Textarea
         placeholder="Type something here…"
         minRows={3}
+        onChange={onChangeHandler}
         endDecorator={
           <Box
             sx={{
@@ -42,6 +80,7 @@ const [newComment, setNewComment] = useState('');
               borderColor: 'divider',
               flex: 'auto',
             }}
+            value={newComment}
           >
             <IconButton
               variant="plain"
@@ -84,7 +123,7 @@ const [newComment, setNewComment] = useState('');
             >
               <FormatItalic />
             </IconButton>
-            <Button sx={{ ml: 'auto' }} onClick={handleCommentSubmit}>Send</Button>
+            <Button sx={{ ml: 'auto' }} onClick={onClickHandler}>Send</Button>
           </Box>
         }
         sx={{
@@ -94,5 +133,6 @@ const [newComment, setNewComment] = useState('');
         }}
       />
     </FormControl>
+    </div>
   );
 }
