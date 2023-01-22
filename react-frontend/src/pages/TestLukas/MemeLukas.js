@@ -114,7 +114,7 @@ const MemeLukas = (props) => {
                     <button onClick={handleEditMode}>Edit Draft</button>
                     : <p></p>}
                 <button onClick={handleToggleStatus}>{status === 'private' ? 'Make Public' : 'Make Private'}</button>
-                <button onClick={handleSpeakClick}>Voice Control</button>
+                <button onClick={handleSpeakClick}>Text to Speech</button>
             </div>
 
             {editMode === true ?
