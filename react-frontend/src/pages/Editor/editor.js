@@ -14,22 +14,6 @@ import Save_Form from './Form_Components/save_component';
 
 const Editor = () => {
 
-    const [imageUrl, setImageUrl] = useState('');
-
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-
     const stageRef = useRef(null);
 
     // Variable für Editor Forms
@@ -188,18 +172,6 @@ const Editor = () => {
                                 //imgs[i] = newAttrs;
                             }}
                         />
-                        <My_Image 
-                                    key={"KEY" }
-                                    imageUrl={imageUrl}
-                                    isSelected={"KEY" === selectedId}
-                                    onSelect={() => { 
-                                        selectShape("KEY")
-                                       }}
-                                    onChange={newAttrs => {
-                                        const imgs = images.slice();
-                                        imgs[0] = newAttrs;
-                                    }}
-                                />
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 
@@ -249,7 +221,6 @@ const Editor = () => {
             </div>
             </Grid>
             <Grid item md={4}>
-                <input type="file" onChange={handleFileSelect} />
                 <h1 textAlign='center'>Editor</h1>
                 <button onClick={() => { clickbutton("Images") }}> Images </button>
                 <button onClick={() => { clickbutton("Texts") }}> Texts </button>
