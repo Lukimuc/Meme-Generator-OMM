@@ -153,10 +153,10 @@ async function findMemeByMemeID(client, memeID) {
 
 
   if (result.length > 0) {
-    console.log(`Memes found`);
+    console.log(`Meme found`);
     console.log(result);
   } else {
-    console.log(`No memes found`);
+    console.log(`No meme found`);
   }
   return result;
 }
