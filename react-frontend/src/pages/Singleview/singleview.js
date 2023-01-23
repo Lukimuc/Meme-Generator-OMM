@@ -341,12 +341,17 @@ export function Singleview() {
             </Button>
           </Grid>
           <Grid item md={4}>
-            <h2> Likes: {memefromServer.likes} </h2> <br />
-            <Link to="/editor">
+            <h2> Details </h2>
+            <p> <b>Title</b><br></br> {memefromServer.title} </p>
+            <p> <b>Creation date</b> <br></br> {memefromServer.memeCreated} </p>
+            <p> <b>CreatorMail </b><br></br>{memefromServer.CreatorMail} </p>
+            <p> <b>imageDescription</b> <br></br>{memefromServer.imageDescription} </p>
+            <p> <b>Likes  <br></br></b>{memefromServer.likes} </p> <br />
+            {/*  <Link to="/editor">
               <Button variant="contained">Edit this template</Button>
-            </Link>
-            
-            <h2> Comments: </h2>
+            </Link> */}
+
+            <h2> Comments </h2>
             {/*} Code for Mapping Comments later on
               <div>
               {comments.map((comment, index) => (
@@ -365,7 +370,7 @@ export function Singleview() {
             onSubmit={handleCommentSubmit}*/}
 
 
-<div>
+            <div>
               <h2>Livestream this view</h2>
               <button onClick={startStream} disabled={streaming}>Start streaming</button>
               <button onClick={stopStream} disabled={!streaming}>Stop streaming</button>
