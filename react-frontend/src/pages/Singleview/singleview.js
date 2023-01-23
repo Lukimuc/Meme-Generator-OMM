@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box, { img } from "@mui/material/Box";
 import MobileStepper from "@mui/material/MobileStepper";
@@ -21,7 +21,18 @@ import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+// Video Stream Imports
+import io from 'socket.io-client';
+import html2canvas from 'html2canvas';
+const socket = io('wss://localhost:8080');
+
+
 export function Singleview() {
+  // Video Stream States
+  const [message, setMessage] = useState("Streaming: OFF");
+  const [streaming, setStreaming] = useState(false);
+  const sectionRef = useRef(null);
+
   //getting String
   const location = useLocation();
   const linkURL = location.pathname;
@@ -33,7 +44,7 @@ export function Singleview() {
   const navigate = useNavigate();
   const [autoplay, setAutoplay] = useState(false);
 
-const [intervalId, setIntervalId] = useState(null);
+  const [intervalId, setIntervalId] = useState(null);
 
   console.log(id); // Output: "63c9c134f5f20d30d87b6da7"
   const [memefromServer, setMemeFromServer] = useState([]);
@@ -67,19 +78,19 @@ const [intervalId, setIntervalId] = useState(null);
   const nextMemeId = () => {
     const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
     const nextIndex = currentIndex + 1;
-   // setNextId(memesfromServer[nextIndex]._id);
-   navigate(`/memes/${nextId}`);
-    if(nextIndex > memesfromServer.length -1) nextIndex = 0;
+    // setNextId(memesfromServer[nextIndex]._id);
+    navigate(`/memes/${nextId}`);
+    if (nextIndex > memesfromServer.length - 1) nextIndex = 0;
     setNextId(notNullMemes[nextIndex]._id);
   }
-  
+
   const prevMemeId = () => {
     const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
     const prevIndex = (currentIndex - 1);
-  //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
-  //  setPrevId(memesfromServer[prevIndex]._id);
+    //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
+    //  setPrevId(memesfromServer[prevIndex]._id);
 
-    if(prevIndex < 0) prevIndex = memesfromServer.length -1;
+    if (prevIndex < 0) prevIndex = memesfromServer.length - 1;
     setPrevId(memesfromServer[prevIndex]._id);
   }
   useEffect(() => {
@@ -94,12 +105,37 @@ const [intervalId, setIntervalId] = useState(null);
     //  setMemeId(memeId);
     getMeme(); // call the function to get the memes from the server
     getMemes();
- /*   if(autoplay) {
-      const id = setInterval(handleNextClick, 5000);
-      setIntervalId(id);
-  }return () => {
-    clearInterval(intervalId);*/
-}, [])
+    /*   if(autoplay) {
+         const id = setInterval(handleNextClick, 5000);
+         setIntervalId(id);
+     }return () => {
+       clearInterval(intervalId);*/
+  }, [])
+
+  // Videostream Code
+  useEffect(() => {
+    if (!streaming) return;
+    const intervalId = setInterval(() => {
+      html2canvas(sectionRef.current).then(canvas => {
+        socket.emit("streaming", canvas.toDataURL("image/webp"));
+      });
+    }, 40);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [streaming]);
+
+  const startStream = () => {
+    setMessage("Streaming: ON");
+    setStreaming(true);
+  };
+
+  const stopStream = () => {
+    setMessage("Streaming: OFF");
+    setStreaming(false);
+  };
+
 
 
   const getRandomId = async () => {
@@ -120,11 +156,11 @@ const [intervalId, setIntervalId] = useState(null);
     setCurrentId(nextId);
     nextMemeId();
     prevMemeId();
-}
+  }
 
-const handleAutoplay = () => {
-  setAutoplay(!autoplay);
-}
+  const handleAutoplay = () => {
+    setAutoplay(!autoplay);
+  }
 
   const steps = [
     {
@@ -174,159 +210,172 @@ const handleAutoplay = () => {
     nextMemeId();
 }, 4000);*/
 
-const handleStartInterval = () => {
-  setIntervalId(setInterval(() => {
-    navigate(`/memes/${nextId}`);
-    setCurrentId(nextId);
-    nextMemeId();
-  }, 4000));
-};
+  const handleStartInterval = () => {
+    setIntervalId(setInterval(() => {
+      navigate(`/memes/${nextId}`);
+      setCurrentId(nextId);
+      nextMemeId();
+    }, 4000));
+  };
 
-const handleStopInterval = () => {
-  clearInterval(intervalId);
-};
+  const handleStopInterval = () => {
+    clearInterval(intervalId);
+  };
 
   /* useEffect(() => {
       setInterval(handleNext, 5000)
     }, [])*/
 
-    const changeId = (direction) => {
-      if (direction === 'next') {
-          setCurrentId(nextId);
-      } else {
-          setCurrentId(prevId);
-      }
+  const changeId = (direction) => {
+    if (direction === 'next') {
+      setCurrentId(nextId);
+    } else {
+      setCurrentId(prevId);
+    }
   }
   return (
-    <div>
-      <Grid
-        container
-        spacing={2}
-        paddingLeft={30}
-        paddingTop={10}
-        paddingRight={30}
-        style={{}}
-      >
-        <Grid item md={8}>
-          {/*} <h1> Meme ID - gelesen aus URL: {id}</h1>*/}
-          <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
-            <Paper
-              square
-              elevation={0}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                height: 50,
-                pl: 2,
-                bgcolor: "background.default",
-              }}
-            >
-             {/*} <Typography>{steps[activeStep].label}</Typography>*/}
-            </Paper>
-            <Box
-              style={{ width: "600px" }}
-              md={{ height: 255, maxWidth: 400, width: "100%", p: 2 }}
-            >
-              <img
-                src={steps[activeStep].imgPath}
-                alt={steps[activeStep].label}
-                style={{
-                  display: "block",
-                  maxWidth: 1000,
-                  width: "100%",
-                  overflow: "hidden",
+    <div ref={sectionRef}>
+      <div>
+        <Grid
+          container
+          spacing={2}
+          paddingLeft={30}
+          paddingTop={10}
+          paddingRight={30}
+          style={{}}
+        >
+          <Grid item md={8}>
+            {/*} <h1> Meme ID - gelesen aus URL: {id}</h1>*/}
+            <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
+              <Paper
+                square
+                elevation={0}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: 50,
+                  pl: 2,
+                  bgcolor: "background.default",
                 }}
+              >
+                {/*} <Typography>{steps[activeStep].label}</Typography>*/}
+              </Paper>
+              <Box
+                style={{ width: "600px" }}
+                md={{ height: 255, maxWidth: 400, width: "100%", p: 2 }}
+              >
+                <img
+                  src={steps[activeStep].imgPath}
+                  alt={steps[activeStep].label}
+                  style={{
+                    display: "block",
+                    maxWidth: 1000,
+                    width: "100%",
+                    overflow: "hidden",
+                  }}
+                />
+              </Box>
+              <MobileStepper
+                variant="none"
+                steps={maxSteps}
+                position="static"
+                activeStep={activeStep}
+                nextButton={
+                  <Link to={`/memes/${nextId}`}>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setCurrentId(nextId);
+                        nextMemeId();
+                      }}
+                    // disabled={activeStep === maxSteps - 1}
+                    >
+                      Next
+                      {theme.direction === "rtl" ? (
+                        <KeyboardArrowLeft />
+                      ) : (
+                        <KeyboardArrowRight />
+                      )}
+                    </Button>
+                  </Link>
+                }
+                backButton={
+                  <Link to={`/memes/${prevId}`}>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setCurrentId(prevId);
+                        prevMemeId();
+
+                      }}
+                    >
+                      {theme.direction === "rtl" ? (
+                        <KeyboardArrowRight />
+                      ) : (
+                        <KeyboardArrowLeft />
+                      )}
+                      Back
+                    </Button>
+                  </Link>
+                }
               />
             </Box>
-         <MobileStepper
-         variant="none"
-              steps={maxSteps}
-              position="static"
-              activeStep={activeStep}
-              nextButton={
-                <Link to={`/memes/${nextId}`}>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setCurrentId(nextId);
-                    nextMemeId();
-                  }}
-                 // disabled={activeStep === maxSteps - 1}
-                >
-                  Next
-                  {theme.direction === "rtl" ? (
-                    <KeyboardArrowLeft />
-                  ) : (
-                    <KeyboardArrowRight />
-                  )}
-                </Button>
-                </Link>
-                  }
-              backButton={
-                <Link to={`/memes/${prevId}`}>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setCurrentId(prevId);
-                    prevMemeId();
+            <Button
+              variant="contained"
+              onClick={showRandom}
+              style={{ margin: 10 }}
+            >
+              Random meme
+            </Button>
 
-                  }}
-                >
-                  {theme.direction === "rtl" ? (
-                    <KeyboardArrowRight />
-                  ) : (
-                    <KeyboardArrowLeft />
-                  )}
-                  Back
-                </Button>
-                </Link>
-              }
-            />
-          </Box>
-          <Button
-            variant="contained"
-            onClick={showRandom}
-            style={{ margin: 10 }}
-          >
-            Random meme
-          </Button>
-        
-          <Button variant="contained"
-           onClick={handleStartInterval}>
-            Start Autoplay ▶
-          </Button>
-          
-          <Button
-            variant="contained"
-            onClick={handleStopInterval} style={{ margin: 10 }}
-          >
-            Stop Autoplay ||
-          </Button>
-        </Grid>
-        <Grid item md={4}>
-          <h2> Likes: {memefromServer.likes} </h2> <br />
-          <Link to="/editor">
-            <Button variant="contained">Edit this template</Button>
-          </Link>
-          <h2> Comments: </h2>
-          {/*} Code for Mapping Comments later on
+            <Button variant="contained"
+              onClick={handleStartInterval}>
+              Start Autoplay ▶
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={handleStopInterval} style={{ margin: 10 }}
+            >
+              Stop Autoplay ||
+            </Button>
+          </Grid>
+          <Grid item md={4}>
+            <h2> Likes: {memefromServer.likes} </h2> <br />
+            <Link to="/editor">
+              <Button variant="contained">Edit this template</Button>
+            </Link>
+            
+            <h2> Comments: </h2>
+            {/*} Code for Mapping Comments later on
               <div>
               {comments.map((comment, index) => (
                   <p key={index}>{comment}</p>
               ))}
               </div>*/}
-          You need to login to comment. Sign in <Link to="/signin"> here </Link>{" "}
-          <br />
-          {/*   <Comments/>**/}
-          <TextareaValidator />
-          {/*} style={{paddingBottom: 30}}
+            You need to login to comment. Sign in <Link to="/signin"> here </Link>{" "}
+            <br />
+            {/*   <Comments/>**/}
+            <TextareaValidator />
+            {/*} style={{paddingBottom: 30}}
               id="newComment"
               label="Add a comment"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             onSubmit={handleCommentSubmit}*/}
+
+
+<div>
+              <h2>Livestream this view</h2>
+              <button onClick={startStream} disabled={streaming}>Start streaming</button>
+              <button onClick={stopStream} disabled={!streaming}>Stop streaming</button>
+              <br></br>
+              <p>{message}</p>
+              <a href="http://localhost:3000/viewer" target="_blank">Click this to see the crypted https / websocket videostream in a second tab or use http://localhost:PORT/viewer</a>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </div>
   );
 }
