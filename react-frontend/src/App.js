@@ -12,7 +12,7 @@ import VoiceControls from './pages/TestLukas/TextInput';
 import Stream from './pages/TestLukas/stream';
 import Viewer from './pages/TestLukas/viewer';
 import Graph from './pages/TestLukas/graph';
-
+import Graph2 from './pages/TestLukas/graph2';
 
 class App extends Component {
   constructor() {
@@ -85,6 +85,7 @@ class App extends Component {
             <Route path='/stream' element={<Stream></Stream>} />
             <Route path='/viewer' element={<Viewer></Viewer>} />
             <Route path='/graph' element={<Graph></Graph>} />
+            <Route path='/graph2' element={<Graph2></Graph2>} />
           </Routes>
         </BrowserRouter>
       </>

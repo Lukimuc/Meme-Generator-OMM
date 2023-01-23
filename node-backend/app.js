@@ -215,6 +215,51 @@ async function findMemeByMemeID(client, memeID) {
   return result;
 }
 
+// logs
+async function findLogs(client) {
+  const result = await client.db("memeGeneratorDB").collection("logs").findOne({ globalIdentifier: true });
+
+  if (result.length > 0) {
+    console.log(`Meme found`);
+    console.log(result);
+  } else {
+    console.log(`No meme found`);
+  }
+  return result;
+}
+
+
+async function upsertLog(client, req) {
+  //const { fileUploadButtonClickedTotal, urlButtonClickedTotal, thirdPartyButtonClickedTotal, cameraButtonClickedTotal, drawButtonClickedTotal } = req.body;
+  console.log(req.body)
+
+  data = req.body;
+  const formattedData = data.map(({ name, clicks }) => {
+    return { [name]: clicks };
+  });
+  console.log(formattedData);
+
+  const combinedData = Object.assign({}, ...formattedData);
+  console.log(combinedData);
+
+  const changes = {
+    "fileUploadButtonClickedTotal": combinedData['File Upload'],
+    "urlButtonClickedTotal": combinedData.URL,
+    "thirdPartyButtonClickedTotal": combinedData['Third Party'],
+    "cameraButtonClickedTotal": combinedData.Camera,
+    "drawButtonClickedTotal": combinedData.Draw,
+    "globalIdentifier": true
+  };
+
+  const result = await client.db("memeGeneratorDB").collection("logs").updateOne({ globalIdentifier: true }, { $set: changes }, { upsert: true });
+
+  console.log(`${result.matchedCount} documents matched the query criteria`);
+  console.log(`${result.modifiedCount} documents were updated`);
+  console.log(changes)
+  return changes;
+}
+
+
 /* async function updateMemeByMemeID(client, memeID, req) {
   const { title, status, likes, imageDescription } = req.body;
   let changes = {}
@@ -264,22 +309,31 @@ app.use(express.json());
 app.use(cors(
 ));
 
+
+// Page logs / Feature 22 - update clicks in Editor
+app.get(("/log"), async (req, res) => {
+  try {
+    const log = await findLogs(client)
+    res.json(log);
+  } catch (error) {
+    res.status(400).json("Error in app.get('/log': " + error);
+  }
+})
+
 // Page logs / Feature 22 - update clicks in Editor
 app.put(("/log"), async (req, res) => {
-  const id = req.params.id
-
-
   try {
-
+    const changes = await upsertLog(client, req)
+    res.json(changes);
   } catch (error) {
-
+    res.status(400).json("Error in app.get('/log': " + error);
   }
 })
 
 // update a specific Meme by MemeID
 app.put(('/memes/:id'), async (req, res) => {
   const id = req.params.id
-console.log('/memes/:id executed')
+  console.log('/memes/:id executed')
 
   try {
     const updatedMeme = await updateMemeByMemeID(client, id, req);
