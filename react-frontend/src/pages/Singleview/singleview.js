@@ -21,6 +21,9 @@ import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+// Graph imports
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
+
 // Video Stream Imports
 import io from 'socket.io-client';
 import html2canvas from 'html2canvas';
@@ -45,6 +48,17 @@ export function Singleview() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.continuous = true;
   recognition.interimResults = true;
+
+  // Graph States
+  const [todayViews, setTodayViews] = useState(0);
+  const fetchRef = useRef(false);
+  const [data, setData] = useState([ // We simulate past data with static but have individual today graphs for each meme
+    { name: 'Three Days ago', pageViews: 7 },
+    { name: 'Two Days ago', pageViews: 13 },
+    { name: 'Yesterday', pageViews: 5 },
+    { name: 'Today', pageViews: todayViews },
+  ]);
+
 
   //getting String
   const location = useLocation();
@@ -133,21 +147,18 @@ export function Singleview() {
       setButtonClicked(null) // reset state
       setTranscript("") // ?? do we need this?
     }
-    if (buttonClicked ==="Back"){
+    if (buttonClicked === "Back") {
       navigate(`/memes/${prevId}`) // TODO
       setButtonClicked(null) // reset state
     }
-    if (buttonClicked ==="Play"){
+    if (buttonClicked === "Play") {
       // TODO how to start slideshow?
       setButtonClicked(null) // reset state
     }
-    if (buttonClicked ==="Pause"){
+    if (buttonClicked === "Pause") {
       // TODO how to pause / stop slideshow?
       setButtonClicked(null) // reset state
     }
-
-
-    
   })
 
 
@@ -207,6 +218,47 @@ export function Singleview() {
     }
   }
 
+  // Graph Render
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchRef]);
+
+  async function fetchInitialData() {
+    // fetch data from server
+    await fetch(`http://localhost:3002/memes/${id}`)
+      .then(response => response.json())
+      .then(initialMeme => {
+        const updatedData = [...data];
+        updatedData[3].pageViews = initialMeme.viewsToday;
+        setTodayViews(initialMeme.viewsToday);
+        setData(updatedData);
+        updateData();
+      }).catch(error => {
+        console.log(error)
+      });
+  }
+
+  async function updateData() {
+    // increment the page views for today
+    const updatedData = [...data];
+    updatedData[3].pageViews += 1;
+
+    // send data to server
+    await fetch(`http://localhost:3002/memes/${id}`, {
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        viewsToday: updatedData[3].pageViews
+      })
+    })
+      .then(response => response.json())
+      .then(updatedMeme => {
+        setTodayViews(updatedMeme.viewsToday)
+        setData(updatedData)
+      }).catch(error => {
+        console.log(error)
+      });
+  }
 
   const getRandomId = async () => {
     const response = await fetch("http://localhost:3002/memes");
@@ -433,6 +485,16 @@ export function Singleview() {
               <div>Button clicked via voice: {buttonClicked} </div>
             </div>
 
+            <h2>Dynamic views graph</h2>
+            <LineChart width={600} height={300} data={data}>
+              <XAxis dataKey="name" stroke="#8884d8" />
+              <YAxis />
+              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+              <Line dataKey="pageViews" fill="#1976d2" barSize={30} />
+              <Tooltip />
+            </LineChart>
+
+
           </Grid>
           <Grid item md={4}>
             <h2> Details </h2>
@@ -441,6 +503,7 @@ export function Singleview() {
             <p> <b>CreatorMail </b><br></br>{memefromServer.CreatorMail} </p>
             <p> <b>imageDescription</b> <br></br>{memefromServer.imageDescription} </p>
             <p> <b>Likes  <br></br></b>{memefromServer.likes} </p> <br />
+
             {/*  <Link to="/editor">
               <Button variant="contained">Edit this template</Button>
             </Link> */}
@@ -455,14 +518,14 @@ export function Singleview() {
             You need to login to comment. Sign in <Link to="/signin"> here </Link>{" "}
             <br />
             {/*   <Comments/>**/}
-            <TextareaValidator  onFocus={() => setIsTextFieldSelected(true)}
-                onBlur={() => {
-                  setIsTextFieldSelected(false);
-                  setTextFieldText(transcript);
-                }
-                }
-                value={isTextFieldSelected ? transcript : textFieldText}
-                style={isTextFieldSelected ? { borderColor: "blue" } : {}}/>
+            <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
+              onBlur={() => {
+                setIsTextFieldSelected(false);
+                setTextFieldText(transcript);
+              }
+              }
+              value={isTextFieldSelected ? transcript : textFieldText}
+              style={isTextFieldSelected ? { borderColor: "blue" } : {}} />
             {/*} style={{paddingBottom: 30}}
               id="newComment"
               label="Add a comment"
