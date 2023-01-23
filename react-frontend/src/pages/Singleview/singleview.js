@@ -27,11 +27,24 @@ import html2canvas from 'html2canvas';
 const socket = io('wss://localhost:8080');
 
 
+
+
 export function Singleview() {
   // Video Stream States
   const [message, setMessage] = useState("Streaming: OFF");
   const [streaming, setStreaming] = useState(false);
   const sectionRef = useRef(null);
+
+  // VoiceControl States
+  const [isRecording, setIsRecording] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState("");
+  const [transcript, setTranscript] = useState("");
+  const [textFieldText, setTextFieldText] = useState("");
+  const [playback, setPlayback] = useState(false);
+  const [isTextFieldSelected, setIsTextFieldSelected] = useState(false);
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.continuous = true;
+  recognition.interimResults = true;
 
   //getting String
   const location = useLocation();
@@ -112,6 +125,32 @@ export function Singleview() {
        clearInterval(intervalId);*/
   }, [])
 
+
+  // Voice Control Effect
+  useEffect(() => {
+    if (buttonClicked === "Next") {
+      navigate(`/memes/${nextId}`) // TODO
+      setButtonClicked(null) // reset state
+      setTranscript("") // ?? do we need this?
+    }
+    if (buttonClicked ==="Back"){
+      navigate(`/memes/${prevId}`) // TODO
+      setButtonClicked(null) // reset state
+    }
+    if (buttonClicked ==="Play"){
+      // TODO how to start slideshow?
+      setButtonClicked(null) // reset state
+    }
+    if (buttonClicked ==="Pause"){
+      // TODO how to pause / stop slideshow?
+      setButtonClicked(null) // reset state
+    }
+
+
+    
+  })
+
+
   // Videostream Code
   useEffect(() => {
     if (!streaming) return;
@@ -136,6 +175,37 @@ export function Singleview() {
     setStreaming(false);
   };
 
+  // Voice Controll Function
+  const startRecording = () => {
+    setIsRecording(!isRecording);
+    if (isRecording) {
+      recognition.abort();
+    } else {
+      recognition.start();
+      recognition.onresult = event => {
+        let current = event.resultIndex;
+        let newTranscript = event.results[current][0].transcript.toLowerCase();
+        if (isTextFieldSelected) {
+          setTranscript(newTranscript);
+        } else {
+          setTranscript(transcript + " " + newTranscript);
+        }
+        if (newTranscript === "back" || newTranscript === " back") {
+          setButtonClicked("Back");
+        } else if (newTranscript === "pause" || newTranscript === "play" || newTranscript === " play" || newTranscript === " pause") {
+          setPlayback(!playback);
+          setButtonClicked(newTranscript);
+        } else if (newTranscript === "next" || newTranscript === " next") {
+          setButtonClicked("Next");
+        } else if (newTranscript === "select" || newTranscript === " select") {
+          setIsTextFieldSelected(true);
+        } else if (newTranscript === "deselect" || newTranscript === " deselect" || newTranscript === " die select") {
+          setIsTextFieldSelected(false);
+          setTextFieldText(transcript);
+        }
+      };
+    }
+  }
 
 
   const getRandomId = async () => {
@@ -287,6 +357,7 @@ export function Singleview() {
                       onClick={() => {
                         setCurrentId(nextId);
                         nextMemeId();
+                        setButtonClicked("Next") // For Voice Control
                       }}
                     // disabled={activeStep === maxSteps - 1}
                     >
@@ -306,7 +377,7 @@ export function Singleview() {
                       onClick={() => {
                         setCurrentId(prevId);
                         prevMemeId();
-
+                        setButtonClicked("Back") // For Voice Control
                       }}
                     >
                       {theme.direction === "rtl" ? (
@@ -339,6 +410,29 @@ export function Singleview() {
             >
               Stop Autoplay ||
             </Button>
+
+            <div>
+              <h3>Voice Control</h3>
+              <button onClick={startRecording}>
+                {isRecording ? "Stop Recording" : "Start Recording"}
+              </button><br></br>
+              <b>Transcript</b> <i>{transcript}</i>
+              <p><b>Activate Recording and use these Commands </b><br></br> "Play" to start the Slideshow <br></br> "Pause" to pause the Slideshow <br></br> "Next" or "Back" to move forward or backwards <br></br> "Select" to select the Textfield on the bottom, then say anything you want</p>
+
+              Voice Textinput field:   <input
+                type="text"
+                onFocus={() => setIsTextFieldSelected(true)}
+                onBlur={() => {
+                  setIsTextFieldSelected(false);
+                  setTextFieldText(transcript);
+                }
+                }
+                value={isTextFieldSelected ? transcript : textFieldText}
+                style={isTextFieldSelected ? { borderColor: "blue" } : {}}
+              />
+              <div>Button clicked via voice: {buttonClicked} </div>
+            </div>
+
           </Grid>
           <Grid item md={4}>
             <h2> Details </h2>
@@ -361,7 +455,14 @@ export function Singleview() {
             You need to login to comment. Sign in <Link to="/signin"> here </Link>{" "}
             <br />
             {/*   <Comments/>**/}
-            <TextareaValidator />
+            <TextareaValidator  onFocus={() => setIsTextFieldSelected(true)}
+                onBlur={() => {
+                  setIsTextFieldSelected(false);
+                  setTextFieldText(transcript);
+                }
+                }
+                value={isTextFieldSelected ? transcript : textFieldText}
+                style={isTextFieldSelected ? { borderColor: "blue" } : {}}/>
             {/*} style={{paddingBottom: 30}}
               id="newComment"
               label="Add a comment"
