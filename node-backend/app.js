@@ -57,7 +57,7 @@ async function createUser(client, newUser) {
 
 //find Memes marked as public
 async function getPublicMemes(client) {
-  const result = await client.db("memeGeneratorDB").collection("memes").find({status:"public"}).toArray();
+  const result = await client.db("memeGeneratorDB").collection("memes").find({ status: "public" }).toArray();
   if (result.length > 0) {
     console.log(`${result.length} public memes found`);
     return result;
@@ -163,8 +163,9 @@ async function findMemesByUserID(client, userID) {
 }
 
 async function updateMemeByMemeID(client, memeID, req) {
-  const { title, status, likes, imageDescription } = req.body;
+  const { title, status, likes, imageDescription, viewsToday } = req.body;
   let changes = {}
+  console.log("viewsToday")
 
   if (title !== undefined) {
     changes.title = title;
@@ -182,6 +183,10 @@ async function updateMemeByMemeID(client, memeID, req) {
     changes.imageDescription = imageDescription;
   }
 
+  if (viewsToday !== undefined) {
+    changes.viewsToday = viewsToday;
+  }
+
   console.log("changes", changes);
 
   const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
@@ -193,7 +198,7 @@ async function updateMemeByMemeID(client, memeID, req) {
     return updatedMeme;
   } else {
     console.log(`No changes applied`)
-    return ;
+    return;
   }
 }
 
@@ -210,7 +215,7 @@ async function findMemeByMemeID(client, memeID) {
   return result;
 }
 
-async function updateMemeByMemeID(client, memeID, req) {
+/* async function updateMemeByMemeID(client, memeID, req) {
   const { title, status, likes, imageDescription } = req.body;
   let changes = {}
 
@@ -238,13 +243,15 @@ async function updateMemeByMemeID(client, memeID, req) {
   if (result.modifiedCount > 0) {
     console.log("Meme has been updated: ", result.modifiedCount);
     updatedMeme = findMemeByMemeID(client, memeID)
-    console.log("updated Meme",updatedMeme._id)
+    console.log("updated Meme", updatedMeme._id)
     return updatedMeme;
   } else {
     console.log(`No changes applied`)
     return;
   }
-}
+} */
+
+
 
 /* Endpoints: 
   /register  ---> Post --> Return: User 
@@ -253,11 +260,26 @@ async function updateMemeByMemeID(client, memeID, req) {
   /image ---> PUT --> Change Counter, Returns Entries Number 
   / --> GET --> Return ALL User
 */
+app.use(express.json());
+app.use(cors(
+));
 
-// update a specific Meme by MemeID
-app.put(("/memes/:id"), async (req, res) => {
+// Page logs / Feature 22 - update clicks in Editor
+app.put(("/log"), async (req, res) => {
   const id = req.params.id
 
+
+  try {
+
+  } catch (error) {
+
+  }
+})
+
+// update a specific Meme by MemeID
+app.put(('/memes/:id'), async (req, res) => {
+  const id = req.params.id
+console.log('/memes/:id executed')
 
   try {
     const updatedMeme = await updateMemeByMemeID(client, id, req);
@@ -268,9 +290,7 @@ app.put(("/memes/:id"), async (req, res) => {
   }
 })
 
-app.use(express.json());
-app.use(cors(
-));
+
 
 
 // REGISTER new user
@@ -365,7 +385,8 @@ app.post(("/memes"), async (req, res) => {
     "CreatorID": user._id,
     "CreatorMail": user.email,
     "image_encoded": image_encoded,
-    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader"
+    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader",
+    "viewsToday": 0
   }
   createMeme(client, newMeme);
   res.json(newMeme);
@@ -383,7 +404,7 @@ app.get(("/memes/:id"), async (req, res) => {
 
   try {
     const meme = await findMemeByMemeID(client, id);
-    
+
     res.json(meme); // server response to frontend
 
   } catch (error) {
@@ -443,7 +464,7 @@ app.get(("/memes/:userID"), async (req, res) => {
 app.put('/memes/:id/like', (req, res) => {
   // retrieve the id of the meme to update from the request
   const id = req.params.id;
-  
+
   // find the meme in the database and update the likes count
   client.db("memeGeneratorDB").collection("memes").updateOne({ _id: new ObjectID(id) }, { $inc: { likes: 1 } })
     .then(result => {

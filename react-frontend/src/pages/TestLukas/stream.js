@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import html2canvas from 'html2canvas';
 
+
 const socket = io('wss://localhost:8080');
 
 
@@ -47,5 +48,6 @@ function Stream() {
         </div>
     );
 }
+
 
 export default Stream;

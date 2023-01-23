@@ -60,6 +60,11 @@ const Navigation = ({ isSignedIn, user }) => {
                         <Link to="/stream">
                             <Button color="inherit">Stream Test</Button>
                         </Link>
+                        
+                        <Link to="/graph">
+                            <Button color="inherit">Graph Test</Button>
+                        </Link>
+                        
 
                         {isSignedIn
                             ?

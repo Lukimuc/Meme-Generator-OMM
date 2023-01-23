@@ -11,6 +11,8 @@ import TestLukas from './pages/TestLukas/TestLukas';
 import VoiceControls from './pages/TestLukas/TextInput';
 import Stream from './pages/TestLukas/stream';
 import Viewer from './pages/TestLukas/viewer';
+import Graph from './pages/TestLukas/graph';
+
 
 class App extends Component {
   constructor() {
@@ -59,6 +61,8 @@ class App extends Component {
         {!this.state.isOnline && <div>You are currently offline</div>}
       </div>
       <script src="https://accounts.google.com/gsi/client" async defer></script>
+      
+
         <BrowserRouter>
           <Navigation isSignedIn={isSignedIn} user={user}/>
 
@@ -80,6 +84,7 @@ class App extends Component {
             <Route path='/voicecontrols' element={<VoiceControls/>} />
             <Route path='/stream' element={<Stream></Stream>} />
             <Route path='/viewer' element={<Viewer></Viewer>} />
+            <Route path='/graph' element={<Graph></Graph>} />
           </Routes>
         </BrowserRouter>
       </>
