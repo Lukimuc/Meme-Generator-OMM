@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const imageEditor = require("../../tools/imageEditor");
+const router = express.Router();
 
 router.get("/", function (req, res) {
     console.log("template: ", req.query.template, " bottomText: ", req.query.bottomText, " topText: ", req.query.topText);
@@ -9,7 +10,10 @@ router.get("/", function (req, res) {
             fetch(url)
                 .then((response) => response.blob())
                 .then((imageBlob) => imageBlob.arrayBuffer())
-                .then((buffer) => res.end(Buffer.from(buffer)))
+                .then((buffer) => {
+                    imageEditor.addCaptionToImage(buffer)
+                        .then((editedImage) => res.end(editedImage));
+                })
         })
 })
 
