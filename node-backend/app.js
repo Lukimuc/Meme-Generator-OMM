@@ -369,8 +369,7 @@ app.put(('/memes/:id'), async (req, res) => {
   }
 })
 
-
-
+app.use("/api/meme", apiMemeRouter);
 
 
 
