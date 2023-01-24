@@ -54,7 +54,7 @@ const Navigation = ({ isSignedIn, user }) => {
                         <Link to="/testLukas">
                             <Button color="inherit">Meme testLukas</Button>
                         </Link>
-                        <Link to="/voicecontrols">
+                        {/* <Link to="/voicecontrols">
                             <Button color="inherit">VoiceControl Test</Button>
                         </Link>
                         <Link to="/stream">
@@ -63,7 +63,7 @@ const Navigation = ({ isSignedIn, user }) => {
                         
                         <Link to="/graph">
                             <Button color="inherit">Graph Test</Button>
-                        </Link>
+                        </Link> */}
                         
 
                         {isSignedIn
