@@ -344,8 +344,7 @@ app.put(('/memes/:id'), async (req, res) => {
   }
 })
 
-
-
+app.use("/api/meme", apiMemeRouter);
 
 // REGISTER new user
 app.post('/register', (req, res) => {
