@@ -9,6 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
 import InsertCommentRoundedIcon from '@mui/icons-material/InsertCommentRounded';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,64 +30,61 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useLocation } from "react-router-dom";
-import { CardActionArea } from "@mui/material";
+import Likebutton from "../../Components/Likebutton"
 
 const Home = (props) => {
 
-  const [memeId, setMemeId] = useState(""); // get meme by MemeID Textfield
-  const [templates, setTemplates] = useState([]); 
-  const [template, setTemplate] = useState(null);
   const [memesfromServer, setMemesFromServer] = useState([]);
   const [count, setCount] = useState(0);
   const [memeLimit, setMemeLimit] = useState(12);
   const limitedTemplates = memesfromServer.slice(0, memeLimit);
   const [likes, setLikes] = useState(0);
   const [minLikes, setMinLikes] = useState(0);
-  const [selectedMeme, setSelectedMeme] = useState(null);
   const [value2, setValue] = React.useState([0, 100]);
   
   const [searchValue, setSearchValue] = useState('');
   const filteredTemplates = limitedTemplates.filter(meme => meme.title.toLowerCase().includes(searchValue.toLowerCase()));
+  const [liked, setLiked] = useState(false);
 
   const location = useLocation();
   const linkURL = location.pathname;
   const [,id] = linkURL.split("/memes/");
 
-  //speech function
- /* const [text, setText] = useState(`Title: ${props.meme.title} Image Description ${props.meme.imageDescription} Status: ${props.meme.status} Likes: ${props.meme.likes} Created: ${props.meme.memeCreated} Creator ID: ${props.meme.CreatorID} Creator Email: ${props.meme.CreatorMail}`); // is read out by the voice in this order and only this variables*/
- /*
-  function handleSpeakClick() {
-    const utterance = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(utterance);
-}*/
-
-
-//updates likes onClick
-const updateLikes = (id) => { //meme._id
+/*
+const updateLikes = (id) => {
   console.log(id);
   fetch(`http://localhost:3002/memes/${id}/like`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 
-    body: JSON.stringify({likes: likes + 1}) }
-    /*vorher: {likes: {count}}*/
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ likes: liked ? - 1 : + 1 }),
   })
-    .then(response => response.json())
-   .then(data => {
-   setLikes(data.likes);
+    .then((response) => response.json())
+    .then((data) => {
+      setLikes(data.likes);
+      if (liked) {
+        setLiked(!data.liked);
+        setLikes(data.likes - 1);
+      }
+      if (!liked) {
+        setLiked(data.liked);
+        setLikes(data.likes + 1);
+      }
     })
-    .catch(error => console.error(error));
-}
+    .catch((error) => 
+    console.error(error));
+};*/
 
 //getTheMemes
   useEffect(() => {
     getMemes();
-  }, []);
+  }, [liked]);
 
+  /*
   useEffect(() => {
     if(props.meme) {
         setLikes(props.meme.likes)
     }
-}, [props.meme])
+}, [props.meme])*/
 
   const getMemes = (event) => {
     fetch('http://localhost:3002/memes', {
@@ -104,9 +102,9 @@ const updateLikes = (id) => { //meme._id
    setMinLikes(newValue);
 };
 
-
 //filter by likes 
-const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
+
+const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
 
   //Load more Memes
   const handleLoadMore = () => {
@@ -121,7 +119,7 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
   return (
     <div>
       <h1 style={{display: 'flex', justifyContent: 'center'}}>Check out already created memes</h1>
-      <Typography style={{display: 'flex', justifyContent: 'center'}}>This overview shows the oldest memes first by default.</Typography> {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
+      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
 <Grid container>
 <Grid item xs={4} paddingLeft={5}>
 <Typography gutterBottom>Show memes with X likes</Typography>
@@ -135,7 +133,12 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
 <Select
   labelId="demo-simple-select-label"
   id="demo-simple-select"
-  size="small"> 
+  size="small"
+   /*Filterbox, erst einblenden, wenn es eine Methode gibt, da sonst Error}
+  value={}
+  label="Age"
+onChange={handleChange} */
+> 
   <MenuItem onClick={() => setMemesFromServer(sortedMemes)}>New memes first</MenuItem>
 </Select>
 </FormControl> 
@@ -158,7 +161,7 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
 </Grid>
         </Grid>
     <Grid container spacing={2} style={{padding:30}}>
-    {filteredTemplatesbyLikes.map((meme, index) => {
+    {filteredTemplates2.map((meme, index) => {
      /* {filteredTemplates.map((template) => {*/
         return (
           <Grid item xs={3} /*key={meme._id}*/ key={index}>
@@ -172,32 +175,21 @@ const filteredTemplatesbyLikes = filteredTemplates.filter(meme => meme.likes >= 
                 title={meme.title}
                 subheader={`Created: ` + meme.memeCreated}
               />
-              <CardMedia style={{alignItems: 'center',  width: '350px', height:'350px'}}>
-                          <Link key={meme.id} to={`/memes/${meme._id}`}>    
-            <MemeLukas style={{alignItems: 'center',  width: '250px', height:'250px'}} key={meme._id} meme={meme} />
+              <CardMedia style={{alignItems: 'center'} }>
+                      <Link key={meme.id} to={`/memes/${meme._id}`}>    
+            <MemeLukas key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*//>{/*onClick={handleMemeClick(meme)*/}
+                 { /*  setTemplate(template);*/}
                              </Link>
                             {console.log("meme.id", meme._id)} 
-                 </CardMedia>
-              <CardContent style={{backgroundColor: 'white'}}>
-              
-             {/*}   <Button variant="contained"onClick={handleSpeakClick}>Speak</Button>*/}
-              <Typography variant="body2" color="text.secondary">
-          
-          <b>  {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </b>
+              </CardMedia>
+              <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+          <b>  <p> {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </p></b>
         </Typography>
-
         </CardContent>
               <CardActions disableSpacing>
-    <IconButton onClick={() =>  {
-    updateLikes(meme._id, meme.likes + 1);
-    setCount(meme.likes ++);
-    }}>
-      <ThumbUpIcon/>
-    </IconButton>
-    <IconButton onClick={() => setCount(count - 1)}>
-      <ThumbDownIcon />
-    </IconButton>
-    </CardActions>
+    <Likebutton key={meme._id} meme={meme} id={id}>Like</Likebutton>
+     </CardActions>
             </Card>
           </Grid>
         );
