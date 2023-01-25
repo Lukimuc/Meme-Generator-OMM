@@ -9,36 +9,38 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { Meme } from "../Home/Meme";
-/*import {Likes} from '../Components/likes';*/
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Grid from "@mui/material/Grid";
 import TextareaValidator from "../../Components/TextareaValidator.js";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useLocation } from "react-router-dom";
-import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { InputBase } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
 
 export function Singleview() {
-  //getting String
+
+  //getting String from URL
   const location = useLocation();
   const linkURL = location.pathname;
   const [, id] = linkURL.split("/memes/");
+  const [searchValue, setSearchValue] = useState('');
+
+  //for slideshow
   const [memesfromServer, setMemesFromServer] = useState([]);
   const [currentId, setCurrentId] = useState(id);
   const [nextId, setNextId] = useState(null);
   const [prevId, setPrevId] = useState(null);
   const navigate = useNavigate();
+
+  //for autoplay
   const [autoplay, setAutoplay] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
 
-const [intervalId, setIntervalId] = useState(null);
-
-  console.log(id); // Output: "63c9c134f5f20d30d87b6da7"
+  //for displaying the current meme
   const [memefromServer, setMemeFromServer] = useState([]);
 
-  const notNullMemes = memesfromServer.filter((meme) => meme._id !== null);
+  //get the meme from the server
   const getMeme = (event) => {
     //meme._id
     fetch(`http://localhost:3002/memes/${id}`, {
@@ -48,10 +50,12 @@ const [intervalId, setIntervalId] = useState(null);
       .then((response) => response.json())
       .then((meme) => {
         console.log(meme);
+        //set the meme
         setMemeFromServer(meme);
       });
-  }; //{console.log(memeId)}
+  }; 
 
+   //get the memes from the server to move through the array
   const getMemes = (event) => {
     fetch("http://localhost:3002/memes", {
       method: "get",
@@ -59,49 +63,62 @@ const [intervalId, setIntervalId] = useState(null);
     })
       .then((response) => response.json())
       .then((memes) => {
-        setMemesFromServer(memes); // set the state of memesfromServer to the received memes
-        setCurrentId(memes[0]._id);
+      //set the memes
+       setMemesFromServer(memes); // set the state of memesfromServer to the received memes
+       //set current id to find current array index to go through
+       setCurrentId(id);
+       const currentMemeIndex = memes.findIndex(meme => meme._id === id);
+       // set nextId to the id of the next meme
+       setNextId(memes[currentMemeIndex + 1]?._id);
+      // set prevId to the id of the next meme
+       setPrevId(memes[currentMemeIndex - 1]?._id);
       });
   };
 
-  const nextMemeId = () => {
-    const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
-    const nextIndex = currentIndex + 1;
-   // setNextId(memesfromServer[nextIndex]._id);
-   navigate(`/memes/${nextId}`);
-    if(nextIndex > memesfromServer.length -1) nextIndex = 0;
-    setNextId(notNullMemes[nextIndex]._id);
-  }
-  
-  const prevMemeId = () => {
-    const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
-    const prevIndex = (currentIndex - 1);
-  //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
-  //  setPrevId(memesfromServer[prevIndex]._id);
-
-    if(prevIndex < 0) prevIndex = memesfromServer.length -1;
-    setPrevId(memesfromServer[prevIndex]._id);
-  }
   useEffect(() => {
-    fetch(`http://localhost:3002/memes/${id}`)
-      .then((response) => response.json())
-      .then((meme) => {
-        setMemeFromServer(meme);
-      });
-  }, [id]);
-
-  useEffect(() => {
-    //  setMemeId(memeId);
-    getMeme(); // call the function to get the memes from the server
-    getMemes();
- /*   if(autoplay) {
-      const id = setInterval(handleNextClick, 5000);
-      setIntervalId(id);
-  }return () => {
-    clearInterval(intervalId);*/
-}, [])
+    const filteredMemes = memesfromServer.filter(memefromServer => memefromServer.title.toLowerCase().includes(searchValue.toLowerCase()));
+    setMemesFromServer(filteredMemes);
+    if (id !== null) {
+      getMeme(); // call the function to get the memes from the server
+      getMemes();
+      console.log(id);
+    }
+    if (!autoplay) return; // if autoplay is not set, do not run the effect
+    const intervalId = setInterval(() => {
+      nextMemeId();
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, [id, autoplay, nextId]);
 
 
+const nextMemeId = () => {
+  //define the current meme by finding the meme from the array by id and setting the "currentid"
+  const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
+  //get back the current index of the currentMeme
+const currentIndex = memesfromServer.indexOf(currentMeme);
+
+  //go to the nextIndex 
+  const nextIndex = currentIndex+1;
+  //set the next index
+ // setNextId(notNullMemes[nextIndex]._id);
+  //navigate to the next id
+  navigate(`/memes/${nextId}`);
+  //const nextMeme = notNullMemes[nextIndex];
+}
+
+const prevMemeId = () => {
+
+   //define the current meme by finding the meme from the array by id and setting the "currentid"
+   const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
+   //get back the current index of the currentMeme
+ const currentIndex = memesfromServer.indexOf(currentMeme);
+  //go to the nextIndex 
+   const prevIndex = currentIndex+1;
+   //set the next index
+   //navigate to the next id
+   navigate(`/memes/${prevId}`);
+   //const nextMeme = notNullMemes[nextIndex];
+}
   const getRandomId = async () => {
     const response = await fetch("http://localhost:3002/memes");
     const memes = await response.json();
@@ -115,13 +132,6 @@ const [intervalId, setIntervalId] = useState(null);
     window.location.href = `/memes/${randomId}`;
   };
 
-  const handleNextClick = () => {
-    navigate(`/memes/${nextId}`);
-    setCurrentId(nextId);
-    nextMemeId();
-    prevMemeId();
-}
-
 const handleAutoplay = () => {
   setAutoplay(!autoplay);
 }
@@ -131,72 +141,18 @@ const handleAutoplay = () => {
       label: memefromServer.title,
       imgPath: memefromServer.image_encoded,
     }
-    /*{
-      label: "Templatename 2",
-      imgPath:
-        "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
-    },
-    {
-      label: "Templatename3",
-      imgPath:
-        "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250",
-    },*/
   ];
 
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = steps.length;
 
-  const handleNext = () => {
-    const currentIndex = memesfromServer.findIndex((meme) => id === currentId);
-    setNextId(memesfromServer[currentIndex + 1].id);
-    setCurrentId(nextId);
-    setActiveStep((prevActiveStep) =>
-      prevActiveStep === maxSteps - 1 ? 0 : prevActiveStep + 1
-    );
-  };
-
-  const handleBack = () => {
-    const currentIndex = memesfromServer.findIndex((meme) => id === currentId);
-    setNextId(memesfromServer[currentIndex - 1].id);
-    setCurrentId(prevId);
-    setActiveStep((prevActiveStep) =>
-      prevActiveStep === maxSteps - 1 ? 0 : prevActiveStep - 1
-    );
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-
-  };
-
-  /*
-  setInterval(function(){
-    navigate(`/memes/${nextId}`);
-    setCurrentId(nextId);
-    nextMemeId();
-}, 4000);*/
-
-const handleStartInterval = () => {
-  setIntervalId(setInterval(() => {
-    navigate(`/memes/${nextId}`);
-    setCurrentId(nextId);
-    nextMemeId();
-  }, 4000));
-};
-
 const handleStopInterval = () => {
+  setAutoplay(!autoplay);
   clearInterval(intervalId);
+  
 };
 
-  /* useEffect(() => {
-      setInterval(handleNext, 5000)
-    }, [])*/
-
-    const changeId = (direction) => {
-      if (direction === 'next') {
-          setCurrentId(nextId);
-      } else {
-          setCurrentId(prevId);
-      }
-  }
   return (
     <div>
       <Grid
@@ -205,10 +161,8 @@ const handleStopInterval = () => {
         paddingLeft={30}
         paddingTop={10}
         paddingRight={30}
-        style={{}}
       >
         <Grid item md={8}>
-          {/*} <h1> Meme ID - gelesen aus URL: {id}</h1>*/}
           <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
             <Paper
               square
@@ -221,8 +175,7 @@ const handleStopInterval = () => {
                 bgcolor: "background.default",
               }}
             >
-             {/*} <Typography>{steps[activeStep].label}</Typography>*/}
-            </Paper>
+               </Paper>
             <Box
               style={{ width: "600px" }}
               md={{ height: 255, maxWidth: 400, width: "100%", p: 2 }}
@@ -244,7 +197,6 @@ const handleStopInterval = () => {
               position="static"
               activeStep={activeStep}
               nextButton={
-                <Link to={`/memes/${nextId}`}>
                 <Button
                   size="small"
                   onClick={() => {
@@ -260,16 +212,13 @@ const handleStopInterval = () => {
                     <KeyboardArrowRight />
                   )}
                 </Button>
-                </Link>
                   }
               backButton={
-                <Link to={`/memes/${prevId}`}>
                 <Button
                   size="small"
                   onClick={() => {
                     setCurrentId(prevId);
                     prevMemeId();
-
                   }}
                 >
                   {theme.direction === "rtl" ? (
@@ -279,7 +228,6 @@ const handleStopInterval = () => {
                   )}
                   Back
                 </Button>
-                </Link>
               }
             />
           </Box>
@@ -292,10 +240,9 @@ const handleStopInterval = () => {
           </Button>
         
           <Button variant="contained"
-           onClick={handleStartInterval}>
+           onClick={handleAutoplay}>
             Start Autoplay ▶
           </Button>
-          
           <Button
             variant="contained"
             onClick={handleStopInterval} style={{ margin: 10 }}
@@ -304,6 +251,8 @@ const handleStopInterval = () => {
           </Button>
         </Grid>
         <Grid item md={4}>
+       
+          <h1>{memefromServer.title}</h1>
           <h2> Likes: {memefromServer.likes} </h2> <br />
           <Link to="/editor">
             <Button variant="contained">Edit this template</Button>

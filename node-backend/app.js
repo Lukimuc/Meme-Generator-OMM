@@ -368,7 +368,7 @@ app.get(("/memes/:userID"), async (req, res) => {
   res.json(memes);
 }) */
 
-
+/*
 app.put('/memes/:id/like', (req, res) => {
   // retrieve the id of the meme to update from the request
   const id = req.params.id;
@@ -384,6 +384,20 @@ app.put('/memes/:id/like', (req, res) => {
       res.send({ success: false });
     });
 });
+*/
+app.put('/memes/:id/like', async (req, res) => {
+  // retrieve the id of the meme to update from the request
+  const id = req.params.id;
+  
+      try {
+        const data = await updateMemeByMemeID(client, id, req);
+        res.json(data); // server response to frontend
+      } catch (error) {
+        console.log("Error in app.get('/meme/:id': " + error);
+        res.status(400).json("Error beim liken app.get('/meme/:id'': " + error);
+      }
+    })
+    
 
 
 /* ------------ Lukas Test Ende -------------- */
