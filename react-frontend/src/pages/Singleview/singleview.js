@@ -30,10 +30,9 @@ const socket = io('wss://localhost:8080');
 
 
 export function Singleview() {
-<<<<<<< HEAD
 
   //getting String from URL
-=======
+
   // Video Stream States
   const [message, setMessage] = useState("Streaming: OFF");
   const [streaming, setStreaming] = useState(false);
@@ -62,7 +61,6 @@ export function Singleview() {
 
 
   //getting String
->>>>>>> main
   const location = useLocation();
   const linkURL = location.pathname;
   const [, id] = linkURL.split("/memes/");
@@ -79,13 +77,13 @@ export function Singleview() {
   const [autoplay, setAutoplay] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
 
-<<<<<<< HEAD
+
   //for displaying the current meme
-=======
+
   const [intervalId, setIntervalId] = useState(null);
 
   console.log(id); // Output: "63c9c134f5f20d30d87b6da7"
->>>>>>> main
+
   const [memefromServer, setMemeFromServer] = useState([]);
 
   //get the meme from the server
@@ -123,7 +121,7 @@ export function Singleview() {
       });
   };
 
-<<<<<<< HEAD
+
   useEffect(() => {
     const filteredMemes = memesfromServer.filter(memefromServer => memefromServer.title.toLowerCase().includes(searchValue.toLowerCase()));
     setMemesFromServer(filteredMemes);
@@ -168,7 +166,6 @@ const prevMemeId = () => {
    navigate(`/memes/${prevId}`);
    //const nextMeme = notNullMemes[nextIndex];
 }
-=======
   const nextMemeId = () => {
     const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
     const nextIndex = currentIndex + 1;
@@ -327,7 +324,6 @@ const prevMemeId = () => {
       });
   }
 
->>>>>>> main
   const getRandomId = async () => {
     const response = await fetch("http://localhost:3002/memes");
     const memes = await response.json();
@@ -341,11 +337,9 @@ const prevMemeId = () => {
     window.location.href = `/memes/${randomId}`;
   };
 
-<<<<<<< HEAD
 const handleAutoplay = () => {
   setAutoplay(!autoplay);
 }
-=======
   const handleNextClick = () => {
     navigate(`/memes/${nextId}`);
     setCurrentId(nextId);
@@ -356,7 +350,6 @@ const handleAutoplay = () => {
   const handleAutoplay = () => {
     setAutoplay(!autoplay);
   }
->>>>>>> main
 
   const steps = [
     {
@@ -369,7 +362,6 @@ const handleAutoplay = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = steps.length;
 
-<<<<<<< HEAD
 const handleStopInterval = () => {
   setAutoplay(!autoplay);
   clearInterval(intervalId);
@@ -411,7 +403,6 @@ const handleStopInterval = () => {
                   maxWidth: 1000,
                   width: "100%",
                   overflow: "hidden",
-=======
   const handleNext = () => {
     const currentIndex = memesfromServer.findIndex((meme) => id === currentId);
     setNextId(memesfromServer[currentIndex + 1].id);
@@ -485,7 +476,6 @@ const handleStopInterval = () => {
                   height: 50,
                   pl: 2,
                   bgcolor: "background.default",
->>>>>>> main
                 }}
               >
                 {/*} <Typography>{steps[activeStep].label}</Typography>*/}
@@ -551,7 +541,6 @@ const handleStopInterval = () => {
                 }
               />
             </Box>
-<<<<<<< HEAD
          <MobileStepper
          variant="none"
               steps={maxSteps}
@@ -620,7 +609,6 @@ const handleStopInterval = () => {
           </Link>
           <h2> Comments: </h2>
           {/*} Code for Mapping Comments later on
-=======
             <Button
               variant="contained"
               onClick={showRandom}
@@ -688,7 +676,6 @@ const handleStopInterval = () => {
 
             <h2> Comments </h2>
             {/*} Code for Mapping Comments later on
->>>>>>> main
               <div>
               {comments.map((comment, index) => (
                   <p key={index}>{comment}</p>
