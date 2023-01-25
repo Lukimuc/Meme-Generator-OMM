@@ -10,6 +10,7 @@ import Third_Party from '../Image_Inputs/Third_party';
 import { CameraFeed } from '../Image_Inputs/Kamera_Feed';
 import Mouse_Draw from '../Image_Inputs/Mouse_Draw';
 import Url from '../Image_Inputs/Url';
+//import CameraFeed from '../Image_Inputs/Camera_feed_new';
 
 const Image_Form = ({push_image}) => {
 
@@ -19,6 +20,9 @@ const Image_Form = ({push_image}) => {
     const [templates, setTemplates] = useState(null);
 
     const [input_image, setInput_Image] = useState()
+
+    //testing image inputs
+    const [images, setImages] = useState(["https://konvajs.org/assets/lion.png"])
 
     useEffect(() => {
         fetchMemes();
@@ -37,19 +41,31 @@ const Image_Form = ({push_image}) => {
     const clickbutton = (text) => {
         switch(text) {
             case "File_Upload":
-                setImageInput(<Upload_Image/>)
+                setImageInput(<Upload_Image
+                    push= { (src) => {setImages( arr => [...arr, src])}}    
+                />)
                 break;
             case "Url":
-                setImageInput(<Url/>)
+                setImageInput(<Url
+                    push= { (src) => {
+                        console.log(src)
+                        setImages( arr => [...arr, src])}} 
+                />)
                 break;
             case "Third_Party":
-                setImageInput(<Third_Party/>)
+                setImageInput(<Third_Party
+                    push= { (src) => {setImages( arr => [...arr, src])}}
+                />)
                 break;
             case "Camera":
-                setImageInput(<CameraFeed />)
+                setImageInput(<CameraFeed 
+                    push= { (src) => {setImages( arr => [...arr, src])}}  
+                />)
                 break;
             case "Draw":
-                setImageInput(<Mouse_Draw/>)
+                setImageInput(<Mouse_Draw
+                    push= { (src) => {setImages( arr => [...arr, src])}}
+                />)
                 break;
             default:
                 setImageInput(<p>Es ist ein Fehler aufgetreten</p>)
@@ -59,7 +75,17 @@ const Image_Form = ({push_image}) => {
     return(
         <div>
             <p> Image Form Component</p>
+            {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
+            {images.map( (image, i) => {
+                return(
+                <div>
+                    <img src={image} alt={"Lion" + i} key={"Lion" + i} onClick={() => setInput_Image(image)}/>
+                </div>)
+            })}
+            {/** 
             <Box style={{maxHeight: '30vh', overflow: 'auto', paddingTop:10}}>
+            
+            {/** 
             <Grid container>
                 {templates && templates.map((template) => {
                 return (
@@ -76,7 +102,9 @@ const Image_Form = ({push_image}) => {
                     </Grid>
                 )})}
             </Grid>
+            
             </Box>
+            */}
             <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();

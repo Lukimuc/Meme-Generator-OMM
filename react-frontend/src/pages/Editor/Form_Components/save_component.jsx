@@ -31,7 +31,7 @@ function Save_Form({ stageRef }) {
   return (
     <div>
         <p> Hier kann das Borad gespeichert werden</p>
-        <button onClick={handleSave}>Save</button>+
+        <button onClick={handleSave}>Save</button>
     </div>
   );
 }

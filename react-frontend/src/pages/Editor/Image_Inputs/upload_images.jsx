@@ -1,7 +1,8 @@
+import { Button } from '@mui/material';
 import React, {useState, useEffect} from 'react'
 
 
-const Upload_Image = () => {
+const Upload_Image = ({push}) => {
 
     const [imageUrl, setImageUrl] = useState('');
 
@@ -25,11 +26,17 @@ const Upload_Image = () => {
         // Connect to a seaweedfs instance
     };
 
+    const helpPush = (src) => {
+        console.log(src)
+        push(src)
+    }
+
     return (
         <div>
             <img src={imageUrl} alt="Image" />
             <br/>
             <input type="file" onChange={handleFileSelect} />
+            <button onClick={() => {console.log("Image wird gepushed"); push(imageUrl)}} > push </button>
         </div>
     )
 

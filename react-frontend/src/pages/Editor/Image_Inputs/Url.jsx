@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-const Url = () => {
+const Url = ({push}) => {
     
     const [url, setUrl] = useState()
 
@@ -17,6 +17,7 @@ const Url = () => {
             <TextField style={{paddingBottom:10}} label="Add text" type="text" value={url || ""} onChange={(e) => setUrl(e.target.value)}/>
             <br/>
             <button onClick={ () => {printImage()}}> PrintUrl </button>
+            <button onClick={() => {console.log(url); push(url.props.src)}} > push </button>
         </div>
     )
 }

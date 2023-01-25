@@ -7,11 +7,13 @@ import TextField from '@mui/material/TextField';
 
 import {Meme} from '../../Home/Meme';
 
-const Third_Party = () => {
+const Third_Party = ({push}) => {
 
     const [templates, setTemplates] = useState(null);
     const [template, setTemplate] = useState(null);
     const [Url, setUrl] = useState()
+
+    const [imagesrc, setImageSrc] = useState(<p> Ausgewähltes image </p>) 
     
     const submitUrl = () => {
         fetchMemes(Url)
@@ -22,11 +24,17 @@ const Third_Party = () => {
           const response = await fetch(Url)
           const data = await response.json();
           setTemplates(data.data.memes);
+          console.log(JSON.stringify(templates))
         } catch (error) {
           console.log(error);
         }
     };
-
+{/**
+    const push = (src) => {
+        setImageSrc(<img src={src} alt={"Lion"} key={"Lion"}/>)
+        console.log(JSON.stringify(template.url))
+    }
+*/}
 
     return (
         <div>
@@ -46,6 +54,8 @@ const Third_Party = () => {
             }
             <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => setUrl(e.target.value)}/>
             <button onClick={ submitUrl()} />
+            {imagesrc}
+            <button onClick={ () => push(template.url)} > push </button>
         </div>
     )
 }
