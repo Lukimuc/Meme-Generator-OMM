@@ -25,7 +25,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import Fab from '@mui/material/Fab';
 import {Meme} from './Meme';
-import MemeLukas from '../TestLukas/MemeLukas';
+import MemeLukasOverview from '../TestLukas/MemeLukasOverview';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
@@ -177,15 +177,14 @@ onChange={handleChange} */
               />
               <CardMedia style={{alignItems: 'center'} }>
                       <Link key={meme.id} to={`/memes/${meme._id}`}>    
-            <MemeLukas key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*//>{/*onClick={handleMemeClick(meme)*/}
+            <MemeLukasOverview key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*//>{/*onClick={handleMemeClick(meme)*/}
                  { /*  setTemplate(template);*/}
                              </Link>
                             {console.log("meme.id", meme._id)} 
               </CardMedia>
               <CardContent>
                   <Typography variant="body2" color="text.secondary">
-          <b>  <p> {meme.likes} {meme.likes === 1 ? "Like" : "Likes"} </p></b>
-        </Typography>
+                </Typography>
         </CardContent>
               <CardActions disableSpacing>
     <Likebutton key={meme._id} meme={meme} id={id}>Like</Likebutton>
