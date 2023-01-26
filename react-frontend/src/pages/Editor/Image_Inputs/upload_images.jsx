@@ -26,11 +26,6 @@ const Upload_Image = ({push}) => {
         // Connect to a seaweedfs instance
     };
 
-    const helpPush = (src) => {
-        console.log(src)
-        push(src)
-    }
-
     return (
         <div>
             <img src={imageUrl} alt="Image" />

@@ -17,20 +17,24 @@ const Editor = () => {
     const stageRef = useRef(null);
 
     // Variable für Editor Forms
-    const [formcomponent, setFormComponent] = useState(<Image_Form
-        push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
-    />)
+    
     const [changeText, setChangeText] = useState(<p>Hier werdn die Texte manipuliert</p>)
     const [mytexts, setMytexts] = useState([])
     const [images, setImages] = useState([])
     // Selecting shapes
     const [selectedId, selectShape] = useState(null);
 
-    
+    const [formcomponent, setFormComponent] = useState(<Image_Form
+        push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
+        count ={images.length} 
+    />)
+
+    /** 
     useEffect( () => {
         console.log("My_Images ist:" + JSON.stringify(images))
         console.log("My_Texts ist: " + JSON.stringify(mytexts))
     })
+    */
    
 
     const checkDeselect = (e) => {
@@ -68,7 +72,8 @@ const Editor = () => {
         if(tmp === "Images") {
             setFormComponent(
                 <Image_Form
-                    push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
+                    push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
+                    count = {images.length} 
                 />
             )
         }else if(tmp === "Texts") {

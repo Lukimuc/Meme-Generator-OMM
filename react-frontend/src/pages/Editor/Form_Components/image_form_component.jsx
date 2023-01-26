@@ -12,9 +12,11 @@ import Mouse_Draw from '../Image_Inputs/Mouse_Draw';
 import Url from '../Image_Inputs/Url';
 //import CameraFeed from '../Image_Inputs/Camera_feed_new';
 
-const Image_Form = ({push_image}) => {
+const Image_Form = ({push_image, count}) => {
 
-    const [image_input, setImageInput] = useState(<Upload_Image/>)
+    const [counter, setCounter] = useState(count)
+
+    const [image_input, setImageInput] = useState(<Upload_Image push= { (src) => {setImages( arr => [...arr, src])}}/>)
 
     const [template, setTemplate] = useState(null);
     const [templates, setTemplates] = useState(null);
@@ -108,7 +110,9 @@ const Image_Form = ({push_image}) => {
             <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
-                push_image(input_image)                       
+                push_image(input_image, counter);
+                console.log(counter)
+                setCounter(counter+1)                     
             }}>Submit Image</Button>
             <p> {input_image} </p>
 
