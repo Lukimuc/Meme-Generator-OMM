@@ -163,7 +163,7 @@ async function findMemesByUserID(client, userID) {
 }
 
 async function updateMemeByMemeID(client, memeID, req) {
-  const { title, status, likes, imageDescription, viewsToday } = req.body;
+  const { title, status, likes, imageDescription, viewsToday, likedBy } = req.body;
   let changes = {}
   console.log("viewsToday")
 
@@ -186,6 +186,18 @@ async function updateMemeByMemeID(client, memeID, req) {
   if (viewsToday !== undefined) {
     changes.viewsToday = viewsToday;
   }
+
+  if (viewsToday !== undefined) {
+    changes.viewsToday = viewsToday;
+  }
+
+  // like feature start
+  if(likedBy !== undefined) {
+    const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    { $addToSet: { likedBy: likedBy } });
+    updatedMeme = findMemeByMemeID(client, memeID);
+    return updatedMeme;
+  } // like feature end
 
   console.log("changes", changes);
 
@@ -438,9 +450,10 @@ app.post(("/memes"), async (req, res) => {
     "memeCreated": new Date(),
     "CreatorID": user._id,
     "CreatorMail": user.email,
-    "image_encoded": image_encoded,
     "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader",
-    "viewsToday": 0
+    "viewsToday": 0,
+    "likedBy": [],
+    "image_encoded": image_encoded
   }
   createMeme(client, newMeme);
   res.json(newMeme);
