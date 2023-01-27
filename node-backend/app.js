@@ -356,7 +356,7 @@ app.put(("/log"), async (req, res) => {
 
 // update a specific Meme by MemeID
 app.put(('/memes/:id'), async (req, res) => {
-  const id = req.params.id
+  const id = req.params.id;
   console.log('/memes/:id executed')
 
   try {
@@ -367,6 +367,8 @@ app.put(('/memes/:id'), async (req, res) => {
     res.status(400).json("Error in app.get('/meme/:id'': " + error);
   }
 })
+
+
 
 
 
@@ -494,7 +496,7 @@ app.get(("/memes/:id"), async (req, res) => {
 
 
 // update a specific Meme by MemeID
-app.put(("/memes/:id"), async (req, res) => {
+/*app.put(("/memes/:id"), async (req, res) => {
   const id = req.params.id
 
   try {
@@ -504,7 +506,7 @@ app.put(("/memes/:id"), async (req, res) => {
     console.log("Error in app.get('/meme/:id': " + error);
     res.status(400).json("Error in app.get('/meme/:id'': " + error);
   }
-})
+})*/
 
 
 // Streaming Server - HTTPS - Feature 18

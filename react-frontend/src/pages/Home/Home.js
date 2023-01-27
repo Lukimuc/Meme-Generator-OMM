@@ -26,6 +26,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import Fab from '@mui/material/Fab';
 import {Meme} from './Meme';
 import MemeLukasOverview from '../TestLukas/MemeLukasOverview';
+import MemeLukas from '../TestLukas/MemeLukas';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
@@ -187,7 +188,7 @@ onChange={handleChange} */
                 </Typography>
         </CardContent>
               <CardActions disableSpacing>
-    <Likebutton key={meme._id} meme={meme} id={id}>Like</Likebutton>
+    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} likes={likes}>Like</Likebutton>
      </CardActions>
             </Card>
           </Grid>

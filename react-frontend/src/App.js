@@ -66,11 +66,15 @@ class App extends Component {
         <BrowserRouter>
           <Navigation isSignedIn={isSignedIn} user={user}/>
 
-          <Routes>
+         <Routes>
 
-            <Route path="/" element={
+        {/*}     <Route path="/" element={
               <Home />
-            } />
+            } />*/}
+
+<Route path="/" element={
+    <Home isSignedIn={isSignedIn} user={user}/>
+} />
             <Route path='/signin' element={
               <Signin loadUser={this.loadUser} />
             } />
