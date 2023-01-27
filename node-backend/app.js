@@ -163,7 +163,7 @@ async function findMemesByUserID(client, userID) {
 }
 
 async function updateMemeByMemeID(client, memeID, req) {
-  const { title, status, likes, imageDescription, viewsToday, likedBy } = req.body;
+  const { title, status, likes, imageDescription, viewsToday, likedBy, deleteLike } = req.body;
   let changes = {}
   console.log("viewsToday")
 
@@ -191,10 +191,22 @@ async function updateMemeByMemeID(client, memeID, req) {
     changes.viewsToday = viewsToday;
   }
 
-  // like feature start
-  if(likedBy !== undefined) {
+  // like feature start - check if value in array has to be deleted 
+  if (deleteLike) {
+    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+      { $pull: { likedBy: likedBy } }); // delete value in array
+
+    changes.likes = likes;
+    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+      { $set: changes }); // new likes value
+    updatedMeme = findMemeByMemeID(client, memeID);
+    return updatedMeme;
+  }
+
+  // if not then add value to array
+  if (likedBy !== undefined) {
     const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
-    { $addToSet: { likedBy: likedBy } });
+      { $addToSet: { likedBy: likedBy } });
     updatedMeme = findMemeByMemeID(client, memeID);
     return updatedMeme;
   } // like feature end
@@ -547,16 +559,16 @@ app.put('/memes/:id/like', (req, res) => {
 app.put('/memes/:id/like', async (req, res) => {
   // retrieve the id of the meme to update from the request
   const id = req.params.id;
-  
-      try {
-        const data = await updateMemeByMemeID(client, id, req);
-        res.json(data); // server response to frontend
-      } catch (error) {
-        console.log("Error in app.get('/meme/:id': " + error);
-        res.status(400).json("Error beim liken app.get('/meme/:id'': " + error);
-      }
-    })
-    
+
+  try {
+    const data = await updateMemeByMemeID(client, id, req);
+    res.json(data); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error beim liken app.get('/meme/:id'': " + error);
+  }
+})
+
 
 
 /* ------------ Lukas Test Ende -------------- */
