@@ -48,6 +48,7 @@ function Save_Form({ stageRef }) {
         save_Element(blob)
       }
       for (let j = 0; j < 20 ; j++) {
+        let compressedFile = await imageCompression(blob, options);
         for (let i = 0 ; i < 5; i++){
           compressedFile = await imageCompression(compressedFile, options);
           if (compressedFile.size < maxSize * 1000){

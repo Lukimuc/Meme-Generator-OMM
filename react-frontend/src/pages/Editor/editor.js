@@ -16,6 +16,10 @@ const Editor = () => {
 
     const stageRef = useRef(null);
 
+    //größe Konva Board 
+    const [width, setWidth] = useState(500)
+    const [height, setHeight] = useState(500)
+
     // Variable für Editor Forms
     
     const [changeText, setChangeText] = useState(<p>Hier werdn die Texte manipuliert</p>)
@@ -126,8 +130,8 @@ const Editor = () => {
                     }}
                 >
                 <Stage 
-                    width={window.innerWidth / 2}
-                    height={window.innerHeight}
+                    width={width}
+                    height={height}
                     style={{
                         border: "1px outset grey",
                     }}
@@ -149,8 +153,8 @@ const Editor = () => {
                                         const imgs = images.slice();
                                         imgs[i] = newAttrs;
                                     }}
-                                    width={i === 0 ? window.innerWidth * 0.5 : img.width}
-                                    height={i === 0 ? window.innerHeight: img.height}
+                                    width={width}
+                                    height={height}
                                 />
                             );
                         })}

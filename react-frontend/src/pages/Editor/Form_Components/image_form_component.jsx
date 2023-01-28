@@ -24,7 +24,23 @@ const Image_Form = ({push_image, count}) => {
     const [input_image, setInput_Image] = useState()
 
     //testing image inputs
-    const [images, setImages] = useState(["https://konvajs.org/assets/lion.png"])
+    const [images, setImages] = useState([])
+
+   
+
+    const loadlocalstorage = () => {
+        console.log("item wird rausgeholt!!!")
+        const storedImages = JSON.parse(localStorage.getItem('imageList'));
+        console.log(storedImages)
+        if (storedImages) {
+        setImages(storedImages);
+        }
+    };
+
+    const savelocalstorage = () => {
+        console.log("item wird gespeichert!!!")
+        localStorage.setItem('imageList', JSON.stringify(images));
+    };
 
     useEffect(() => {
         fetchMemes();
@@ -77,6 +93,8 @@ const Image_Form = ({push_image, count}) => {
     return(
         <div>
             <p> Image Form Component</p>
+            <button onClick={() => savelocalstorage()}> save in localStorage</button>
+            <button onClick={() => loadlocalstorage()}> load in localStorage</button>
             {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
             {images.map( (image, i) => {
                 return(
