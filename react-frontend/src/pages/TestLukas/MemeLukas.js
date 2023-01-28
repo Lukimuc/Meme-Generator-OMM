@@ -112,6 +112,7 @@ const MemeLukas = (props) => {
                 <p>Creator ID: {meme.CreatorID}</p>
                 <p>Creator Email: {meme.CreatorMail}</p>
                 <img src={imageSrc} alt={meme.title} />
+                <p>LikedBy: {meme.likedBy}</p>
 
                 {draft ?
                     <button onClick={handleEditMode}>Edit Draft</button>
