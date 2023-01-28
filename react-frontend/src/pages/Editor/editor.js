@@ -10,7 +10,6 @@ import Grid from '@mui/material/Grid';
 import Image_Form from './Form_Components/image_form_component';
 import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
-import Save_Form2 from './Form_Components/save_form2'
 
 
 const Editor = () => {
@@ -29,13 +28,6 @@ const Editor = () => {
         push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
         count ={images.length} 
     />)
-
-    /** 
-    useEffect( () => {
-        console.log("My_Images ist:" + JSON.stringify(images))
-        console.log("My_Texts ist: " + JSON.stringify(mytexts))
-    })
-    */
    
 
     const checkDeselect = (e) => {
@@ -46,24 +38,9 @@ const Editor = () => {
         }
         check_text_clickt()
     };
-    {/** 
-    useEffect(() => {
-        fetchMemes();
-      }, []);
-    
-    const fetchMemes = async () => {
-        try {
-          const response = await fetch("https://api.imgflip.com/get_memes")
-          const data = await response.json();
-          setTemplates(data.data.memes);
-        } catch (error) {
-          console.log(error);
-        }
-    };
-    */}
 
     function handleKeyDown(e) {
-        if (e.key === 'Backspace') {
+        if (e.metaKey || e.ctrlKey && e.key === 'Backspace') {
             setImages(images.filter( (img) => img.key !== selectedId))
             setMytexts(mytexts.filter( (text) => text.key !== selectedId))
         }
@@ -159,25 +136,6 @@ const Editor = () => {
                     ref={stageRef}
                 >
                     <Layer>
-                        <My_Text
-                            key={"text1"}
-                            attr={
-                                {
-                                    text: "Beispieltest",
-                                    fontFamily: "fantasy",
-                                    fontStyle:"bold",
-                                    fill:"green",
-                                }
-                            }
-                            isSelected={"text1" === selectedId}
-                            onSelect={() => { 
-                                selectShape("text1")
-                                 }}
-                            onChange={newAttrs => {
-                                const imgs = images.slice();
-                                //imgs[i] = newAttrs;
-                            }}
-                        />
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 

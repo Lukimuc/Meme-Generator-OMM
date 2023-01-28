@@ -84,29 +84,6 @@ const Image_Form = ({push_image, count}) => {
                     <img src={image} alt={"Lion" + i} key={"Lion" + i} onClick={() => setInput_Image(image)}/>
                 </div>)
             })}
-            {/** 
-            <Box style={{maxHeight: '30vh', overflow: 'auto', paddingTop:10}}>
-            
-            {/** 
-            <Grid container>
-                {templates && templates.map((template) => {
-                return (
-                    <Grid item md={3} key={template.id}>
-                        <Meme
-                        template={template}
-                        width={90}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setInput_Image(e.target.src);
-                            setTemplate(template);
-                        }}
-                        />
-                    </Grid>
-                )})}
-            </Grid>
-            
-            </Box>
-            */}
             <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();

@@ -69,13 +69,9 @@ function Save_Form({ stageRef }) {
           fileType: 'image/jpeg'
         }
       }
-    
 
   console.log("Die Datei konnte nicht abgespeichert werden sie nicht so klein komprimiert werden konnte!")
-      //const link = document.createElement("a");
-      //link.href = URL.createObjectURL(compressedFile);
-      //link.download = "compressed_image.jpg";
-      //link.click();
+      
   } catch (error) {
       console.log(error);
   }
@@ -135,6 +131,7 @@ function Save_Form({ stageRef }) {
         <p> Hier kann das Borad gespeichert werden</p>
         <button onClick={() => sendtoServer()}> send to server </button>
         <br/>
+        <p> Die größe der Datei wird in KB angegeben</p>
         <input type="number" value={maxSize} onChange={e => setMaxSize(e.target.value)} />
         <button onClick={handleSave}>Download Compressed Image</button>
     </div>

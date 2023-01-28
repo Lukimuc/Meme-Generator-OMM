@@ -29,12 +29,6 @@ const Third_Party = ({push}) => {
           console.log(error);
         }
     };
-{/**
-    const push = (src) => {
-        setImageSrc(<img src={src} alt={"Lion"} key={"Lion"}/>)
-        console.log(JSON.stringify(template.url))
-    }
-*/}
 
     return (
         <div>
