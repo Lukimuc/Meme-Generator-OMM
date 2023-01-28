@@ -68,7 +68,7 @@ export class CameraFeed extends Component {
                 <div className="c-camera-feed__stage">
                     <canvas width="680" height="360" ref={ref => (this.canvas = ref)} />
                     <img src={this.state.photo} alt="Taken photo" />
-                    <button onClick={() => {console.log(this.state.photo); this.props.push(this.state.photo)}} > push </button>
+                    <button onClick={() => {console.log("Foto wird gepushed"); this.props.push(this.state.photo)}} > push </button>
                 </div>
             </div>
         );

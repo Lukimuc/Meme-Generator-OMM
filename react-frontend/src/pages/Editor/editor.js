@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import Image_Form from './Form_Components/image_form_component';
 import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
+import Save_Form2 from './Form_Components/save_form2'
 
 
 const Editor = () => {
