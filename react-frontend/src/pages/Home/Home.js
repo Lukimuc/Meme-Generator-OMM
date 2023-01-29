@@ -51,6 +51,7 @@ const Home = (props) => {
   const linkURL = location.pathname;
   const [,id] = linkURL.split("/memes/");
 
+
 /*
 const updateLikes = (id) => {
   console.log(id);
@@ -79,6 +80,12 @@ const updateLikes = (id) => {
   useEffect(() => {
     getMemes();
   }, [liked]);
+
+  /*
+  const updateMeme = (updatedMeme) => {
+    setMeme({ ...meme, likedBy: updatedMeme.likedBy });
+  }
+  */
 
   /*
   useEffect(() => {
@@ -120,7 +127,8 @@ const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2
   return (
     <div>
       <h1 style={{display: 'flex', justifyContent: 'center'}}>Check out already created memes</h1>
-      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
+      <Typography style={{display: 'flex', justifyContent: 'center'}}>Please log in to like memes. The newest memes are displayed at the bottom by default.</Typography>
+      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/} 
 <Grid container>
 <Grid item xs={4} paddingLeft={5}>
 <Typography gutterBottom>Show memes with X likes</Typography>
@@ -188,7 +196,7 @@ onChange={handleChange} */
                 </Typography>
         </CardContent>
               <CardActions disableSpacing>
-    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={MemeLukas.email} likes={props.likes} likedBy={props.likedBy}>Like</Likebutton>
+    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={MemeLukas.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}*/>Like</Likebutton>
      </CardActions>
             </Card>
           </Grid>

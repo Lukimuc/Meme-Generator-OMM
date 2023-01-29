@@ -190,17 +190,6 @@ async function updateMemeByMemeID(client, memeID, req) {
   if (viewsToday !== undefined) {
     changes.viewsToday = viewsToday;
   }
-
-  if (likedBy !== undefined) {
-    changes.likedBy = likedBy;
-  }
-
-  if (deleteLike !== undefined) {
-    changes.deleteLike = deleteLike;
-  }
-
-
-
   
 
   // like feature start - check if value in array has to be deleted 
