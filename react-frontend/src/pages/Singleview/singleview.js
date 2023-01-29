@@ -60,8 +60,8 @@ export function Singleview(props) {
   const location = useLocation();
   const linkURL = location.pathname;
   const [, id] = linkURL.split("/memes/");
- 
- //for slideshow
+
+  //for slideshow
   const [memesfromServer, setMemesFromServer] = useState([]);
   const [memefromServer, setMemeFromServer] = useState([]);
   const [currentId, setCurrentId] = useState(id);
@@ -72,7 +72,7 @@ export function Singleview(props) {
   //for autoplay
   const [autoplay, setAutoplay] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
- 
+
   const notNullMemes = memesfromServer.filter((meme) => meme._id !== null);
   const getMeme = (event) => {
     //meme._id
@@ -95,7 +95,7 @@ export function Singleview(props) {
       .then((response) => response.json())
       .then((memes) => {
         setMemesFromServer(memes); // set the state of memesfromServer to the received memes
-       // setCurrentId(memes[0]._id);
+        // setCurrentId(memes[0]._id);
 
         setCurrentId(id);
         //find the index of the current meme
@@ -103,7 +103,7 @@ export function Singleview(props) {
         // set nextId to the id of the next meme
         setNextId(memes[currentMemeIndex + 1]?._id);
 
-       // set prevId to the id of the next meme
+        // set prevId to the id of the next meme
         setPrevId(memes[currentMemeIndex - 1]?._id);
       });
   };
@@ -112,36 +112,36 @@ export function Singleview(props) {
     //define the current meme by finding the meme from the array by id and setting the "currentid"
     const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
     //get back the current index of the currentMeme
-  const currentIndex = memesfromServer.indexOf(currentMeme);
-  
+    const currentIndex = memesfromServer.indexOf(currentMeme);
+
     //go to the nextIndex 
-    const nextIndex = currentIndex+1;
+    const nextIndex = currentIndex + 1;
     //set the next index
-   // setNextId(notNullMemes[nextIndex]._id);
+    // setNextId(notNullMemes[nextIndex]._id);
     //navigate to the next id
     navigate(`/memes/${nextId}`);
     //const nextMeme = notNullMemes[nextIndex];
   }
-  
+
   const prevMemeId = () => {
-     /* const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
-  const prevIndex = (currentIndex - 1);*/
-//  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
-//  setPrevId(memesfromServer[prevIndex]._id);
-   //define the current meme by finding the meme from the array by id and setting the "currentid"
-   const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
-   //get back the current index of the currentMeme
- const currentIndex = memesfromServer.indexOf(currentMeme);
-   //updating current index with next ID
-   //setCurrentId(nextId);
-  // const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
-  //go to the nextIndex 
-   const prevIndex = currentIndex+1;
-   //set the next index
-  // setNextId(notNullMemes[nextIndex]._id);
-   //navigate to the next id
-   navigate(`/memes/${prevId}`);
-   //const nextMeme = notNullMemes[nextIndex];
+    /* const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+ const prevIndex = (currentIndex - 1);*/
+    //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
+    //  setPrevId(memesfromServer[prevIndex]._id);
+    //define the current meme by finding the meme from the array by id and setting the "currentid"
+    const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
+    //get back the current index of the currentMeme
+    const currentIndex = memesfromServer.indexOf(currentMeme);
+    //updating current index with next ID
+    //setCurrentId(nextId);
+    // const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+    //go to the nextIndex 
+    const prevIndex = currentIndex + 1;
+    //set the next index
+    // setNextId(notNullMemes[nextIndex]._id);
+    //navigate to the next id
+    navigate(`/memes/${prevId}`);
+    //const nextMeme = notNullMemes[nextIndex];
   }
 
   useEffect(() => {
@@ -162,10 +162,10 @@ export function Singleview(props) {
     if (buttonClicked === "Next") {
       //setCurrentId(nextId);
       navigate(`/memes/${nextId}`);
-  
-     // nextMemeId();
-     // navigate(`/memes/${nextId}`) // TODO
-  
+
+      // nextMemeId();
+      // navigate(`/memes/${nextId}`) // TODO
+
       setButtonClicked(null) // reset state
       setTranscript("") // ?? do we need this?
     }
@@ -178,14 +178,14 @@ export function Singleview(props) {
     if (buttonClicked === "Back") {
       setCurrentId(prevId);
       prevMemeId();
-  //setCurrentId(prevId);
-  //    nextMemeId();
+      //setCurrentId(prevId);
+      //    nextMemeId();
       /*navigate(`/memes/${prevId}`)*/ // TODO
       setButtonClicked(null) // reset state
     }
 
   })
-  
+
 
   // Videostream Code
   useEffect(() => {
@@ -233,7 +233,11 @@ export function Singleview(props) {
           setButtonClicked(newTranscript);
         } else if (newTranscript === "next" || newTranscript === " next") {
           setButtonClicked("Next");
+        } else if (newTranscript === "random" || newTranscript === "random meme" || newTranscript === "zufällig" || newTranscript === " random meme" || newTranscript === " random" || newTranscript === " zufällig") {
+          setButtonClicked("Next");
         } else if (newTranscript === "select" || newTranscript === " select") {
+          setIsTextFieldSelected(true);
+        } else if (newTranscript === "like" || newTranscript === " like") {
           setIsTextFieldSelected(true);
         } else if (newTranscript === "deselect" || newTranscript === " deselect" || newTranscript === " die select") {
           setIsTextFieldSelected(false);
@@ -374,51 +378,54 @@ export function Singleview(props) {
                 position="static"
                 activeStep={activeStep}
                 nextButton={
-                
-                    <Button
-                      size="small"
-                      onClick={() => {
-                        setCurrentId(nextId);
-                        nextMemeId();
-                        setButtonClicked("Next") // For Voice Control
-                      }}
-                     
-                     disabled={currentIndex === memesfromServer.length-1}
-                    >
-                      Next
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowLeft />
-                      ) : (
-                        <KeyboardArrowRight />
-                      )}
-                    </Button>
-                
+
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      setCurrentId(nextId);
+                      nextMemeId();
+                      setButtonClicked("Next") // For Voice Control
+                    }}
+
+                    disabled={currentIndex === memesfromServer.length - 1}
+                  >
+                    Next
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowLeft />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </Button>
+
                 }
                 backButton={
-                 
-                    <Button
+
+                  <Button
                     disabled={currentIndex === 0}
-                      size="small"
-                      onClick={() => {
-                        setCurrentId(prevId);
-                        prevMemeId();
-                        setButtonClicked("Back") // For Voice Control
-                      }}
-                    >
-                      {theme.direction === "rtl" ? (
-                        <KeyboardArrowRight />
-                      ) : (
-                        <KeyboardArrowLeft />
-                      )}
-                      Back
-                    </Button>
-                  
+                    size="small"
+                    onClick={() => {
+                      setCurrentId(prevId);
+                      prevMemeId();
+                      setButtonClicked("Back") // For Voice Control
+                    }}
+                  >
+                    {theme.direction === "rtl" ? (
+                      <KeyboardArrowRight />
+                    ) : (
+                      <KeyboardArrowLeft />
+                    )}
+                    Back
+                  </Button>
+
                 }
               />
             </Box>
             <Button
               variant="contained"
-              onClick={showRandom}
+              onClick={() => {
+                showRandom();
+                setButtonClicked("Random")
+              }}
               style={{ margin: 10 }}
             >
               Random meme
@@ -440,8 +447,8 @@ export function Singleview(props) {
             </Button>
 
             <div>
-           {/*} <Likebutton key={memefromServer._id} meme={memefromServer} id={id} isSignedIn={props.isSignedIn} user={props.user} email={props.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}>Like</Likebutton>*/}
-   
+              {/*} <Likebutton key={memefromServer._id} meme={memefromServer} id={id} isSignedIn={props.isSignedIn} user={props.user} email={props.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}>Like</Likebutton>*/}
+
               <h3>Voice Control</h3>
               <button onClick={startRecording}>
                 {isRecording ? "Stop Recording" : "Start Recording"}
@@ -480,8 +487,8 @@ export function Singleview(props) {
             <p> <b>CreatorMail </b><br></br>{memefromServer.CreatorMail} </p>
             <p> <b>imageDescription</b> <br></br>{memefromServer.imageDescription} </p>
             <p> <b>Likes  <br></br></b>{memefromServer.likes} </p> <br />
-      
-           {/*} <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
+
+            {/*} <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
               onBlur={() => {
                 setIsTextFieldSelected(false);
                 setTextFieldText(transcript);
