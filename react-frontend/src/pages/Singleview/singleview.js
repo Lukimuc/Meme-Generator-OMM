@@ -107,45 +107,48 @@ export function Singleview() {
   };
 
   const nextMemeId = () => {
+    //define the current meme by finding the meme from the array by id and setting the "currentid"
     const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
     //get back the current index of the currentMeme
   const currentIndex = memesfromServer.indexOf(currentMeme);
-    if (currentIndex === memesfromServer.length-1) {
-      navigate(`/memes/${memesfromServer[currentIndex]._id}`);
-      setCurrentId(memesfromServer[0]._id);
-    } else {
-    //navigate to the next id
-    navigate(`/memes/${memesfromServer[currentIndex]._id}`);
-    //const nextMeme = notNullMemes[nextIndex];
-    }
-  }
-  const prevMemeId = () => {
-    const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
-    //get back the current index of the currentMeme
-  const currentIndex = memesfromServer.indexOf(currentMeme);
-   //define the current meme by finding the meme from the array by id and setting the "currentid"
   
- if (currentIndex === memesfromServer[0]) {
- //updating current index with next ID
-  //navigate(`/memes/${memesfromServer[currentIndex-1]._id}`);
-   navigate(`/memes/${memesfromServer[memesfromServer.length-1]._id}`);
-   setCurrentId(memesfromServer[memesfromServer.length-1]._id);
-  }
-  else {
+    //go to the nextIndex 
+    const nextIndex = currentIndex+1;
+    //set the next index
+   // setNextId(notNullMemes[nextIndex]._id);
     //navigate to the next id
-    navigate(`/memes/${prevId}`);
-    setCurrentId(memesfromServer[currentIndex-1]._id);
+    navigate(`/memes/${nextId}`);
+    //const nextMeme = notNullMemes[nextIndex];
   }
-}
+  
+  const prevMemeId = () => {
+     /* const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+  const prevIndex = (currentIndex - 1);*/
+//  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
+//  setPrevId(memesfromServer[prevIndex]._id);
+   //define the current meme by finding the meme from the array by id and setting the "currentid"
+   const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
+   //get back the current index of the currentMeme
+ const currentIndex = memesfromServer.indexOf(currentMeme);
+   //updating current index with next ID
+   //setCurrentId(nextId);
+  // const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
+  //go to the nextIndex 
+   const prevIndex = currentIndex+1;
+   //set the next index
+  // setNextId(notNullMemes[nextIndex]._id);
+   //navigate to the next id
+   navigate(`/memes/${prevId}`);
+   //const nextMeme = notNullMemes[nextIndex];
+  }
 
   useEffect(() => {
     if (id !== null) {
       getMeme(); // call the function to get the memes from the server
       getMemes();
       console.log(id);
-    } 
+    }
     if (!autoplay) return; // if autoplay is not set, do not run the effect
-    console.log("autoplay started")
     const intervalId = setInterval(() => {
       nextMemeId();
     }, 3000);
@@ -376,8 +379,8 @@ export function Singleview() {
                         nextMemeId();
                         setButtonClicked("Next") // For Voice Control
                       }}
-                    
-                   //disabled={activeStep === maxSteps - 1}
+                     
+                     disabled={currentIndex === memesfromServer.length-1}
                     >
                       Next
                       {theme.direction === "rtl" ? (
@@ -391,13 +394,13 @@ export function Singleview() {
                 backButton={
                  
                     <Button
+                    disabled={currentIndex === 0}
                       size="small"
                       onClick={() => {
                         setCurrentId(prevId);
                         prevMemeId();
                         setButtonClicked("Back") // For Voice Control
                       }}
-                     disabled={currentIndex === 0}
                     >
                       {theme.direction === "rtl" ? (
                         <KeyboardArrowRight />
@@ -406,7 +409,7 @@ export function Singleview() {
                       )}
                       Back
                     </Button>
-                 
+                  
                 }
               />
             </Box>
