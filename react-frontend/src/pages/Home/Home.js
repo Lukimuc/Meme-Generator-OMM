@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import Fab from '@mui/material/Fab';
-import {Meme} from './Meme';
+import { Meme } from './Meme';
 import MemeLukasOverview from '../TestLukas/MemeLukasOverview';
 import MemeLukas from '../TestLukas/MemeLukas';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
@@ -42,41 +42,41 @@ const Home = (props) => {
   const [likes, setLikes] = useState(0);
   const [minLikes, setMinLikes] = useState(0);
   const [value2, setValue] = React.useState([0, 100]);
-  
+
   const [searchValue, setSearchValue] = useState('');
   const filteredTemplates = limitedTemplates.filter(meme => meme.title.toLowerCase().includes(searchValue.toLowerCase()));
   const [liked, setLiked] = useState(false);
 
   const location = useLocation();
   const linkURL = location.pathname;
-  const [,id] = linkURL.split("/memes/");
+  const [, id] = linkURL.split("/memes/");
 
 
-/*
-const updateLikes = (id) => {
-  console.log(id);
-  fetch(`http://localhost:3002/memes/${id}/like`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ likes: liked ? - 1 : + 1 }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      setLikes(data.likes);
-      if (liked) {
-        setLiked(!data.liked);
-        setLikes(data.likes - 1);
-      }
-      if (!liked) {
-        setLiked(data.liked);
-        setLikes(data.likes + 1);
-      }
+  /*
+  const updateLikes = (id) => {
+    console.log(id);
+    fetch(`http://localhost:3002/memes/${id}/like`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ likes: liked ? - 1 : + 1 }),
     })
-    .catch((error) => 
-    console.error(error));
-};*/
+      .then((response) => response.json())
+      .then((data) => {
+        setLikes(data.likes);
+        if (liked) {
+          setLiked(!data.liked);
+          setLikes(data.likes - 1);
+        }
+        if (!liked) {
+          setLiked(data.liked);
+          setLikes(data.likes + 1);
+        }
+      })
+      .catch((error) => 
+      console.error(error));
+  };*/
 
-//getTheMemes
+  //getTheMemes
   useEffect(() => {
     getMemes();
   }, [liked]);
@@ -106,17 +106,17 @@ const updateLikes = (id) => {
   }
 
   const handleSliderChange = (event2, newValue) => {
-   setValue(newValue);
-   setMinLikes(newValue);
-};
+    setValue(newValue);
+    setMinLikes(newValue);
+  };
 
-//filter by likes 
+  //filter by likes 
 
-const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
+  const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2[0] && meme.likes <= value2[1]);
 
   //Load more Memes
   const handleLoadMore = () => {
-    setMemeLimit (memeLimit+12);
+    setMemeLimit(memeLimit + 12);
   };
 
   //Sort Memes by Creation Date
@@ -126,100 +126,102 @@ const filteredTemplates2 = filteredTemplates.filter(meme => meme.likes >= value2
 
   return (
     <div>
-      <h1 style={{display: 'flex', justifyContent: 'center'}}>Check out already created memes</h1>
-      <Typography style={{display: 'flex', justifyContent: 'center'}}>Please log in to like memes. The newest memes are displayed at the bottom by default.</Typography>
-      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/} 
-<Grid container>
-<Grid item xs={4} paddingLeft={5}>
-<Typography gutterBottom>Show memes with X likes</Typography>
-<Box width={'300px'}>
-<Slider onChange={handleSliderChange} defaultValue={[0, 100]} /*value={minLikes}*/ value={value2} valueLabelDisplay='auto' min={0} max={100} range disableSwap = {true}/>
-</Box> </Grid>
-<Grid item xs={4}>
-<Typography gutterBottom>Sort</Typography>
-<FormControl  alignItems="center" justify="center" style={{width:200}}>
-<InputLabel id="demo-simple-select-label" placeholder="Filter Memes">Sort Memes</InputLabel>
-<Select
-  labelId="demo-simple-select-label"
-  id="demo-simple-select"
-  size="small"
-   /*Filterbox, erst einblenden, wenn es eine Methode gibt, da sonst Error}
-  value={}
-  label="Age"
-onChange={handleChange} */
-> 
-  <MenuItem onClick={() => setMemesFromServer(sortedMemes)}>New memes first</MenuItem>
-</Select>
-</FormControl> 
-</Grid>
-<Grid item xs={4} style={{ float: 'right'}}>
-<Paper style={{ float: 'right', marginRight:30}}
-      component="form"
-      md={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
-    >
-      <InputBase
-        sx={{ ml: 1, flex: 1 }}
-        placeholder="Filter memes"
-        value={searchValue}
-        onChange={event => setSearchValue(event.target.value)}
-      />
-      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-        <SearchIcon />
-      </IconButton>
-        </Paper>
-</Grid>
+      <h1 style={{ display: 'flex', justifyContent: 'center' }}>Check out already created memes</h1>
+      <Typography style={{ display: 'flex', justifyContent: 'center' }}>Please log in to like memes. The newest memes are displayed at the bottom by default.</Typography>
+      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
+      <Grid container>
+        <Grid item xs={4} paddingLeft={5}>
+          <Typography gutterBottom>Show memes with X likes</Typography>
+          <Box width={'300px'}>
+            <Slider onChange={handleSliderChange} defaultValue={[0, 100]} /*value={minLikes}*/ value={value2} valueLabelDisplay='auto' min={0} max={100} range disableSwap={true} />
+          </Box> </Grid>
+        <Grid item xs={4}>
+          <Typography gutterBottom>Sort</Typography>
+          <FormControl alignItems="center" justify="center" style={{ width: 200 }}>
+            <InputLabel id="demo-simple-select-label" placeholder="Filter Memes">Sort Memes</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              size="small"
+            /*Filterbox, erst einblenden, wenn es eine Methode gibt, da sonst Error}
+           value={}
+           label="Age"
+         onChange={handleChange} */
+            >
+              <MenuItem onClick={() => setMemesFromServer(sortedMemes)}>New memes first</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
-    <Grid container spacing={2} style={{padding:30}}>
-    {filteredTemplates2.map((meme, index) => {
-     /* {filteredTemplates.map((template) => {*/
-        return (
-          <Grid item xs={3} /*key={meme._id}*/ key={index}>
-            <Card style={{ maxWidth: 345, maxHeight: 600 }}>
-              <CardHeader
-                avatar={
-                  <Avatar>
-                    User
-                  </Avatar>
-                }
-                title={meme.title}
-                subheader={`Created: ` + meme.memeCreated}
-              />
-              <CardMedia style={{alignItems: 'center'} }>
-                      <Link key={meme.id} to={`/memes/${meme._id}`}>    
-            <MemeLukasOverview key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*//>{/*onClick={handleMemeClick(meme)*/}
-                 { /*  setTemplate(template);*/}
-                             </Link>
-                            {console.log("meme.id", meme._id)} 
-              </CardMedia>
-              <CardContent>
-                  <Typography variant="body2" color="text.secondary">
-                </Typography>
-        </CardContent>
-              <CardActions disableSpacing>
-    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={MemeLukas.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}*/>Like</Likebutton>
-     </CardActions>
-            </Card>
-          </Grid>
-        );
-      })}
-    </Grid>
-    <div style={{display: 'flex', justifyContent: 'center', padding:40 }}>  
-    <Button variant="contained" style={{backgroundColor:'red'}} onClick={handleLoadMore}>Load more Memes</Button>
-    <Link to="/editor">
-<Fab color="primary" aria-label="add"  style={{
-                        margin: 0,
-                        top: 'auto',
-                        right: 20,
-                        bottom: 20,
-                        left: 'auto',
-                        position: 'fixed',
-                    }}>
-  <AddIcon />
-</Fab>
-</Link>  
-    </div>
+        <Grid item xs={4} style={{ float: 'right' }}>
+          <Paper style={{ float: 'right', marginRight: 30 }}
+            component="form"
+            md={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Filter memes"
+              value={searchValue}
+              onChange={event => setSearchValue(event.target.value)}
+            />
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} style={{ padding: 30 }}>
+        {filteredTemplates2.map((meme, index) => {
+          if (meme.status === "public") {
+            /* {filteredTemplates.map((template) => {*/
+            return (
+              <Grid item xs={3} /*key={meme._id}*/ key={index}>
+                <Card style={{ maxWidth: 345, maxHeight: 600 }}>
+                  <CardHeader
+                    avatar={
+                      <Avatar>
+                        User
+                      </Avatar>
+                    }
+                    title={meme.title}
+                    subheader={`Created: ` + meme.memeCreated}
+                  />
+                  <CardMedia style={{ alignItems: 'center' }}>
+                    <Link key={meme.id} to={`/memes/${meme._id}`}>
+                      <MemeLukasOverview key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*/ />{/*onClick={handleMemeClick(meme)*/}
+                      { /*  setTemplate(template);*/}
+                    </Link>
+                    {console.log("meme.id", meme._id)}
+                  </CardMedia>
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                    </Typography>
+                  </CardContent>
+                  <CardActions disableSpacing>
+                    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={MemeLukas.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}*/>Like</Likebutton>
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          }
+        })}
+      </Grid>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+        <Button variant="contained" style={{ backgroundColor: 'red' }} onClick={handleLoadMore}>Load more Memes</Button>
+        <Link to="/editor">
+          <Fab color="primary" aria-label="add" style={{
+            margin: 0,
+            top: 'auto',
+            right: 20,
+            bottom: 20,
+            left: 'auto',
+            position: 'fixed',
+          }}>
+            <AddIcon />
+          </Fab>
+        </Link>
+      </div>
     </div>
   );
-      }   
-   
+}
+
 export default Home;
