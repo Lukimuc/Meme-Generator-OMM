@@ -111,7 +111,7 @@ const MemeLukas = (props) => {
                 <p>Created: {meme.memeCreated}</p>
                 <p>Creator ID: {meme.CreatorID}</p>
                 <p>Creator Email: {meme.CreatorMail}</p>
-                <img src={imageSrc} alt={meme.title} />
+                <img src={imageSrc} alt={meme.title} style={{width: "100%"}} />
                 <p>LikedBy: {meme.likedBy}</p>
 
                 {draft ?
