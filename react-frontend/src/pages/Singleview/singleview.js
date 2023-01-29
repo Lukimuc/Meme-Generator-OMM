@@ -145,6 +145,7 @@ export function Singleview() {
       console.log(id);
     } 
     if (!autoplay) return; // if autoplay is not set, do not run the effect
+    console.log("autoplay started")
     const intervalId = setInterval(() => {
       nextMemeId();
     }, 3000);

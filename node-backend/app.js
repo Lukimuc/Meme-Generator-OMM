@@ -191,6 +191,18 @@ async function updateMemeByMemeID(client, memeID, req) {
     changes.viewsToday = viewsToday;
   }
 
+  if (likedBy !== undefined) {
+    changes.likedBy = likedBy;
+  }
+
+  if (deleteLike !== undefined) {
+    changes.deleteLike = deleteLike;
+  }
+
+
+
+  
+
   // like feature start - check if value in array has to be deleted 
   if (deleteLike) {
     await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },

@@ -5,7 +5,7 @@ import base64 from 'base64-js';
 const MemeLukas = (props) => {
     const { meme } = props;
     const [imageSrc, setImageSrc] = useState("");
-    const [text, setText] = useState(`Title: ${meme.title} Image Description ${meme.imageDescription} Status: ${meme.status} Likes: ${meme.likes} Created: ${meme.memeCreated} Creator ID: ${meme.CreatorID} Creator Email: ${meme.CreatorMail}`); // is read out by the voice in this order and only this variables
+    const [text, setText] = useState(`Title: ${meme.title} Image Description ${meme.imageDescription} Status: ${meme.status} Likes: ${meme.likes} Created: ${meme.memeCreated} Creator ID: ${meme.CreatorID} Creator Email: ${meme.CreatorMail}`) ; // is read out by the voice in this order and only this variables
 
     // draft mode
     const [editMode, setEditMode] = useState();

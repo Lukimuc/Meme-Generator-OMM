@@ -12,10 +12,20 @@ const LikeButton = (props) => {
   const [likes, setLikes] = useState(props.meme.likes);
   const [isLiked, setIsLiked] = useState(false);
   const [memeId, setMemeId] = useState(props.meme.id); 
+  const [likedBy, setlikedBy] = useState(props.meme.likedBy);
 
   useEffect(() => {
    // setMemeId(props.meme.id);
     setMemeId(props.meme.id);
+  /*  setLikes(props.meme.likes);
+    setlikedBy(props.meme.likedBy);*/
+    if (props.isSignedIn === true) {
+//if (!props.meme.likedBy.find(email => email === props.user.email)) {
+  document.getElementsByClassName("likebutton")[0].style.color = 'green';
+  //  document.getElementsByClassName("likebutton").style.color = 'green';
+//}
+    } 
+  }, [props.meme._id, props.user]);
   /*  getMeme();*/
   /*if (props.isSignedIn === true) {
     if (props.likedBy.includes(!props.user.email)) {
@@ -32,59 +42,85 @@ const LikeButton = (props) => {
  /* if (props.isSignedIn === true && props.meme.likedBy.includes(props.user.email)) {
     document.getElementById("likebutton").style.color = 'green';
 }*/
-    
-  }, [props.meme]);
-  
+
+const updateLikedBy = (id) => {
+ // setIsLiked(!isLiked);
+  if (props.isSignedIn === true) {
+    //if meme doesn't have the user in the array, do +1
+    if(!props.meme.likedBy.find(email => email === props.user.email)) {
+   // if (!props.meme.likedBy.includes(props.user.email)) {
+      console.log(props.user.email);
+      console.log(props.meme.likedBy)
+ // if (props.isSignedIn === true) {
+  fetch(`http://localhost:3002/memes/${props.meme._id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+     likedBy: props.meme.likedBy + props.user.email
+    }),
+  })
+    .then((res) => res.json())
+    .then((updatedMeme) => {
+      setlikedBy(updatedMeme.likedBy);
+    })
+    .catch((error) => 
+    console.error(error));
+  }
+ //}
+else {
+  console.log("remove user");
+fetch(`http://localhost:3002/memes/${props.meme._id}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ 
+    likedBy: props.user.email,
+  deleteLike: true
+  }),})
+  .then((res) => res.json())
+  .then((updatedMeme) => {
+    setlikedBy(updatedMeme.likedBy);
+  })
+  .catch((error) => 
+  console.error(error));
+}
+}
+};
   const updateLikes = (id) => {
     setIsLiked(!isLiked);
     if (props.isSignedIn === true) {
-      //if meme doesn't have email in the array, do +1
-      
-        if (!props.likedBy.includes(props.user.email)) {
+      //if meme doesn't have the user in the array, do +1
+      if(!props.meme.likedBy.find(email => email === props.user.email)) {
+     // if (!props.meme.likedBy.includes(props.user.email)) {
+        console.log(props.user.email);
+        console.log(props.meme.likedBy)
    // if (props.isSignedIn === true) {
-    const currentLikedBy = props.meme.likedBy;
-    currentLikedBy.push(props.user.email);
     fetch(`http://localhost:3002/memes/${props.meme._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        likes: props.meme.likes + 1,
-       //likedBy: [props.user.email]
-     //  likedBy: currentLikedBy
-        //deleteLike: true
+      //  id: props.meme.id,
+       // likes: props.meme.likes + 1,
+        likes: props.meme.likes + 1
+      // likedBy: props.user.email
         //$inc: {likes: isLiked ? -1 : 1}
-      /*  {likes: 
-            isLiked ? 0 : +1 } }*/
       }),
     })
       .then((res) => res.json())
       .then((updatedMeme) => {
         setLikes(updatedMeme.likes);
-       // props.likedBy(props.use.email)
-       // setLikes(likes + (isLiked? -1 : 1));
-        //setIsLiked(!isLiked);
-        //setLikes(likes);
-       // isLiked? 
-        //setLikes(likes-1) :
-       // setLikes(likes+1);
       })
       .catch((error) => 
       console.error(error));
+    }
    //}
-  }
-  else 
+  else {
+    console.log("remove user");
   fetch(`http://localhost:3002/memes/${props.meme._id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
-    //  likes: props.meme.likes + 1,
-      likes: likes - 1,
-     //likedBy: [props.user.email]
-   //  likedBy: currentLikedBy
-      //deleteLike: true
-      //$inc: {likes: isLiked ? -1 : 1}
-    /*  {likes: 
-          isLiked ? 0 : +1 } }*/
+      likedBy: props.user.email,
+    deleteLike: true
     }),
   })
     .then((res) => res.json())
@@ -93,57 +129,14 @@ const LikeButton = (props) => {
     })
     .catch((error) => 
     console.error(error));
- //}
-}
-    
+  }
+}    
 };
-
-  const updateDislikes = (id) => {
-    setIsLiked(!isLiked);
-    if (props.isSignedIn === true) {
-   // if (props.isSignedIn === true) {
-    fetch(`http://localhost:3002/memes/${props.meme._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        likes: likes - 1,
-       // likedBy: props.user.email
-       // deleteLike: props.true
-        //$inc: {likes: isLiked ? -1 : 1}
-      /*  {likes: 
-            isLiked ? 0 : +1 } }*/
-      }),
-    })
-      .then((res) => res.json())
-      .then((updatedMeme) => {
-        
-        setLikes(updatedMeme.likes);
-
-      /*  if (props.isSignedIn === true) {
-          if (props.likedBy.includes(!props.user.email)) {
-            document.getElementById("likebutton").style.color='green';
-          }
-        }*/
-       // setLikes(likes + (isLiked? -1 : 1));
-        //setIsLiked(!isLiked);
-        //setLikes(likes);
-       // isLiked? 
-        //setLikes(likes-1) :
-       // setLikes(likes+1);
-       
-      })
-      .catch((error) => 
-      console.error(error));
-   //}
-  }};
-
- 
-
-
   return (
     <div>
          <CardContent>
           <Typography variant="body2" color="text.secondary">
+          Liked by: {props.meme.likedBy}
           <b>
           {/*{props.likes} */}
           {/*{props.meme.likes} */} 
@@ -152,10 +145,11 @@ const LikeButton = (props) => {
 
 {/*{props.user.email}*/}
          </Typography>
-      <IconButton id="likebutton"
-      style={{ color: isLiked ? 'green' : 'gray' }}
+      <IconButton className="likebutton" 
+    //  style={{ color: isLiked ? 'green' : 'gray' }}
         onClick={() => {
-          updateLikes(props.meme._id, props.likes, props.user.email);
+          updateLikedBy(props.meme._id,  props.meme.likes, props.meme.likedBy, props.user.email);
+          updateLikes(props.meme._id, props.meme.likes, props.meme.likedBy, props.user.email);
           /*isLiked ?
          updateDislikes(props.meme._id, props.likes) :
          updateLikes(props.meme._id, props.likes, props.user.email);*/
@@ -168,5 +162,4 @@ const LikeButton = (props) => {
     </div>
   );
 };
-
 export default LikeButton;

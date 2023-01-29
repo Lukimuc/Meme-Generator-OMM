@@ -188,7 +188,7 @@ onChange={handleChange} */
                 </Typography>
         </CardContent>
               <CardActions disableSpacing>
-    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={props.user.email} likes={props.likes} likedBy={props.likedBy}>Like</Likebutton>
+    <Likebutton key={meme._id} meme={meme} id={id} isSignedIn={props.isSignedIn} user={props.user} email={MemeLukas.email} likes={props.likes} likedBy={props.likedBy}>Like</Likebutton>
      </CardActions>
             </Card>
           </Grid>
