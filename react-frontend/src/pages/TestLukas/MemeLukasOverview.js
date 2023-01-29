@@ -28,7 +28,7 @@ const MemeLukas = (props) => {
 
     return (
         <div>
-            <img src={imageSrc} alt={meme.title} style={{alignItems: 'center',  width: '350px', height:'350px'}} />
+            <img src={imageSrc} alt={meme.title} style={{alignItems: 'center',  width: '100%', height:'100%'}} />
            {/*} <button onClick={handleSpeakClick}>Speak</button>*/}
         </div>
 

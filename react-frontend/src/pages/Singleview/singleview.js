@@ -17,6 +17,8 @@ import { useLocation } from "react-router-dom";
 import { useMatch } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Likebutton from "../../Components/Likebutton";
+
 
 // Graph imports
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
@@ -26,7 +28,7 @@ import io from 'socket.io-client';
 import html2canvas from 'html2canvas';
 const socket = io('wss://localhost:8080');
 
-export function Singleview() {
+export function Singleview(props) {
   // Video Stream States
   const [message, setMessage] = useState("Streaming: OFF");
   const [streaming, setStreaming] = useState(false);
@@ -158,31 +160,32 @@ export function Singleview() {
   // Voice Control Effect
   useEffect(() => {
     if (buttonClicked === "Next") {
-      setCurrentId(nextId);
-      nextMemeId();
+      //setCurrentId(nextId);
+      navigate(`/memes/${nextId}`);
+  
+     // nextMemeId();
      // navigate(`/memes/${nextId}`) // TODO
-
+  
       setButtonClicked(null) // reset state
       setTranscript("") // ?? do we need this?
     }
-    if (buttonClicked === "Back") {
-//setCurrentId(prevId);
-  //    nextMemeId();
-      navigate(`/memes/${prevId}`) // TODO
-      setButtonClicked(null) // reset state
-    }
-    if (buttonClicked === "Play") {
-      // TODO how to start slideshow?
-       handleAutoplay();
-      setButtonClicked(null) // reset state
-    }
-    if (buttonClicked === "Pause") {
-      // TODO how to pause / stop slideshow?
-      handleStopInterval()
-      setButtonClicked(null) // reset state
-    }
-  })
 
+    if (buttonClicked === "Play") {
+      handleAutoplay();
+      setButtonClicked(null) // reset state
+    }
+
+    if (buttonClicked === "Back") {
+      setCurrentId(prevId);
+      prevMemeId();
+  //setCurrentId(prevId);
+  //    nextMemeId();
+      /*navigate(`/memes/${prevId}`)*/ // TODO
+      setButtonClicked(null) // reset state
+    }
+
+  })
+  
 
   // Videostream Code
   useEffect(() => {
@@ -422,7 +425,10 @@ export function Singleview() {
             </Button>
 
             <Button variant="contained"
-              onClick={handleAutoplay}>
+              onClick={() => {
+                handleAutoplay();
+                setButtonClicked("Play");
+              }}>
               Start Autoplay ▶
             </Button>
 
@@ -434,6 +440,8 @@ export function Singleview() {
             </Button>
 
             <div>
+           {/*} <Likebutton key={memefromServer._id} meme={memefromServer} id={id} isSignedIn={props.isSignedIn} user={props.user} email={props.email} likes={props.likes} likedBy={props.likedBy}  /*updateMeme={updateMeme}>Like</Likebutton>*/}
+   
               <h3>Voice Control</h3>
               <button onClick={startRecording}>
                 {isRecording ? "Stop Recording" : "Start Recording"}
@@ -472,12 +480,8 @@ export function Singleview() {
             <p> <b>CreatorMail </b><br></br>{memefromServer.CreatorMail} </p>
             <p> <b>imageDescription</b> <br></br>{memefromServer.imageDescription} </p>
             <p> <b>Likes  <br></br></b>{memefromServer.likes} </p> <br />
-
-            {/*  <Link to="/editor">
-              <Button variant="contained">Edit this template</Button>
-            </Link> */}
       
-            <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
+           {/*} <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
               onBlur={() => {
                 setIsTextFieldSelected(false);
                 setTextFieldText(transcript);
@@ -485,7 +489,7 @@ export function Singleview() {
               }
               value={isTextFieldSelected ? transcript : textFieldText}
               style={isTextFieldSelected ? { borderColor: "blue" } : {}} />
-       
+            */}
             <div>
               <h2>Livestream this view</h2>
               <button onClick={startStream} disabled={streaming}>Start streaming</button>
