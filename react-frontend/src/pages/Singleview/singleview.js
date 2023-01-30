@@ -55,7 +55,6 @@ export function Singleview(props) {
     { name: 'Today', pageViews: todayViews },
   ]);
 
-
   //getting String
   const location = useLocation();
   const linkURL = location.pathname;
@@ -157,6 +156,7 @@ export function Singleview(props) {
     return () => clearInterval(intervalId);
   }, [id, autoplay, nextId]);
 
+  
   // Voice Control Effect
   useEffect(() => {
     if (buttonClicked === "Next") {
@@ -175,16 +175,23 @@ export function Singleview(props) {
       setButtonClicked(null) // reset state
     }
 
+
+    if (buttonClicked === "Random") {
+   
+    showRandom();
+      setButtonClicked(null) // reset state
+    }
+
     if (buttonClicked === "Back") {
       setCurrentId(prevId);
       prevMemeId();
       //setCurrentId(prevId);
       //    nextMemeId();
       /*navigate(`/memes/${prevId}`)*/ // TODO
-      setButtonClicked(null) // reset state
+     setButtonClicked(null) // reset state
     }
-
-  })
+  }
+  )
 
 
   // Videostream Code
@@ -211,7 +218,7 @@ export function Singleview(props) {
     setStreaming(false);
   };
 
-  // Voice Controll Function
+  // Voice Control Function
   const startRecording = () => {
     setIsRecording(!isRecording);
     if (isRecording) {
@@ -234,7 +241,7 @@ export function Singleview(props) {
         } else if (newTranscript === "next" || newTranscript === " next") {
           setButtonClicked("Next");
         } else if (newTranscript === "random" || newTranscript === "random meme" || newTranscript === "zufällig" || newTranscript === " random meme" || newTranscript === " random" || newTranscript === " zufällig") {
-          setButtonClicked("Next");
+          setButtonClicked("Random");
         } else if (newTranscript === "select" || newTranscript === " select") {
           setIsTextFieldSelected(true);
         } else if (newTranscript === "like" || newTranscript === " like") {
