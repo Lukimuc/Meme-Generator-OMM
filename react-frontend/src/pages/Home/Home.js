@@ -96,7 +96,7 @@ const Home = (props) => {
 
   //Load more Memes
   const handleLoadMore = () => {
-    setMemeLimit(prevMemeLimit => prevMemeLimit + 12);
+    setMemeLimit(prevMemeLimit => prevMemeLimit + 4);
     //setMemeLimit(memeLimit +12);
   };
 
