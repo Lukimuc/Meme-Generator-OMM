@@ -45,41 +45,15 @@ const Home = (props) => {
 
   const [searchValue, setSearchValue] = useState('');
   const filteredTemplates = limitedTemplates.filter(meme => meme.title.toLowerCase().includes(searchValue.toLowerCase()));
-  const [liked, setLiked] = useState(false);
 
   const location = useLocation();
   const linkURL = location.pathname;
   const [, id] = linkURL.split("/memes/");
 
-
-  /*
-  const updateLikes = (id) => {
-    console.log(id);
-    fetch(`http://localhost:3002/memes/${id}/like`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ likes: liked ? - 1 : + 1 }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setLikes(data.likes);
-        if (liked) {
-          setLiked(!data.liked);
-          setLikes(data.likes - 1);
-        }
-        if (!liked) {
-          setLiked(data.liked);
-          setLikes(data.likes + 1);
-        }
-      })
-      .catch((error) => 
-      console.error(error));
-  };*/
-
   //getTheMemes
   useEffect(() => {
     getMemes();
-  }, [liked]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -88,6 +62,7 @@ const Home = (props) => {
     };
   }, []);
 
+  
   const handleScroll = () => {
     const scrollY = window.scrollY;
     const clientHeight = document.documentElement.clientHeight;
@@ -97,21 +72,7 @@ const Home = (props) => {
     }
   };
 
-  
 
-  
-  /*
-  const updateMeme = (updatedMeme) => {
-    setMeme({ ...meme, likedBy: updatedMeme.likedBy });
-  }
-  */
-
-  /*
-  useEffect(() => {
-    if(props.meme) {
-        setLikes(props.meme.likes)
-    }
-}, [props.meme])*/
 
   const getMemes = (event) => {
     fetch('http://localhost:3002/memes', {
@@ -135,7 +96,8 @@ const Home = (props) => {
 
   //Load more Memes
   const handleLoadMore = () => {
-    setMemeLimit(memeLimit + 12);
+    setMemeLimit(prevMemeLimit => prevMemeLimit + 12);
+    //setMemeLimit(memeLimit +12);
   };
 
   //Sort Memes by Creation Date
@@ -225,7 +187,7 @@ const Home = (props) => {
         })}
       </Grid>
       <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-        <Button variant="contained" style={{ backgroundColor: 'red' }} onClick={handleLoadMore}>Load more Memes</Button>
+      {/*}  <Button variant="contained" style={{ backgroundColor: 'red' }} onClick={handleLoadMore}>Load more Memes</Button>*/}
         <Link to="/editor">
           <Fab color="primary" aria-label="add" style={{
             margin: 0,
