@@ -81,6 +81,25 @@ const Home = (props) => {
     getMemes();
   }, [liked]);
 
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollHeight = document.documentElement.scrollHeight;
+    if (scrollY + clientHeight >= scrollHeight - 50) {
+      handleLoadMore();
+    }
+  };
+
+  
+
+  
   /*
   const updateMeme = (updatedMeme) => {
     setMeme({ ...meme, likedBy: updatedMeme.likedBy });
