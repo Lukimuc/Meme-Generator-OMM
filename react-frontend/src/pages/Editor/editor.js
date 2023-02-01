@@ -125,13 +125,13 @@ const Editor = () => {
                     display: "block",
                     /* float: "left",*/
                     border: "5px outset grey",
-                    /* height: "100%",
-                    width: "50%",*/
+                    height: {height},
+                    width: {width},
                     }}
                 >
                 <Stage 
-                    width={width}
-                    height={height}
+                    width={"100%"}
+                    height={"100%"}
                     style={{
                         border: "1px outset grey",
                     }}
