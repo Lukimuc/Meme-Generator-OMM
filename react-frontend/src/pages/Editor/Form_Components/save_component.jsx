@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 
+
 function Save_Form({ stageRef }) {
 
   const [maxSize, setMaxSize] = useState(1);

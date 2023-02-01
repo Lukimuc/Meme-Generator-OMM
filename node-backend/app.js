@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
 
 
+
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
 // ### Thus copy paste this block to your project
@@ -52,6 +53,18 @@ async function createUser(client, newUser) {
   console.log(`New User created with the ID ${result.insertedID}`);
 
   return result;
+}
+
+//find Memes marked as public
+async function getPublicMemes(client) {
+  const result = await client.db("memeGeneratorDB").collection("memes").find({ status: "public" }).toArray();
+  if (result.length > 0) {
+    console.log(`${result.length} public memes found`);
+    return result;
+  } else {
+    console.log(`No public memes found`);
+    return result;
+  }
 }
 
 // get a specific User by email in DB
@@ -149,18 +162,165 @@ async function findMemesByUserID(client, userID) {
   return result;
 }
 
+async function updateMemeByMemeID(client, memeID, req) {
+  const { title, status, likes, imageDescription, viewsToday, likedBy, deleteLike } = req.body;
+  let changes = {}
+  console.log("viewsToday")
+
+  if (title !== undefined) {
+    changes.title = title;
+  }
+
+  if (status !== undefined) {
+    changes.status = status;
+  }
+
+  if (likes !== undefined) {
+    changes.likes = likes;
+  }
+
+  if (imageDescription !== undefined) {
+    changes.imageDescription = imageDescription;
+  }
+
+  if (viewsToday !== undefined) {
+    changes.viewsToday = viewsToday;
+  }
+
+  if (viewsToday !== undefined) {
+    changes.viewsToday = viewsToday;
+  }
+  
+
+  // like feature start - check if value in array has to be deleted 
+  if (deleteLike) {
+    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+      { $pull: { likedBy: likedBy } }); // delete value in array
+
+    changes.likes = likes;
+    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+      { $set: changes }); // new likes value
+    updatedMeme = findMemeByMemeID(client, memeID);
+    return updatedMeme;
+  }
+
+  // if not then add value to array
+  if (likedBy !== undefined) {
+    const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+      { $addToSet: { likedBy: likedBy } });
+    updatedMeme = findMemeByMemeID(client, memeID);
+    return updatedMeme;
+  } // like feature end
+
+  console.log("changes", changes);
+
+  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    { $set: changes });
+
+  if (result.modifiedCount > 0) {
+    console.log("Meme has been updated: ", result.modifiedCount);
+    updatedMeme = findMemeByMemeID(client, memeID)
+    return updatedMeme;
+  } else {
+    console.log(`No changes applied`)
+    return;
+  }
+}
+
 async function findMemeByMemeID(client, memeID) {
   const result = await client.db("memeGeneratorDB").collection("memes").findOne({ _id: ObjectID(memeID) });
 
 
   if (result.length > 0) {
-    console.log(`Memes found`);
+    console.log(`Meme found`);
     console.log(result);
   } else {
-    console.log(`No memes found`);
+    console.log(`No meme found`);
   }
   return result;
 }
+
+// logs
+async function findLogs(client) {
+  const result = await client.db("memeGeneratorDB").collection("logs").findOne({ globalIdentifier: true });
+
+  if (result.length > 0) {
+    console.log(`Meme found`);
+    console.log(result);
+  } else {
+    console.log(`No meme found`);
+  }
+  return result;
+}
+
+
+async function upsertLog(client, req) {
+  //const { fileUploadButtonClickedTotal, urlButtonClickedTotal, thirdPartyButtonClickedTotal, cameraButtonClickedTotal, drawButtonClickedTotal } = req.body;
+  console.log(req.body)
+
+  data = req.body;
+  const formattedData = data.map(({ name, clicks }) => {
+    return { [name]: clicks };
+  });
+  console.log(formattedData);
+
+  const combinedData = Object.assign({}, ...formattedData);
+  console.log(combinedData);
+
+  const changes = {
+    "fileUploadButtonClickedTotal": combinedData['File Upload'],
+    "urlButtonClickedTotal": combinedData.URL,
+    "thirdPartyButtonClickedTotal": combinedData['Third Party'],
+    "cameraButtonClickedTotal": combinedData.Camera,
+    "drawButtonClickedTotal": combinedData.Draw,
+    "globalIdentifier": true
+  };
+
+  const result = await client.db("memeGeneratorDB").collection("logs").updateOne({ globalIdentifier: true }, { $set: changes }, { upsert: true });
+
+  console.log(`${result.matchedCount} documents matched the query criteria`);
+  console.log(`${result.modifiedCount} documents were updated`);
+  console.log(changes)
+  return changes;
+}
+
+
+/* async function updateMemeByMemeID(client, memeID, req) {
+  const { title, status, likes, imageDescription } = req.body;
+  let changes = {}
+
+  if (title !== undefined) {
+    changes.title = title;
+  }
+
+  if (status !== undefined) {
+    changes.status = status;
+  }
+
+  if (likes !== undefined) {
+    changes.likes = likes;
+  }
+
+  if (imageDescription !== undefined) {
+    changes.imageDescription = imageDescription;
+  }
+
+  console.log("changes", changes);
+
+  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    { $set: changes });
+
+  if (result.modifiedCount > 0) {
+    console.log("Meme has been updated: ", result.modifiedCount);
+    updatedMeme = findMemeByMemeID(client, memeID)
+    console.log("updated Meme", updatedMeme._id)
+    return updatedMeme;
+  } else {
+    console.log(`No changes applied`)
+    return;
+  }
+} */
+
 
 
 /* Endpoints: 
@@ -171,7 +331,48 @@ async function findMemeByMemeID(client, memeID) {
   / --> GET --> Return ALL User
 */
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+));
+
+
+// Page logs / Feature 22 - update clicks in Editor
+app.get(("/log"), async (req, res) => {
+  try {
+    const log = await findLogs(client)
+    res.json(log);
+  } catch (error) {
+    res.status(400).json("Error in app.get('/log': " + error);
+  }
+})
+
+// Page logs / Feature 22 - update clicks in Editor
+app.put(("/log"), async (req, res) => {
+  try {
+    const changes = await upsertLog(client, req)
+    res.json(changes);
+  } catch (error) {
+    res.status(400).json("Error in app.get('/log': " + error);
+  }
+})
+
+// update a specific Meme by MemeID
+app.put(('/memes/:id'), async (req, res) => {
+  const id = req.params.id;
+  console.log('/memes/:id executed')
+
+  try {
+    const updatedMeme = await updateMemeByMemeID(client, id, req);
+    res.json(updatedMeme); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error in app.get('/meme/:id'': " + error);
+  }
+})
+
+
+
+
+
 
 // REGISTER new user
 app.post('/register', (req, res) => {
@@ -264,8 +465,10 @@ app.post(("/memes"), async (req, res) => {
     "memeCreated": new Date(),
     "CreatorID": user._id,
     "CreatorMail": user.email,
-    "image_encoded": image_encoded,
-    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader"
+    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader",
+    "viewsToday": 0,
+    "likedBy": [],
+    "image_encoded": image_encoded
   }
   createMeme(client, newMeme);
   res.json(newMeme);
@@ -283,6 +486,7 @@ app.get(("/memes/:id"), async (req, res) => {
 
   try {
     const meme = await findMemeByMemeID(client, id);
+
     res.json(meme); // server response to frontend
 
   } catch (error) {
@@ -291,8 +495,44 @@ app.get(("/memes/:id"), async (req, res) => {
   }
 })
 
-app.use("/api/meme", apiMemeRouter);
 
+// update a specific Meme by MemeID
+/*app.put(("/memes/:id"), async (req, res) => {
+  const id = req.params.id
+
+  try {
+    const updatedMeme = await updateMemeByMemeID(client, id, req);
+    res.json(updatedMeme); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error in app.get('/meme/:id'': " + error);
+  }
+})*/
+
+
+// Streaming Server - HTTPS - Feature 18
+
+const fs = require('fs');
+const server = require('https').createServer({
+  key: fs.readFileSync(__dirname + "/server.key"),
+  cert: fs.readFileSync(__dirname + "/server.cert")
+});
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+
+io.on('connection', socket => {
+  console.log("a user connected");
+
+  socket.on('streaming', (data) => {
+    //console.log("received streaming data: ", data);
+    io.emit('streaming', data);
+  });
+});
+
+server.listen(8080);
 
 /* DO WE USE THIS? // get memes by specific user
 app.get(("/memes/:userID"), async (req, res) => {
@@ -301,6 +541,36 @@ app.get(("/memes/:userID"), async (req, res) => {
   memes = await findAllMemes(client);
   res.json(memes);
 }) */
+
+/*
+app.put('/memes/:id/like', (req, res) => {
+  // retrieve the id of the meme to update from the request
+  const id = req.params.id;
+
+  // find the meme in the database and update the likes count
+  client.db("memeGeneratorDB").collection("memes").updateOne({ _id: new ObjectID(id) }, { $inc: { likes: 1 } })
+    .then(result => {
+      console.log(`Meme with id ${id} updated`);
+      res.send({ success: true });
+    })
+    .catch(err => {
+      console.log(err);
+      res.send({ success: false });
+    });
+});
+*/
+app.put('/memes/:id/like', async (req, res) => {
+  // retrieve the id of the meme to update from the request
+  const id = req.params.id;
+
+  try {
+    const data = await updateMemeByMemeID(client, id, req);
+    res.json(data); // server response to frontend
+  } catch (error) {
+    console.log("Error in app.get('/meme/:id': " + error);
+    res.status(400).json("Error beim liken app.get('/meme/:id'': " + error);
+  }
+})
 
 
 
@@ -364,6 +634,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });*/
+
 
 module.exports = app;
 

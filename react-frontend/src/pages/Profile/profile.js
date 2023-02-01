@@ -47,30 +47,42 @@ const Profile = (props) => {
                     </Box>
                 </Paper>
 
+
+                <Paper elevation={1} style={{ padding: "25px", margin: "20px" }}>
+                    <Typography variant="h5" style={{ marginBottom: "25px" }}>Drafts</Typography>
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={3}>
+
+
+
+                          
+
+                            {
+                                memesfromServer.map((meme) => (
+                                    meme.status === 'draft'
+                                        ? <Grid item md={4}>
+                                            <MemeLukas key={meme._id} meme={meme} />
+                                        </Grid>
+                                        : <p></p>
+                            ))}
+
+                        </Grid>
+                    </Box>
+                </Paper>
+
                 <Paper elevation={1} style={{ padding: "25px", margin: "20px" }}>
                     <Typography variant="h5" style={{ marginBottom: "25px" }}>Memes History</Typography>
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={3}>
-                            <Grid item xs>
-                                <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 1</Box>
-                            </Grid>
-                            <Grid item md={4}>
-                                <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 2</Box>
-                            </Grid>
-                            <Grid item md={4}>
-                                <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 3</Box>
-                            </Grid>
-                            <Grid item md={4}>
-                                <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 4</Box>
-                            </Grid>
-                            <Grid item md={4}>
-                                <Box style={{ height: "300px", textAlign: 'center', border: "dotted" }}>Meme 5</Box>
-                            </Grid>
+                            
 
                             {memesfromServer.map((meme) => (
+                                meme.status === 'public' || meme.status === 'private'
+                                ?
                                 <Grid item md={4}>
                                     <MemeLukas key={meme._id} meme={meme} />
                                 </Grid>
+                                : <></>
                             ))}
 
                         </Grid>
