@@ -1,9 +1,9 @@
 const express = require('express');
-const imageEditor = require("../../tools/imageEditor");
+const url = require("url");
+const ImageEditor = require("../../tools/imageEditor");
 const router = express.Router();
 
 router.get("/", function (req, res) {
-    console.log("template: ", req.query.template, " bottomText: ", req.query.bottomText, " topText: ", req.query.topText);
     fetchMemeUrl(req.query.template)
         .then((url) => {
             console.log(url)
@@ -11,11 +11,31 @@ router.get("/", function (req, res) {
                 .then((response) => response.blob())
                 .then((imageBlob) => imageBlob.arrayBuffer())
                 .then((buffer) => {
-                    imageEditor.addCaptionToImage(buffer)
-                        .then((editedImage) => res.end(editedImage));
+                    const imageEditor = new ImageEditor(buffer);
+                    let result = parseMemesFromReq(req).map(async (meme) => {
+                        return imageEditor
+                            .addCaptionToImage()
+                    })
+                    Promise.all(result)
+                        .then(results => {
+                            res.end(results[0]);
+                        })
+                        .catch(e => {
+                            console.error(e);
+                        })
                 })
         })
 })
+
+function parseMemesFromReq(req) {
+    const memes = req.query.memes;
+    let parsedMemes = [];
+    for (let i = 0; i < memes.length; i++) {
+        const meme = memes[i]
+        parsedMemes.push(JSON.parse(meme));
+    }
+    return parsedMemes;
+}
 
 let fetchMemeUrl = function (template) {
     return new Promise((resolve, reject) => {
@@ -28,7 +48,6 @@ let fetchMemeUrl = function (template) {
                     const memes = data.data.memes;
                     const url = Object.entries(memes)
                         .filter(([_, value]) => {
-                            console.log(value);
                             return value.name === template;
                         })
                         .map(([_, value]) => value.url)
