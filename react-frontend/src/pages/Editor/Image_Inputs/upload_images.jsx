@@ -1,7 +1,8 @@
+import { Button } from '@mui/material';
 import React, {useState, useEffect} from 'react'
 
 
-const Upload_Image = () => {
+const Upload_Image = ({push}) => {
 
     const [imageUrl, setImageUrl] = useState('');
 
@@ -30,6 +31,7 @@ const Upload_Image = () => {
             <img src={imageUrl} alt="Image" />
             <br/>
             <input type="file" onChange={handleFileSelect} />
+            <button onClick={() => {console.log("Image wird gepushed"); push(imageUrl)}} > push </button>
         </div>
     )
 

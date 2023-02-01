@@ -11,7 +11,7 @@ import { CameraFeed } from '../Image_Inputs/Kamera_Feed';
 import Mouse_Draw from '../Image_Inputs/Mouse_Draw';
 import Url from '../Image_Inputs/Url';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-
+//import CameraFeed from '../Image_Inputs/Camera_feed_new';
 
 
 
@@ -84,12 +84,33 @@ const Image_Form = ({ push_image }) => {
     }
     // ---- graph code  end ---- //
 
-    const [image_input, setImageInput] = useState(<Upload_Image />)
+    const [counter, setCounter] = useState(count)
+
+    const [image_input, setImageInput] = useState(<Upload_Image push= { (src) => {setImages( arr => [...arr, src])}}/>)
 
     const [template, setTemplate] = useState(null);
     const [templates, setTemplates] = useState(null);
 
     const [input_image, setInput_Image] = useState()
+
+    //testing image inputs
+    const [images, setImages] = useState([])
+
+   
+
+    const loadlocalstorage = () => {
+        console.log("item wird rausgeholt!!!")
+        const storedImages = JSON.parse(localStorage.getItem('imageList'));
+        console.log(storedImages)
+        if (storedImages) {
+        setImages(storedImages);
+        }
+    };
+
+    const savelocalstorage = () => {
+        console.log("item wird gespeichert!!!")
+        localStorage.setItem('imageList', JSON.stringify(images));
+    };
 
     useEffect(() => {
         fetchMemes();
@@ -108,6 +129,31 @@ const Image_Form = ({ push_image }) => {
     const clickbutton = (text) => {
         switch (text) {
             case "File_Upload":
+                setImageInput(<Upload_Image
+                    push= { (src) => {setImages( arr => [...arr, src])}}    
+                />)
+                break;
+            case "Url":
+                setImageInput(<Url
+                    push= { (src) => {
+                        console.log(src)
+                        setImages( arr => [...arr, src])}} 
+                />)
+                break;
+            case "Third_Party":
+                setImageInput(<Third_Party
+                    push= { (src) => {setImages( arr => [...arr, src])}}
+                />)
+                break;
+            case "Camera":
+                setImageInput(<CameraFeed 
+                    push= { (src) => {setImages( arr => [...arr, src])}}  
+                />)
+                break;
+            case "Draw":
+                setImageInput(<Mouse_Draw
+                    push= { (src) => {setImages( arr => [...arr, src])}}
+                />)
                 setImageInput(<Upload_Image />)
                 handleDiagram('File Upload')
                 break;
@@ -135,6 +181,22 @@ const Image_Form = ({ push_image }) => {
     return (
         <div>
             <p> Image Form Component</p>
+            <button onClick={() => savelocalstorage()}> save in localStorage</button>
+            <button onClick={() => loadlocalstorage()}> load in localStorage</button>
+            {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
+            {images.map( (image, i) => {
+                return(
+                <div>
+                    <img src={image} alt={"Lion" + i} key={"Lion" + i} onClick={() => setInput_Image(image)}/>
+                </div>)
+            })}
+            <br/>
+            <Button variant="contained" onClick={(e) => {
+                e.preventDefault();
+                push_image(input_image, counter);
+                console.log(counter)
+                setCounter(counter+1)   
+            }}>Submit Image</Button>           
             <Box style={{ maxHeight: '30vh', overflow: 'auto', paddingTop: 10 }}>
                 <Grid container>
                     {templates && templates.map((template) => {
@@ -155,10 +217,10 @@ const Image_Form = ({ push_image }) => {
                 </Grid>
             </Box>
             <br />
-            <Button variant="contained" onClick={(e) => {
+            {/** <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
                 push_image(input_image)
-            }}>Submit Image</Button>
+            }}>Submit Image</Button> */}
             <p> {input_image} </p>
 
             <button onClick={() => { clickbutton("File_Upload") }}> File Upload </button>

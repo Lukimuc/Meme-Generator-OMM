@@ -20,7 +20,7 @@ const Text_Form = ({push_text, count}) => {
                         text:input_text,
                         fontFamily:"Arial",
                         fontStyle:"bolt",
-                        fill:"orange",
+                        fill:"black",
                         counter: counter
                     }
                 )

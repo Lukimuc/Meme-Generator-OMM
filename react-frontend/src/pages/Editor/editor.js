@@ -16,21 +16,22 @@ const Editor = () => {
 
     const stageRef = useRef(null);
 
+    //größe Konva Board 
+    const [width, setWidth] = useState(500)
+    const [height, setHeight] = useState(500)
+
     // Variable für Editor Forms
-    const [formcomponent, setFormComponent] = useState(<Image_Form
-        push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
-    />)
+    
     const [changeText, setChangeText] = useState(<p>Hier werdn die Texte manipuliert</p>)
     const [mytexts, setMytexts] = useState([])
     const [images, setImages] = useState([])
     // Selecting shapes
     const [selectedId, selectShape] = useState(null);
 
-    
-    useEffect( () => {
-        console.log("My_Images ist:" + JSON.stringify(images))
-        console.log("My_Texts ist: " + JSON.stringify(mytexts))
-    })
+    const [formcomponent, setFormComponent] = useState(<Image_Form
+        push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
+        count ={images.length} 
+    />)
    
 
     const checkDeselect = (e) => {
@@ -41,24 +42,9 @@ const Editor = () => {
         }
         check_text_clickt()
     };
-    {/** 
-    useEffect(() => {
-        fetchMemes();
-      }, []);
-    
-    const fetchMemes = async () => {
-        try {
-          const response = await fetch("https://api.imgflip.com/get_memes")
-          const data = await response.json();
-          setTemplates(data.data.memes);
-        } catch (error) {
-          console.log(error);
-        }
-    };
-    */}
 
     function handleKeyDown(e) {
-        if (e.key === 'Backspace') {
+        if (e.metaKey || e.ctrlKey && e.key === 'Backspace') {
             setImages(images.filter( (img) => img.key !== selectedId))
             setMytexts(mytexts.filter( (text) => text.key !== selectedId))
         }
@@ -68,7 +54,8 @@ const Editor = () => {
         if(tmp === "Images") {
             setFormComponent(
                 <Image_Form
-                    push_image={ (input_image) => setImages( arr => [...arr, {src: input_image, key:"Image_" + images.length}])}
+                    push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
+                    count = {images.length} 
                 />
             )
         }else if(tmp === "Texts") {
@@ -143,8 +130,8 @@ const Editor = () => {
                     }}
                 >
                 <Stage 
-                    width={window.innerWidth / 2}
-                    height={window.innerHeight}
+                    width={width}
+                    height={height}
                     style={{
                         border: "1px outset grey",
                     }}
@@ -153,25 +140,6 @@ const Editor = () => {
                     ref={stageRef}
                 >
                     <Layer>
-                        <My_Text
-                            key={"text1"}
-                            attr={
-                                {
-                                    text: "Beispieltest",
-                                    fontFamily: "fantasy",
-                                    fontStyle:"bold",
-                                    fill:"green",
-                                }
-                            }
-                            isSelected={"text1" === selectedId}
-                            onSelect={() => { 
-                                selectShape("text1")
-                                 }}
-                            onChange={newAttrs => {
-                                const imgs = images.slice();
-                                //imgs[i] = newAttrs;
-                            }}
-                        />
                         {images.map( (img, i) => {
                             return (
                                 <My_Image 
@@ -185,8 +153,8 @@ const Editor = () => {
                                         const imgs = images.slice();
                                         imgs[i] = newAttrs;
                                     }}
-                                    width={i === 0 ? window.innerWidth * 0.5 : img.width}
-                                    height={i === 0 ? window.innerHeight: img.height}
+                                    width={width}
+                                    height={height}
                                 />
                             );
                         })}

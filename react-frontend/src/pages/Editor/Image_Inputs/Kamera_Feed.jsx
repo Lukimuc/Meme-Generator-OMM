@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 
 export class CameraFeed extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+          photo: ''
+        };
+    }
+
     /**
      * Processes available devices and identifies one by the label
      * @memberof CameraFeed
@@ -12,6 +20,8 @@ export class CameraFeed extends Component {
             this.setDevice(device);
         });
     }
+
+    
 
     /**
      * Sets the active device and starts playing the feed
@@ -42,10 +52,10 @@ export class CameraFeed extends Component {
      * @instance
      */
     takePhoto = () => {
-        const { sendFile } = this.props;
         const context = this.canvas.getContext('2d');
         context.drawImage(this.videoPlayer, 0, 0, 680, 360);
-        this.canvas.toBlob(sendFile);
+        const photo = this.canvas.toDataURL();
+        this.setState({ photo });
     };
 
     render() {
@@ -57,6 +67,8 @@ export class CameraFeed extends Component {
                 <button onClick={this.takePhoto}>Take photo!</button>
                 <div className="c-camera-feed__stage">
                     <canvas width="680" height="360" ref={ref => (this.canvas = ref)} />
+                    <img src={this.state.photo} alt="Taken photo" />
+                    <button onClick={() => {console.log("Foto wird gepushed"); this.props.push(this.state.photo)}} > push </button>
                 </div>
             </div>
         );

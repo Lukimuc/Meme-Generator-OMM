@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { Stage, Layer, Line, Text } from 'react-konva';
 
-const Mouse_Draw = () => {
+const Mouse_Draw = ({push}) => {
+
+  const stageRef = useRef(null);
+
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
   const isDrawing = React.useRef(false);
@@ -32,6 +35,19 @@ const Mouse_Draw = () => {
     isDrawing.current = false;
   };
 
+  const handlepush = () => {
+    if (!stageRef.current) {
+        console.log("Stageref ist null")
+        return;
+    }
+    const stage = stageRef.current;
+    const dataURL = stage.toDataURL({
+        mimeType: 'image/png',
+        quality: 1
+    });
+    push(dataURL)
+  };
+
   return (
     <div>
       <Stage
@@ -41,6 +57,7 @@ const Mouse_Draw = () => {
         onMousemove={handleMouseMove}
         onMouseup={handleMouseUp}
         style={{ border: '1px solid grey' }}
+        ref={stageRef}
       >
         <Layer>
           <Text text="Just start drawing" x={5} y={30} />
@@ -69,6 +86,7 @@ const Mouse_Draw = () => {
         <option value="pen">Pen</option>
         <option value="eraser">Eraser</option>
       </select>
+      <button onClick={handlepush}>push</button>
     </div>
   );
 };
