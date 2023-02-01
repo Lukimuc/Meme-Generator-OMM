@@ -1,22 +1,23 @@
 const express = require('express');
-const url = require("url");
 const ImageEditor = require("../../tools/imageEditor");
 const router = express.Router();
 
 router.get("/", function (req, res) {
+    console.log("Received API call")
     fetchMemeUrl(req.query.template)
         .then((url) => {
-            console.log(url)
             fetch(url)
                 .then((response) => response.blob())
                 .then((imageBlob) => imageBlob.arrayBuffer())
                 .then((buffer) => {
                     const imageEditor = new ImageEditor(buffer);
-                    let result = parseMemesFromReq(req).map(async (memeConfig) => {
+                    const memeConfigs = parseMemesFromReq(req)
+                    console.log("Create", memeConfigs.length, "memes for template ", req.query.template);
+                    let editorPromises = memeConfigs.map(async (memeConfig) => {
                         return imageEditor
                             .addCaptionsToBuffer(memeConfig)
                     })
-                    Promise.all(result)
+                    Promise.all(editorPromises)
                         .then(results => {
                             res.end(results[1]);
                         })
