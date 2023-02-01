@@ -12,17 +12,17 @@ router.get("/", function (req, res) {
                 .then((imageBlob) => imageBlob.arrayBuffer())
                 .then((buffer) => {
                     const imageEditor = new ImageEditor(buffer);
-                    let result = parseMemesFromReq(req).map(async (meme) => {
+                    let result = parseMemesFromReq(req).map(async (memeConfig) => {
                         return imageEditor
-                            .addCaptionToImage()
+                            .addCaptionsToBuffer(memeConfig)
                     })
                     Promise.all(result)
                         .then(results => {
-                            res.end(results[0]);
+                            res.end(results[1]);
                         })
                         .catch(e => {
                             console.error(e);
-                        })
+                        });
                 })
         })
 })
