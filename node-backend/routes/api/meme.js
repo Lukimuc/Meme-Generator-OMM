@@ -1,6 +1,8 @@
 const express = require('express');
 const ImageEditor = require("../../tools/imageEditor");
 const router = express.Router();
+const archiver = require('archiver');
+const zlib = require("zlib");
 
 router.get("/", function (req, res) {
     console.log("Received API call")
@@ -19,7 +21,7 @@ router.get("/", function (req, res) {
                     })
                     Promise.all(editorPromises)
                         .then(results => {
-                            res.end(results[1]);
+                            compressBuffers(results, res);
                         })
                         .catch(e => {
                             console.error(e);
@@ -59,6 +61,29 @@ let fetchMemeUrl = function (template) {
                 }
             )
     })
+}
+
+function compressBuffers(buffers, res) {
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    const zipData = [];
+
+    res.setHeader('Content-Disposition', 'attachment; filename="memes.zip"');
+
+    archive.on('data', function (chunk) {
+        zipData.push(chunk);
+    });
+
+    archive.on('end', function() {
+        const result = Buffer.concat(zipData);
+        res.end(result);
+    })
+
+    for (let i = 0; i < buffers.length; i++) {
+        const buffer = buffers[i];
+        archive.append(buffer, { name: `meme-${i}.jpg`});
+    }
+
+    archive.finalize();
 }
 
 module.exports = router;
