@@ -11,14 +11,16 @@ import Image_Form from './Form_Components/image_form_component';
 import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
 
-
 const Editor = (props) => {
 
     const stageRef = useRef(null);
 
     //größe Konva Board 
-    const [width, setWidth] = useState(500)
-    const [height, setHeight] = useState(500)
+   // const [width, setWidth] = useState("100%")
+   // const [height, setHeight] = useState("100%")
+
+    const [divWidth, setDivWidth] = useState(500);
+const [divHeight, setDivHeight] = useState(500);
 
     // Variable für Editor Forms
     
@@ -117,22 +119,37 @@ const Editor = (props) => {
         setImages([])
         setMytexts([])
     }
+
+    const handleStageResize = () => {
+        //hier kann man die Stage anpassen
+
+       // setDivWidth(stageRef.current.offsetWidth);
+      //  setDivHeight(stageRef.current.offsetHeight);
+      //  Stage.height(stageRef.current.offsetWidth);
+      };
       
+    /*  useEffect(() => {
+        handleStageResize();
+      }, []);*/
+   
     return (
         <div onKeyDown={handleKeyDown} tabIndex={0}>
             <Grid container paddingLeft={10} paddingTop={10} paddingRight={10} spacing={1}>
                 <Grid item md={8}>
                 <div style={{
                     display: "block",
+                    height: divHeight,
+                    width: divWidth,
                     /* float: "left",*/
                     border: "5px outset grey",
-                    height: {height},
-                    width: {width},
+                   // height: {height},
+                  //  width: {width},
                     }}
                 >
+                    
                 <Stage 
-                    width={"100%"}
-                    height={"100%"}
+                    width={500}
+                    height={500}
                     style={{
                         border: "1px outset grey",
                     }}
@@ -154,8 +171,8 @@ const Editor = (props) => {
                                         const imgs = images.slice();
                                         imgs[i] = newAttrs;
                                     }}
-                                    width={width}
-                                    height={height}
+                                    width={divWidth}
+                                    height={divHeight}
                                 />
                             );
                         })}
