@@ -12,7 +12,7 @@ import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
 
 
-const Editor = () => {
+const Editor = (props) => {
 
     const stageRef = useRef(null);
 
@@ -78,6 +78,7 @@ const Editor = () => {
         }else if (tmp === "Save") {
             setFormComponent(<Save_Form
                 stageRef={stageRef}
+                user={props.user}
             />)
         }else {
             setFormComponent(<p>Error</p>)

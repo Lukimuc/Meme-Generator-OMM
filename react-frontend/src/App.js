@@ -83,7 +83,7 @@ class App extends Component {
             } />
             <Route path='/profile/:id' element={<Profile isSignedIn={isSignedIn} user={user} />} />
             <Route path='/memes/:id' element={<Singleview />} />
-            <Route path='/editor' element={<Editor />} />
+            <Route path='/editor' element={<Editor isSignedIn={isSignedIn} user={user}/>} />
             <Route path='/testLukas' element={<TestLukas user={user}/>} />
             <Route path='/voicecontrols' element={<VoiceControls/>} />
             <Route path='/stream' element={<Stream></Stream>} />

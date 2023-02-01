@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 
 
-function Save_Form({ stageRef }) {
+function Save_Form({ stageRef, user }) {
 
   const [maxSize, setMaxSize] = useState(1);
 
@@ -118,7 +118,7 @@ function Save_Form({ stageRef }) {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: "test", // TODO
+        email: user.email, 
         image_encoded: image
       })
     })
