@@ -2,7 +2,6 @@ const express = require('express');
 const ImageEditor = require("../../tools/imageEditor");
 const router = express.Router();
 const archiver = require('archiver');
-const zlib = require("zlib");
 
 router.get("/", function (req, res) {
     console.log("Received API call")
@@ -15,12 +14,13 @@ router.get("/", function (req, res) {
                     const imageEditor = new ImageEditor(buffer);
                     const memeConfigs = parseMemesFromReq(req)
                     console.log("Create", memeConfigs.length, "memes for template ", req.query.template);
-                    let editorPromises = memeConfigs.map(async (memeConfig) => {
+                    let editorPromises = memeConfigs.map((memeConfig) => {
                         return imageEditor
-                            .addCaptionsToBuffer(memeConfig)
+                            .addCaptionsToBuffer(memeConfig);
                     })
                     Promise.all(editorPromises)
                         .then(results => {
+                            console.log("Finished editing memes");
                             compressBuffers(results, res);
                         })
                         .catch(e => {
@@ -66,7 +66,6 @@ let fetchMemeUrl = function (template) {
 function compressBuffers(buffers, res) {
     const archive = archiver('zip', { zlib: { level: 9 } });
     const zipData = [];
-
     res.setHeader('Content-Disposition', 'attachment; filename="memes.zip"');
 
     archive.on('data', function (chunk) {
@@ -75,6 +74,7 @@ function compressBuffers(buffers, res) {
 
     archive.on('end', function() {
         const result = Buffer.concat(zipData);
+        console.log("Finished compressing memes, sending archive now");
         res.end(result);
     })
 
