@@ -15,7 +15,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'rec
 
 
 
-const Image_Form = ({ push_image }) => {
+const Image_Form = ({ push_image, count }) => {
 
     // ---- graph code ---- //
     const fetchRef = useRef(false);
