@@ -39,6 +39,10 @@ const Navigation = ({ isSignedIn, user }) => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Meme Generator
                         </Typography>
+                        <Link to="/howto">
+                            <Button color="inherit">How to use this Website</Button>
+                        </Link>
+
                         <Link to={profileLink}>
                             <Button color="inherit">Profile</Button>
                         </Link>
