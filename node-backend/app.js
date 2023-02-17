@@ -39,6 +39,7 @@ const assert = require('assert');
 const url = 'mongodb://0.0.0.0:27017';
 
 const apiMemeRouter = require("./routes/api/meme");
+const apiSearchRouter = require("./routes/api/search");
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -372,6 +373,7 @@ app.put(('/memes/:id'), async (req, res) => {
 })
 
 app.use("/api/meme", apiMemeRouter);
+app.use("/api/search", apiSearchRouter);
 
 // REGISTER new user
 app.post('/register', (req, res) => {
