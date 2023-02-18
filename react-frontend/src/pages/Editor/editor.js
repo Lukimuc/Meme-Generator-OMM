@@ -148,10 +148,15 @@ const [divHeight, setDivHeight] = useState(500);
                 >
                     
                 <Stage 
+<<<<<<< HEAD
                     width={500}
                     height={500}
+=======
+                    width={600}
+                    height={600}
+>>>>>>> 4582716a (Änderung für merge request)
                     style={{
-                        border: "1px outset grey",
+                        border: "1px outset red",
                     }}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
