@@ -26,7 +26,9 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'r
 // Video Stream Imports
 import io from 'socket.io-client';
 import html2canvas from 'html2canvas';
-const socket = io('wss://localhost:8080');
+const socket = io('https://localhost:8080', {
+  rejectUnauthorized: false
+});
 
 export function Singleview(props) {
   // Video Stream States

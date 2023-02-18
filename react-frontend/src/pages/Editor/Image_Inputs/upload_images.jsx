@@ -30,8 +30,11 @@ const Upload_Image = ({push}) => {
         <div>
             <img src={imageUrl} alt="Image" />
             <br/>
-            <input type="file" onChange={handleFileSelect} />
-            <button onClick={() => {console.log("Image wird gepushed"); push(imageUrl)}} > push </button>
+            <Button variant="contained" component="label">
+                Upload
+                <input hidden multiple type="file" onChange={handleFileSelect}/>
+            </Button> <br/>
+            <Button variant="contained" onClick={() => {console.log("Image wird gepushed"); push(imageUrl)}} > push </Button>
         </div>
     )
 

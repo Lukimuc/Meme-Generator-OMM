@@ -6,10 +6,12 @@ import My_Text from './Konva_Components/my_text';
 import Editiere_Text from './editire_text';
 
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
 import Image_Form from './Form_Components/image_form_component';
 import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
+import { TextField } from '@mui/material';
 
 const Editor = (props) => {
 
@@ -20,7 +22,14 @@ const Editor = (props) => {
    // const [height, setHeight] = useState("100%")
 
     const [divWidth, setDivWidth] = useState(500);
-const [divHeight, setDivHeight] = useState(500);
+    const [divHeight, setDivHeight] = useState(500);
+
+    useEffect(() => {
+        const content = stageRef.current.content;
+    
+        content.style.border = '3px solid black';
+        content.style.backgroundColor = 'white';
+      }, []);
 
     // Variable für Editor Forms
     
@@ -138,26 +147,21 @@ const [divHeight, setDivHeight] = useState(500);
                 <Grid item md={8}>
                 <div style={{
                     display: "block",
-                    height: divHeight,
-                    width: divWidth,
+                    //height: divHeight,
+                    //width: divWidth,
                     /* float: "left",*/
-                    border: "5px outset grey",
+                   //border: "5px outset grey",
                    // height: {height},
                   //  width: {width},
                     }}
                 >
                     
                 <Stage 
-<<<<<<< HEAD
-                    width={500}
-                    height={500}
-=======
-                    width={600}
-                    height={600}
->>>>>>> 4582716a (Änderung für merge request)
-                    style={{
-                        border: "1px outset red",
-                    }}
+                    width={divWidth}
+                    height={divHeight}
+                    //style={{
+                    //    border: "1px outset red",
+                    //}}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
                     ref={stageRef}
@@ -209,27 +213,38 @@ const [divHeight, setDivHeight] = useState(500);
                     </Layer>
                 </Stage>
                 
-            </div>
-            </Grid>
-            <Grid item md={4}>
-                <h1 textAlign='center'>Editor</h1>
-                <button onClick={() => { clickbutton("Images") }}> Images </button>
-                <button onClick={() => { clickbutton("Texts") }}> Texts </button>
-                <button onClick={() => { clickbutton("Save") }}> Save </button>
-                {formcomponent}
-                {changeText}
-                <button onClick={() => delete_all()}> Clear </button>
+                </div>
+                </Grid>
+                <Grid item md={4}>
+                    <h1 textAlign='center'>Editor</h1>
+                    <Button variant="contained" onClick={() => { clickbutton("Images") }}> Images </Button>
+                    <Button variant="contained" onClick={() => { clickbutton("Texts") }}> Texts </Button>
+                    <Button variant="contained" onClick={() => { clickbutton("Save") }}> Save </Button>
+                    {formcomponent}
+                    {changeText}
+                    <Button variant="contained" onClick={() => delete_all()}> Clear </Button> <br/>
+                    <TextField 
+                        type="number"
+                        name="Width Editor"
+                        label="Width Edtor"
+                        variant="filled"
+                        value={divWidth}
+                        onChange={ (event) => {
+                            event.preventDefault();
+                            setDivWidth(parseInt(event.target.value))
+                    } } />
+                    <TextField 
+                        type="number"
+                        name="Height Editor"
+                        label="Height Edtor"
+                        variant="filled"
+                        value={divHeight}
+                        onChange={ (event) => {
+                            event.preventDefault();
+                            setDivHeight(parseInt(event.target.value))
+                    } } />
 
-                    
-               
-                        {/*}  {template && <Meme template={template} name={template.name}  />}*/}
-                        {/*vorher war template statt templates? whats the difference???}*/}
-                         {/*<Grid container spacing={2}>*/}
-  
-                    
-   
-           
-            </Grid>
+                </Grid>
             </Grid>
             
         </div>

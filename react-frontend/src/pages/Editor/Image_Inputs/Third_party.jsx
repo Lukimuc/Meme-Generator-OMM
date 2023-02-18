@@ -47,9 +47,9 @@ const Third_Party = ({push}) => {
                 )})
             }
             <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => setUrl(e.target.value)}/>
-            <button onClick={ submitUrl()} />
+            <Button variant="contained" onClick={ submitUrl()} />
             {imagesrc}
-            <button onClick={ () => push(template.url)} > push </button>
+            <Button variant="contained" onClick={ () => push(template.url)} > push </Button>
         </div>
     )
 }

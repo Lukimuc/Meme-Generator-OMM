@@ -112,6 +112,7 @@ const Image_Form = ({ push_image, count }) => {
         localStorage.setItem('imageList', JSON.stringify(images));
     };
 
+    /**
     useEffect(() => {
         fetchMemes();
     }, []);
@@ -125,6 +126,7 @@ const Image_Form = ({ push_image, count }) => {
             console.log(error);
         }
     };
+     */
 
     const clickbutton = (text) => {
         switch (text) {
@@ -154,24 +156,6 @@ const Image_Form = ({ push_image, count }) => {
                 setImageInput(<Mouse_Draw
                     push= { (src) => {setImages( arr => [...arr, src])}}
                 />)
-                setImageInput(<Upload_Image />)
-                handleDiagram('File Upload')
-                break;
-            case "Url":
-                setImageInput(<Url />)
-                handleDiagram('URL')
-                break;
-            case "Third_Party":
-                setImageInput(<Third_Party />)
-                handleDiagram('Third Party')
-                break;
-            case "Camera":
-                setImageInput(<CameraFeed />)
-                handleDiagram('Camera')
-                break;
-            case "Draw":
-                setImageInput(<Mouse_Draw />)
-                handleDiagram('Draw')
                 break;
             default:
                 setImageInput(<p>Es ist ein Fehler aufgetreten</p>)
@@ -181,8 +165,8 @@ const Image_Form = ({ push_image, count }) => {
     return (
         <div>
             <p> Image Form Component</p>
-            <button onClick={() => savelocalstorage()}> save in localStorage</button>
-            <button onClick={() => loadlocalstorage()}> load in localStorage</button>
+            <Button variant="contained" onClick={() => savelocalstorage()}> save in localStorage</Button>
+            <Button variant="contained" onClick={() => loadlocalstorage()}> load in localStorage</Button>
             {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
             {images.map( (image, i) => {
                 return(
@@ -221,13 +205,13 @@ const Image_Form = ({ push_image, count }) => {
                 e.preventDefault();
                 push_image(input_image)
             }}>Submit Image</Button> */}
-            <p> {input_image} </p>
+            <p> {input_image != null ? "Es ist ein Bild ausgewählt" : "Kein Bild ausgewählt"} </p>
 
-            <button onClick={() => { clickbutton("File_Upload") }}> File Upload </button>
-            <button onClick={() => { clickbutton("Url") }}> Url </button>
-            <button onClick={() => { clickbutton("Third_Party") }}> Third Party </button>
-            <button onClick={() => { clickbutton("Camera") }}> Camera </button>
-            <button onClick={() => { clickbutton("Draw") }}> Draw </button>
+            <Button variant="contained" onClick={() => { clickbutton("File_Upload") }}> File Upload </Button>
+            <Button variant="contained" onClick={() => { clickbutton("Url") }}> Url </Button>
+            <Button variant="contained" onClick={() => { clickbutton("Third_Party") }}> Third Party </Button>
+            <Button variant="contained" onClick={() => { clickbutton("Camera") }}> Camera </Button>
+            <Button variant="contained" onClick={() => { clickbutton("Draw") }}> Draw </Button>
             {image_input}
             {/**<Upload_Image />
             <Third_Party /> */}

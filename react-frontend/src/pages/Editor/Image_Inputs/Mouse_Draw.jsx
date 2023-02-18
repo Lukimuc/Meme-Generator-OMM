@@ -1,13 +1,26 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import { Stage, Layer, Line, Text } from 'react-konva';
+
+import Button from '@mui/material/Button';
 
 const Mouse_Draw = ({push}) => {
 
   const stageRef = useRef(null);
 
-  const [tool, setTool] = React.useState('pen');
-  const [lines, setLines] = React.useState([]);
-  const isDrawing = React.useRef(false);
+  useEffect(() => {
+    const content = stageRef.current.content;
+
+    content.style.border = '1px solid grey';
+    content.style.backgroundColor = 'white';
+  }, []);
+
+  const [tool, setTool] = useState('pen');
+  const [lines, setLines] = useState([]);
+
+  const [width, setWidth] = useState(300)
+  const [height, setHeight] = useState(300)
+
+  const isDrawing = useRef(false);
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -50,17 +63,25 @@ const Mouse_Draw = ({push}) => {
 
   return (
     <div>
+      <div
+        style={{
+          width:{width},
+          height:{height},
+          //border: `1px solid red`
+        }}
+      >
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={width}
+        height={height}
         onMouseDown={handleMouseDown}
         onMousemove={handleMouseMove}
         onMouseup={handleMouseUp}
-        style={{ border: '1px solid grey' }}
+        //style={{ border: '1px solid grey' }}
         ref={stageRef}
       >
-        <Layer>
-          <Text text="Just start drawing" x={5} y={30} />
+        <Layer
+          style={{border: '1px solid black'}}
+        >
           {lines.map((line, i) => (
             <Line
               key={i}
@@ -77,6 +98,7 @@ const Mouse_Draw = ({push}) => {
           ))}
         </Layer>
       </Stage>
+      </div>
       <select
         value={tool}
         onChange={(e) => {
@@ -86,7 +108,22 @@ const Mouse_Draw = ({push}) => {
         <option value="pen">Pen</option>
         <option value="eraser">Eraser</option>
       </select>
-      <button onClick={handlepush}>push</button>
+      <Button variant="contained" onClick={handlepush}>push</Button>
+      <label>
+        Width:
+        <input type="number" value={width} onChange={ (event) => {
+          event.preventDefault();
+          console.log(window.innerWidth)
+          setWidth(parseInt(event.target.value))
+        } } />
+      </label>
+      <label>
+        Height:
+        <input type="number" value={height} onChange={ (event) => {
+          event.preventDefault();
+          setHeight(parseInt(event.target.value))
+        } } />
+      </label>
     </div>
   );
 };

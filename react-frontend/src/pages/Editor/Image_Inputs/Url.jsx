@@ -16,8 +16,8 @@ const Url = ({push}) => {
             <br/>
             <TextField style={{paddingBottom:10}} label="Add text" type="text" value={url || ""} onChange={(e) => setUrl(e.target.value)}/>
             <br/>
-            <button onClick={ () => {printImage()}}> PrintUrl </button>
-            <button onClick={() => {console.log(url); push(url.props.src)}} > push </button>
+            <Button variant="contained" onClick={ () => {printImage()}}> PrintUrl </Button>
+            <Button variant="contained" onClick={() => {console.log(url); push(url.props.src)}} > push </Button>
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 
+
 const fontFamilies = [
     { value: "Arial", label: "Arial" },
     { value: "Times New Roman", label: "Times New Roman" },
@@ -45,7 +46,7 @@ const Editiere_Text = ({text_attr, onClick}) => {
             <br/>
             <input type="color" value={color} onChange={e => setColor(e.target.value)} />
             <br/>
-            <button onClick={() => onClick(text_attr.key, {text: text, fontFamily: fontFamily, fontStyle: fontStyle, fill: color})}> Submit </button>
+            <Button onClick={() => onClick(text_attr.key, {text: text, fontFamily: fontFamily, fontStyle: fontStyle, fill: color})}> Submit </Button>
             <p style={{ fontFamily, fontStyle, color }}>{text}</p>
         </div>
     )
