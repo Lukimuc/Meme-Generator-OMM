@@ -19,6 +19,8 @@
     "monk": "7.3.3",
     "morgan": "~1.9.1",
     "njwt": "^1.0.0",
+    "piexifjs": "^1.0.6",
+    "sharp": "^0.31.3",
     "socket.io-client": "^4.5.4"
   },
   "devDependencies": {
