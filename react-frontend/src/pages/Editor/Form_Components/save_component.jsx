@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 
+import { TextField, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 function Save_Form({ stageRef, user }) {
 
   const [maxSize, setMaxSize] = useState(1);
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [selectedOption, setSelectedOption] = useState("private");
 
   const save_Element = (blob) => {
     const link = document.createElement("a");
@@ -109,7 +117,10 @@ function Save_Form({ stageRef, user }) {
       mimeType: 'image/png',
       quality: 1
     });
-
+    if (title === "" || description === "") {
+      toast.error('Title oder Description wurde nicht hinzugefügt');
+      return
+    }
     createMeme(dataURL)
   }
 
@@ -118,24 +129,55 @@ function Save_Form({ stageRef, user }) {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        title: title,
+        imageDescription: description,
+        status: selectedOption,
         email: user.email, 
         image_encoded: image
       })
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          toast.success("Das Meme wurde erstellt");
+        } else {
+          toast.error("Fehler beim Erstellen des Memes");
+        }
+        return response.json();
+      })
       .then(createdMeme => {
         console.log(createdMeme);
+        // TODO wo bekomme ich den link für die singleview
       })
   }
 
   return (
     <div>
         <p> Hier kann das Borad gespeichert werden</p>
-        <button onClick={() => sendtoServer()}> send to server </button>
+        <TextField type="text" name="Title" label="Title" variant="filled" value={title || ""} onChange={ (e) => {
+          e.preventDefault();
+          setTitle(e.target.value)
+        }} />
+        <TextField type="text" name="Description" label="Description" variant="filled" value={description || ""} onChange={ (e) => {
+          e.preventDefault();
+          setDescription(e.target.value)
+        }} />
+        
+        <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="private"
+          name="radio-buttons-group"
+          value={selectedOption}
+          onChange={(e) => setSelectedOption(e.target.value)}
+        >
+          <FormControlLabel value="private" control={<Radio />} label="private" />
+          <FormControlLabel value="public" control={<Radio />} label="public" />
+        </RadioGroup>
+        <p>{selectedOption}</p>
+        <Button variant="contained" onClick={() => sendtoServer()}> send to server </Button>
         <br/>
         <p> Die größe der Datei wird in KB angegeben</p>
-        <input type="number" value={maxSize} onChange={e => setMaxSize(e.target.value)} />
-        <button onClick={handleSave}>Download Compressed Image</button>
+        <TextField type="number" name="Compress" label="Compress" variant="filled" value={maxSize} onChange={e => setMaxSize(e.target.value)} />
+        <Button variant="contained" onClick={handleSave}>Download Compressed Image</Button>
     </div>
   );
 }

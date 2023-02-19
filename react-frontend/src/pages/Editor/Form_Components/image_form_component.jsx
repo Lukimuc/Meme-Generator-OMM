@@ -11,7 +11,6 @@ import { CameraFeed } from '../Image_Inputs/Kamera_Feed';
 import Mouse_Draw from '../Image_Inputs/Mouse_Draw';
 import Url from '../Image_Inputs/Url';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-//import CameraFeed from '../Image_Inputs/Camera_feed_new';
 
 
 
@@ -168,12 +167,30 @@ const Image_Form = ({ push_image, count }) => {
             <Button variant="contained" onClick={() => savelocalstorage()}> save in localStorage</Button>
             <Button variant="contained" onClick={() => loadlocalstorage()}> load in localStorage</Button>
             {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
-            {images.map( (image, i) => {
-                return(
-                <div>
-                    <img src={image} alt={"Lion" + i} key={"Lion" + i} onClick={() => setInput_Image(image)}/>
-                </div>)
-            })}
+            <div style={{
+                width: "100%",
+                height: "500px",
+                overflow: "auto",
+            }}>
+                <div style={{
+                    display: "grid",
+                    gridGap: "10px",
+                    gridTemplateColumns: "repeat(3, 150px)",
+                    gridTemplateRows: "repeat(auto-fit, minmax(150px, 1fr))",
+                }}>
+                    {images.length === 0 ? <p>Noch kein Template ausgewählt</p> : images.map( (image, i) => {
+                        return(
+                            <div>
+                                <img 
+                                    src={image} 
+                                    alt={"Image" + i} 
+                                    key={"Image" + i} 
+                                    style={{maxWidth: "100%", maxHeight: "100%", border: input_image === image ? "2px solid black" : "none"}}
+                                    onClick={() => setInput_Image(image)}/>
+                            </div>)
+                    })}
+                </div>
+            </div>
             <br/>
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();

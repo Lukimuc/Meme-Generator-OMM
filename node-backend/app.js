@@ -454,17 +454,17 @@ app.get('/profile/:id', async (req, res) => {
 
 // create Meme
 app.post(("/memes"), async (req, res) => {
-  const { email, image_encoded } = req.body; // TODO get input from frontend 
+  const { title, imageDescription, status, email, image_encoded } = req.body; // TODO get input from frontend 
   user = await findOneUserByEmail(client, email);
 
   newMeme = {
-    "title": "test",
-    "status": "public",
+    "title": title,
+    "status": status,
     "likes": 0,
     "memeCreated": new Date(),
     "CreatorID": user._id,
     "CreatorMail": user.email,
-    "imageDescription": "This is a Description of the Picture made by the User used for the Screenreader",
+    "imageDescription": imageDescription,
     "viewsToday": 0,
     "likedBy": [],
     "image_encoded": image_encoded
