@@ -1,37 +1,28 @@
 const express = require('express');
+const {findMemesInDB} = require('../../tools/dbApiSearch');
+const {zipBuffers} = require("../../tools/imageZipper");
+
 const router = express.Router();
+
 router.get('/', (req, res) => {
-    console.log(req.mongoClient);
     findMemesInDB(req)
-        .then((res) => console.log(res));
-    res.status(200).send();
+        .then((result) => {
+            const imageBuffers = result.filter((entry) => entry['image_encoded'] !== null) .map((meme) => {
+                return convertDataUrlToImageBuffer(meme['image_encoded'])
+            })
+            zipBuffers(imageBuffers, res)
+                .then((archive) => res.end(archive));
+        });
+    //res.status(200).send();
 })
 
-async function findMemesInDB(req) {
-    let searchParams = {};
-    let sortParams = {};
-    let limit = 10;
+function convertDataUrlToImageBuffer(dataUrl) {
+    const parts = dataUrl.split(",");
+    const data = parts[1];
 
-    console.log(req.query);
-    if (req.query.title) {
-        searchParams['title'] = {$regex: req.query.title, $options: 'i'};
-    }
-
-    if (req.query.creator) {
-        searchParams['CreatorMail'] = req.query.creator;
-    }
-
-    if (req.query.order === "ascending") {
-        sortParams['memeCreated'] = 1;
-    } else {
-        sortParams['memeCreated'] = -1;
-    }
-
-    if (req.query.limit) {
-        limit = parseInt(req.query.limit);
-    }
-
-    return req.mongoDB.collection('memes').find(searchParams).sort(sortParams).limit(limit).toArray();
+    const buffer = Buffer.from(data, 'base64');
+    return buffer;
 }
+
 
 module.exports = router;
