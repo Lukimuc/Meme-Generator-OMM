@@ -337,7 +337,11 @@ app.use(express.json());
 app.use(cors(
 ));
 
-
+//Make MongoClient accessible for routes
+app.use((req, res, next) => {
+  req.mongoDB = client.db('memeGeneratorDB');
+  next();
+})
 // Page logs / Feature 22 - update clicks in Editor
 app.get(("/log"), async (req, res) => {
   try {
