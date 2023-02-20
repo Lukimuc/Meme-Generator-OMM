@@ -1,30 +1,20 @@
 const express = require('express');
 const {findMemesInDB} = require('../../tools/dbApiSearch');
 const {zipBuffers} = require("../../tools/imageZipper");
-const {readExif} = require("../../tools/exifEditor");
+const {createJpegBuffersFromMemes} = require("../../tools/imageConverter");
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
     findMemesInDB(req)
-        .then((result) => {
-            const imageBuffers = result.filter((entry) => entry['image_encoded'] !== null).map((meme) => {
-                return convertDataUrlToImageBuffer(meme['image_encoded'])
-            })
-            imageBuffers.forEach((buffer) => readExif(buffer));
-            zipBuffers(imageBuffers, res)
-                .then((archive) => res.end(archive));
+        .then((memes) => {
+           createJpegBuffersFromMemes(memes)
+               .then((buffers) => {
+                   zipBuffers(buffers, res)
+                       .then((archive) => res.status(200).end(archive));
+               })
         });
     //res.status(200).send();
 })
-
-function convertDataUrlToImageBuffer(dataUrl) {
-    const parts = dataUrl.split(",");
-    const data = parts[1];
-
-    const buffer = Buffer.from(data, 'base64');
-    return buffer;
-}
-
 
 module.exports = router;
