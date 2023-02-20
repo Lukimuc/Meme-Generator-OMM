@@ -1,6 +1,6 @@
 const archiver = require("archiver");
 
-async function zipBuffers(buffers, res) {
+async function zipBuffers(buffers, res, customNames = false) {
     return new Promise((resolve, _) => {
     const archive = archiver('zip', { zlib: { level: 9 } });
     const zipData = [];
@@ -18,7 +18,9 @@ async function zipBuffers(buffers, res) {
 
     for (let i = 0; i < buffers.length; i++) {
         const buffer = buffers[i];
-        archive.append(buffer, { name: `meme-${i}.jpg`});
+        const name = customNames ? `${buffer[1]}.jpeg` : `meme-${i}.jpeg`
+        const meme = customNames ? buffer[0] : buffer
+        archive.append(meme, { name: name});
     }
 
     archive.finalize();

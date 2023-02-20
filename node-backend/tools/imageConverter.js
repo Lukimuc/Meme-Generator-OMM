@@ -1,10 +1,10 @@
 //imageConverter
 const sharp = require('sharp');
 
-async function createJpegBuffersFromMemes(memes) {
+async function createJpegNameBuffersFromMemes(memes) {
     return new Promise((resolve) => {
        let promises = memes.filter((meme) => meme['image_encoded'] !== null).map((meme) => {
-           return exifBufferFromMeme(meme)
+           return exifBufferWithNameFromMeme(meme)
         })
         Promise.all(promises)
             .then(results => {
@@ -13,7 +13,7 @@ async function createJpegBuffersFromMemes(memes) {
     })
 }
 
-async function exifBufferFromMeme(meme) {
+async function exifBufferWithNameFromMeme(meme) {
     const buffer = convertDataUrlToImageBuffer(meme['image_encoded'])
     return sharp(buffer)
         .jpeg()
@@ -29,6 +29,8 @@ async function exifBufferFromMeme(meme) {
                 }
             }
         })
+        .toBuffer()
+        .then((buffer) => [buffer, meme['title']]);
 }
 function convertDataUrlToImageBuffer(dataUrl) {
     const parts = dataUrl.split(",");
@@ -38,4 +40,4 @@ function convertDataUrlToImageBuffer(dataUrl) {
     return buffer;
 }
 
-module.exports.createJpegBuffersFromMemes = createJpegBuffersFromMemes;
+module.exports.createJpegNameBuffersFromMemes = createJpegNameBuffersFromMemes;
