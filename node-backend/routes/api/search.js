@@ -14,7 +14,6 @@ router.get('/', (req, res) => {
                        .then((archive) => res.status(200).end(archive));
                })
         });
-    //res.status(200).send();
 })
 
 module.exports = router;

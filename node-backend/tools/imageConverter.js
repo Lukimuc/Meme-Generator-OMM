@@ -1,11 +1,10 @@
 //imageConverter
-const piexif = require('piexifjs');
 const sharp = require('sharp');
 
 async function createJpegBuffersFromMemes(memes) {
     return new Promise((resolve) => {
        let promises = memes.filter((meme) => meme['image_encoded'] !== null).map((meme) => {
-           return urlFromMemeWithExif(meme)
+           return exifBufferFromMeme(meme)
         })
         Promise.all(promises)
             .then(results => {
@@ -14,7 +13,7 @@ async function createJpegBuffersFromMemes(memes) {
     })
 }
 
-async function urlFromMemeWithExif(meme) {
+async function exifBufferFromMeme(meme) {
     const buffer = convertDataUrlToImageBuffer(meme['image_encoded'])
     return sharp(buffer)
         .jpeg()
