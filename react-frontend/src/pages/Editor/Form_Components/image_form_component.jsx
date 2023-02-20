@@ -314,7 +314,7 @@ const Image_Form = ({ push_image, count, user }) => {
 
             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
-                push_image(input_image, counter);
+                push_image(input_image.src, counter);
                 setCounter(counter+1)   
             }}>Submit Image</Button>
 

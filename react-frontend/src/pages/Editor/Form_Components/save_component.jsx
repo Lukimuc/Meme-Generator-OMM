@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 
-import { TextField, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Button, RadioGroup, FormControlLabel, Radio, Link } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import Share from "./shares"
 
 
 
@@ -13,6 +15,7 @@ function Save_Form({ stageRef, user }) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [selectedOption, setSelectedOption] = useState("private");
+  const [sharedUrl, setSharedUrl] = useState("")
 
   const save_Element = (blob) => {
     const link = document.createElement("a");
@@ -153,7 +156,8 @@ function Save_Form({ stageRef, user }) {
         return response.json();
       })
       .then(createdMeme => {
-        console.log(createdMeme);
+        console.log(createdMeme._id);
+        setSharedUrl("http://localhost:3000/memes/" + createdMeme._id)
         // TODO wo bekomme ich den link für die singleview
       })
   }
@@ -186,6 +190,8 @@ function Save_Form({ stageRef, user }) {
         <p> Die größe der Datei wird in KB angegeben</p>
         <TextField type="number" name="Compress" label="Compress" variant="filled" value={maxSize} onChange={e => setMaxSize(e.target.value)} />
         <Button variant="contained" onClick={handleSave}>Download Compressed Image</Button>
+        <p>{sharedUrl === "" ? "" : <Link href={sharedUrl} target="_blank"> Dein erstelltes Meme </Link>}</p>
+        {sharedUrl === "" ? "" : <Share url={sharedUrl}/>}
     </div>
   );
 }
