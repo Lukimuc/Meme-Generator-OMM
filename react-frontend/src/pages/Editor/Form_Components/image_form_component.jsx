@@ -105,7 +105,8 @@ const Image_Form = ({ push_image, count, user }) => {
         const storedImages = JSON.parse(localStorage.getItem('imageList'));
         console.log(storedImages)
         if (storedImages) {
-        setImages(...images, storedImages);
+            storedImages.map( (img) => setImages( arr => [...arr, {src:img.src, serverid:""}]))
+        //setImages(...images, storedImages);
         }
     };
 
