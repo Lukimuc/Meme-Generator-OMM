@@ -23,6 +23,10 @@ function Save_Form({ stageRef, user }) {
   }
 
   const handleSave = async() => {
+    if (user.email === ""){
+      toast.error("Kein User angemeldet")
+      return
+    }
     if (!stageRef.current) {
         console.log("Stageref ist null")
         return;
@@ -108,6 +112,10 @@ function Save_Form({ stageRef, user }) {
   }
 
   const sendtoServer = () => {
+    if (user.email === ""){
+      toast.error("Kein User angemeldet")
+      return
+    }
     if (!stageRef.current) {
       console.log("Stageref ist null")
       return;

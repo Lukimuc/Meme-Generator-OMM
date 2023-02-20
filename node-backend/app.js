@@ -6,6 +6,8 @@ var logger = require('morgan');
 var bcrypt = require('bcrypt-nodejs');
 var cors = require('cors');
 
+const { ObjectId } = require('mongodb');
+
 
 
 // ##### IMPORTANT
@@ -569,6 +571,57 @@ app.put('/memes/:id/like', async (req, res) => {
     console.log("Error in app.get('/meme/:id': " + error);
     res.status(400).json("Error beim liken app.get('/meme/:id'': " + error);
   }
+})
+
+// speichern von templates
+
+async function createTemplate(client, template) {
+  const result = await client.db("memeGeneratorDB").collection("templates").insertOne(template)
+}
+
+async function findAllTemplates(client) {
+  const cursor = await client.db("memeGeneratorDB").collection("templates").find()
+  const result = await cursor.toArray();
+
+  if (result.length > 0) {
+    console.log(`Memes found`);
+  } else {
+    console.log(`No memes found`);
+  }
+  return result;
+}
+
+async function deleteTemplate(client, id) {
+  const result = await client.db("memeGeneratorDB").collection("templates").deleteOne({ _id: ObjectId(id) });;
+  console.log(`${result.deletedCount} document(s) deleted`);
+  return
+}
+
+app.get(('/template'), async (req, res) => {
+  templates = await findAllTemplates(client)
+  console.log("Es wurden alle templates geladen!")
+  res.status(200).json(templates)
+})
+
+app.post("/template", async (req, res) => {
+  const { image_encoded, email } = req.body
+  user = await findOneUserByEmail(client,email)
+
+  newTemplate = {
+    "CreatorID" : user._id,
+    "CreatorMail" : user.email,
+    "template_encoded": image_encoded
+  }
+
+  console.log("Es wurde ein template gespeichert!")
+  createTemplate(client, newTemplate)
+  res.json(newTemplate)
+})
+
+app.delete("/template/:id", async (req, res) => {
+  const id = req.params.id;
+  deleteTemplate(client, id)
+  res.sendStatus(200)
 })
 
 

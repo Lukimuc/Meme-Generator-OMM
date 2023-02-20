@@ -43,6 +43,7 @@ const Editor = (props) => {
     const [formcomponent, setFormComponent] = useState(<Image_Form
         push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
         count ={images.length} 
+        user={props.user}
     />)
    
 
@@ -68,6 +69,7 @@ const Editor = (props) => {
                 <Image_Form
                     push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
                     count = {images.length} 
+                    user={props.user}
                 />
             )
         }else if(tmp === "Texts") {
