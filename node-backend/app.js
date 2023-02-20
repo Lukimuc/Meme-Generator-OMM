@@ -41,6 +41,7 @@ const assert = require('assert');
 const url = 'mongodb://0.0.0.0:27017';
 
 const apiMemeRouter = require("./routes/api/meme");
+const apiSearchRouter = require("./routes/api/search");
 
 const dbName = 'memeGeneratorDB';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -338,7 +339,11 @@ app.use(express.json());
 app.use(cors(
 ));
 
-
+//Make MongoClient accessible for routes
+app.use((req, res, next) => {
+  req.mongoDB = client.db('memeGeneratorDB');
+  next();
+})
 // Page logs / Feature 22 - update clicks in Editor
 app.get(("/log"), async (req, res) => {
   try {
@@ -374,6 +379,7 @@ app.put(('/memes/:id'), async (req, res) => {
 })
 
 app.use("/api/meme", apiMemeRouter);
+app.use("/api/search", apiSearchRouter);
 
 // REGISTER new user
 app.post('/register', (req, res) => {
