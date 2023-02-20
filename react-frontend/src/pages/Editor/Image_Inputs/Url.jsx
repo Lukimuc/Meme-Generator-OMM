@@ -14,6 +14,7 @@ const Url = ({push}) => {
             <p> Hier wird die Url bearbeitet</p>
             {url}
             <br/>
+            <p> Beispielurl: https://konvajs.org/assets/lion.png </p>
             <TextField style={{paddingBottom:10}} label="Add text" type="text" value={url || ""} onChange={(e) => setUrl(e.target.value)}/>
             <br/>
             <Button variant="contained" onClick={ () => {printImage()}}> PrintUrl </Button>

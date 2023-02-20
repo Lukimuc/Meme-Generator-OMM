@@ -13,6 +13,7 @@ import Text_Form from './Form_Components/text_form_component';
 import Save_Form from './Form_Components/save_component';
 import { TextField } from '@mui/material';
 
+
 const Editor = (props) => {
 
     const stageRef = useRef(null);
@@ -42,6 +43,7 @@ const Editor = (props) => {
     const [formcomponent, setFormComponent] = useState(<Image_Form
         push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
         count ={images.length} 
+        user={props.user}
     />)
    
 
@@ -67,6 +69,7 @@ const Editor = (props) => {
                 <Image_Form
                     push_image={ (input_image, count) => setImages( arr => [...arr, {src: input_image, key:"Image_" + count}])}
                     count = {images.length} 
+                    user={props.user}
                 />
             )
         }else if(tmp === "Texts") {

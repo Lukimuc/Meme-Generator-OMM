@@ -15,6 +15,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import jwt_decode from "jwt-decode";
 import { useEffect } from 'react';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const theme = createTheme();
 
 const SignIn = (props) => {
@@ -42,7 +45,14 @@ const SignIn = (props) => {
                 password: signInPassword
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    toast.success("User angemeldet");
+                } else {
+                    toast.error("Fehler beim anmelden");
+                }
+                return response.json();
+            })
             .then(user => {
                 if (user) {
                     props.loadUser(user);
@@ -79,7 +89,14 @@ const SignIn = (props) => {
                 email: userGoogleObject.email,
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    toast.success("User angemeldet");
+                } else {
+                    toast.error("Fehler beim anmelden");
+                }
+                return response.json();
+            })
             .then(user => {
                 if (user) {
                     props.loadUser(user);

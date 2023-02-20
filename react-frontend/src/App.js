@@ -15,6 +15,9 @@ import Graph from './pages/TestLukas/graph';
 import Graph2 from './pages/TestLukas/graph2';
 import HowTo from './Components/HowTo';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 class App extends Component {
   constructor() {
     super();
@@ -58,6 +61,7 @@ class App extends Component {
     const { isSignedIn, user } = this.state; // to avoid this.state.isSigendIn und .state and make more readable code
     return (
       <>
+      <ToastContainer />
       <div>
         {!this.state.isOnline && <div>You are currently offline</div>}
       </div>

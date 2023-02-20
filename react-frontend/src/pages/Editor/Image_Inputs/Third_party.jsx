@@ -32,22 +32,34 @@ const Third_Party = ({push}) => {
 
     return (
         <div>
+            <div style={{
+                width: "100%",
+                height: "500px",
+                overflow: "auto",
+            }}>
+            <div style={{
+                    display: "grid",
+                    gridGap: "10px",
+                    gridTemplateColumns: "repeat(3, 150px)",
+                    gridTemplateRows: "repeat(auto-fit, minmax(150px, 1fr))",
+                }}>
             {templates && templates.map((template) => {
                 return (
-                    <Grid item md={3} key={template.id}>
                         <Meme
                         template={template}
-                        width={90}
+                        //width={90}
+                        style={{maxWidth: "100%", maxHeight: "100%"}}
                         onClick={(e) => {
                             e.preventDefault();
                             setTemplate(template);
                         }}
                         />
-                    </Grid>
                 )})
             }
+            </div>
+            </div>
+            <p> Beispielurl: https://api.imgflip.com/get_memes </p>
             <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => setUrl(e.target.value)}/>
-            <Button variant="contained" onClick={ submitUrl()} />
             {imagesrc}
             <Button variant="contained" onClick={ () => push(template.url)} > push </Button>
         </div>
