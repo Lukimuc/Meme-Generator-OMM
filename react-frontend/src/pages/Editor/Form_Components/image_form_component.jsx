@@ -137,6 +137,7 @@ const Image_Form = ({ push_image, count, user }) => {
                 setImageInput(<Upload_Image
                     push= { (src) => {setImages( arr => [...arr, {src:src, serverid:""}])}}    
                 />)
+                handleDiagram('File Upload');
                 break;
             case "Url":
                 setImageInput(<Url
@@ -144,21 +145,25 @@ const Image_Form = ({ push_image, count, user }) => {
                         console.log(src)
                         setImages( arr => [...arr, {src:src, serverid:""}])}} 
                 />)
+                handleDiagram('URL');
                 break;
             case "Third_Party":
                 setImageInput(<Third_Party
                     push= { (src) => {setImages( arr => [...arr, {src:src, serverid:""}])}}
                 />)
+                handleDiagram('Third Party');
                 break;
             case "Camera":
                 setImageInput(<CameraFeed 
                     push= { (src) => {setImages( arr => [...arr, {src:src, serverid:""}])}}  
                 />)
+                handleDiagram('Camera'); 
                 break;
             case "Draw":
                 setImageInput(<Mouse_Draw
                     push= { (src) => {setImages( arr => [...arr, {src:src, serverid:""}])}}
                 />)
+                handleDiagram('Draw');
                 break;
             default:
                 setImageInput(<p>Es ist ein Fehler aufgetreten</p>)
