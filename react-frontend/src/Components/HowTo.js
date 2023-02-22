@@ -50,7 +50,7 @@ const HowTo = () => {
                 <ReactMarkdown>The API for retrieving memes is located under
                     GET:[http://localhost:3002/api/search](http://localhost:3002/api/search)</ReactMarkdown>
                 <ReactMarkdown>You can use the API to search and download existing memes in the database.</ReactMarkdown>
-                <ReactMarkdown>Just calling the API without parameters returns the ten latest memes in descending order.</ReactMarkdown>
+                <ReactMarkdown>Just calling the API without parameters returns the ten latest public memes in descending order.</ReactMarkdown>
                 <ReactMarkdown>The following optional URL-parameters can be used to refine the search:</ReactMarkdown>
                 <ReactMarkdown>* `title: String`: A string the title of the meme must contain</ReactMarkdown>
                 <ReactMarkdown>* `order: String`: The order of the memes sorted by the time of creation. Can either be `ascending` or `descending`. Default is `descending`</ReactMarkdown>

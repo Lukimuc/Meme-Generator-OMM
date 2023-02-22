@@ -4,6 +4,8 @@ function findMemesInDB(req) {
     let sortParams = {};
     let limit = 10;
 
+    searchParams['status'] = {$ne: 'private'};
+
     console.log(req.query);
     if (req.query.title) {
         searchParams['title'] = {$regex: req.query.title, $options: 'i'};
