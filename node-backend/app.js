@@ -616,7 +616,8 @@ app.post("/template", async (req, res) => {
   newTemplate = {
     "CreatorID" : user._id,
     "CreatorMail" : user.email,
-    "template_encoded": image_encoded
+    "template_encoded": image_encoded["src"],
+    "serverid": image_encoded["serverid"]
   }
 
   console.log("Es wurde ein template gespeichert!")
