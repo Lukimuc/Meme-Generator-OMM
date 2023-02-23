@@ -59,7 +59,8 @@ const Third_Party = ({push}) => {
             </div>
             </div>
             <p> Beispielurl: https://api.imgflip.com/get_memes </p>
-            <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => setUrl(e.target.value)}/>
+            <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => {setUrl(e.target.value)}}/>
+            <Button variant="contained" onClick={ () => submitUrl()} > print memes </Button>
             {imagesrc}
             <Button variant="contained" onClick={ () => push(template.url)} > push </Button>
         </div>
