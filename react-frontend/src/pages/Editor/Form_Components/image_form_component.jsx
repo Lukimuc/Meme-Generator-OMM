@@ -290,7 +290,21 @@ const Image_Form = ({ push_image, count, user }) => {
         <div>
             <p> Image Form Component</p>
             <Button variant="contained" onClick={() => savelocalstorage()}> save in localStorage</Button>
-            <Button variant="contained" onClick={() => loadlocalstorage()}> load in localStorage</Button>
+            <Button variant="contained" onClick={() => loadlocalstorage()}> load in localStorage</Button> <br/>
+            <Button variant="contained" onClick={ (e) => {
+                e.preventDefault();
+                checkBase64()
+            }}> Send to Server </Button>
+
+            <Button variant="contained" onClick={ (e) => {
+                e.preventDefault();
+                getTemplates()
+            }} > Load Templates from Server </Button>
+
+            <Button variant="contained" onClick= { (e) => {
+                e.preventDefault();
+                deletefromServer()
+            }} > Delete from Server </Button>
             {/**<img src={"https://konvajs.org/assets/lion.png"} alt={"Lion"} /> */}
             <div style={{
                 width: "100%",
@@ -324,20 +338,7 @@ const Image_Form = ({ push_image, count, user }) => {
                 setCounter(counter+1)   
             }}>Submit Image</Button>
 
-            <Button variant="contained" onClick={ (e) => {
-                e.preventDefault();
-                checkBase64()
-            }}> Send to Server </Button>
-
-            <Button variant="contained" onClick={ (e) => {
-                e.preventDefault();
-                getTemplates()
-            }} > Load Templates from Server </Button>
-
-            <Button variant="contained" onClick= { (e) => {
-                e.preventDefault();
-                deletefromServer()
-            }} > Delete from Server </Button>
+            {/**
             <Box style={{ maxHeight: '30vh', overflow: 'auto', paddingTop: 10 }}>
                 <Grid container>
                     {templates && templates.map((template) => {
@@ -358,7 +359,7 @@ const Image_Form = ({ push_image, count, user }) => {
                 </Grid>
             </Box>
             <br />
-            {/** <Button variant="contained" onClick={(e) => {
+             <Button variant="contained" onClick={(e) => {
                 e.preventDefault();
                 push_image(input_image)
             }}>Submit Image</Button> */}
