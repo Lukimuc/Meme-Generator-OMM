@@ -25,7 +25,7 @@ const e = require('express');
 
 var app = express(); */
 
-/* ------------ Lukas Test -------------- */
+/* ------------ Alternative bc the template code doesn't work on mac -------------- */
 
 const app = express()
 const port = 3002
@@ -290,44 +290,6 @@ async function upsertLog(client, req) {
 }
 
 
-/* async function updateMemeByMemeID(client, memeID, req) {
-  const { title, status, likes, imageDescription } = req.body;
-  let changes = {}
-
-  if (title !== undefined) {
-    changes.title = title;
-  }
-
-  if (status !== undefined) {
-    changes.status = status;
-  }
-
-  if (likes !== undefined) {
-    changes.likes = likes;
-  }
-
-  if (imageDescription !== undefined) {
-    changes.imageDescription = imageDescription;
-  }
-
-  console.log("changes", changes);
-
-  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
-    { $set: changes });
-
-  if (result.modifiedCount > 0) {
-    console.log("Meme has been updated: ", result.modifiedCount);
-    updatedMeme = findMemeByMemeID(client, memeID)
-    console.log("updated Meme", updatedMeme._id)
-    return updatedMeme;
-  } else {
-    console.log(`No changes applied`)
-    return;
-  }
-} */
-
-
-
 /* Endpoints: 
   /register  ---> Post --> Return: User 
   /signin route --> Post --> Return:  succes /fail
@@ -502,21 +464,6 @@ app.get(("/memes/:id"), async (req, res) => {
   }
 })
 
-
-// update a specific Meme by MemeID
-/*app.put(("/memes/:id"), async (req, res) => {
-  const id = req.params.id
-
-  try {
-    const updatedMeme = await updateMemeByMemeID(client, id, req);
-    res.json(updatedMeme); // server response to frontend
-  } catch (error) {
-    console.log("Error in app.get('/meme/:id': " + error);
-    res.status(400).json("Error in app.get('/meme/:id'': " + error);
-  }
-})*/
-
-
 // Streaming Server - HTTPS - Feature 18
 
 const fs = require('fs');
@@ -541,31 +488,6 @@ io.on('connection', socket => {
 
 server.listen(8080);
 
-/* DO WE USE THIS? // get memes by specific user
-app.get(("/memes/:userID"), async (req, res) => {
-  const {id} = req.body;
-  console.log(id);
-  memes = await findAllMemes(client);
-  res.json(memes);
-}) */
-
-/*
-app.put('/memes/:id/like', (req, res) => {
-  // retrieve the id of the meme to update from the request
-  const id = req.params.id;
-
-  // find the meme in the database and update the likes count
-  client.db("memeGeneratorDB").collection("memes").updateOne({ _id: new ObjectID(id) }, { $inc: { likes: 1 } })
-    .then(result => {
-      console.log(`Meme with id ${id} updated`);
-      res.send({ success: true });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send({ success: false });
-    });
-});
-*/
 app.put('/memes/:id/like', async (req, res) => {
   // retrieve the id of the meme to update from the request
   const id = req.params.id;
@@ -631,9 +553,7 @@ app.delete("/template/:id", async (req, res) => {
   res.sendStatus(200)
 })
 
-
-
-/* ------------ Lukas Test Ende -------------- */
+/* ------------ End of alternative bc the template code doesn't work on mac -------------- */
 
 
 // ????????? is the following part required ??????????
