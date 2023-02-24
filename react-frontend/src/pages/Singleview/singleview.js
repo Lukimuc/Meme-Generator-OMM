@@ -1,24 +1,15 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
-import Box, { img } from "@mui/material/Box";
+import Box from "@mui/material/Box";
 import MobileStepper from "@mui/material/MobileStepper";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import Grid from "@mui/material/Grid";
-import TextareaValidator from "../../Components/TextareaValidator.js";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useLocation } from "react-router-dom";
-import { useMatch } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Likebutton from "../../Components/Likebutton";
-
 
 // Graph imports
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
@@ -76,7 +67,6 @@ export function Singleview(props) {
 
   const notNullMemes = memesfromServer.filter((meme) => meme._id !== null);
   const getMeme = (event) => {
-    //meme._id
     fetch(`http://localhost:3002/memes/${id}`, {
       method: "get",
       headers: { "Content-Type": "application/json" },
@@ -86,7 +76,7 @@ export function Singleview(props) {
         console.log(meme);
         setMemeFromServer(meme);
       });
-  }; //{console.log(memeId)}
+  }; 
 
   const getMemes = (event) => {
     fetch("http://localhost:3002/memes", {
@@ -96,11 +86,11 @@ export function Singleview(props) {
       .then((response) => response.json())
       .then((memes) => {
         setMemesFromServer(memes); // set the state of memesfromServer to the received memes
-        // setCurrentId(memes[0]._id);
-
         setCurrentId(id);
+
         //find the index of the current meme
         const currentMemeIndex = memes.findIndex(meme => meme._id === id);
+        
         // set nextId to the id of the next meme
         setNextId(memes[currentMemeIndex + 1]?._id);
 
@@ -117,32 +107,23 @@ export function Singleview(props) {
 
     //go to the nextIndex 
     const nextIndex = currentIndex + 1;
-    //set the next index
-    // setNextId(notNullMemes[nextIndex]._id);
+
     //navigate to the next id
     navigate(`/memes/${nextId}`);
-    //const nextMeme = notNullMemes[nextIndex];
+
   }
 
   const prevMemeId = () => {
-    /* const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
- const prevIndex = (currentIndex - 1);*/
-    //  const prevIndex = (currentIndex - 1 + memesfromServer.length) % memesfromServer.length;
-    //  setPrevId(memesfromServer[prevIndex]._id);
     //define the current meme by finding the meme from the array by id and setting the "currentid"
     const currentMeme = memesfromServer.find((meme) => meme._id === currentId);
     //get back the current index of the currentMeme
     const currentIndex = memesfromServer.indexOf(currentMeme);
     //updating current index with next ID
-    //setCurrentId(nextId);
-    // const currentIndex = memesfromServer.findIndex((meme) => meme._id === currentId);
-    //go to the nextIndex 
     const prevIndex = currentIndex + 1;
     //set the next index
-    // setNextId(notNullMemes[nextIndex]._id);
+   
     //navigate to the next id
     navigate(`/memes/${prevId}`);
-    //const nextMeme = notNullMemes[nextIndex];
   }
 
   useEffect(() => {
@@ -162,14 +143,9 @@ export function Singleview(props) {
   // Voice Control Effect
   useEffect(() => {
     if (buttonClicked === "Next") {
-      //setCurrentId(nextId);
       navigate(`/memes/${nextId}`);
-
-      // nextMemeId();
-      // navigate(`/memes/${nextId}`) // TODO
-
       setButtonClicked(null) // reset state
-      setTranscript("") // ?? do we need this?
+      setTranscript("")
     }
 
     if (buttonClicked === "Play") {
@@ -187,9 +163,6 @@ export function Singleview(props) {
     if (buttonClicked === "Back") {
       setCurrentId(prevId);
       prevMemeId();
-      //setCurrentId(prevId);
-      //    nextMemeId();
-      /*navigate(`/memes/${prevId}`)*/ // TODO
      setButtonClicked(null) // reset state
     }
   }
@@ -298,6 +271,7 @@ export function Singleview(props) {
       });
   }
 
+  //random ID
   const getRandomId = async () => {
     const response = await fetch("http://localhost:3002/memes");
     const memes = await response.json();
@@ -311,6 +285,7 @@ export function Singleview(props) {
     window.location.href = `/memes/${randomId}`;
   };
 
+  //setAutoplay
   const handleAutoplay = () => {
     setAutoplay(!autoplay);
   }
@@ -351,8 +326,7 @@ export function Singleview(props) {
           style={{}}
         >
           <Grid item md={8}>
-            {/*} <h1> Meme ID - gelesen aus URL: {id}</h1>*/}
-            <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
+              <Box sx={{ maxWidth: 600, flexGrow: 1 }}>
               <Paper
                 square
                 elevation={0}
@@ -364,7 +338,6 @@ export function Singleview(props) {
                   bgcolor: "background.default",
                 }}
               >
-                {/*} <Typography>{steps[activeStep].label}</Typography>*/}
               </Paper>
               <Box
                 style={{ width: "600px" }}
@@ -395,7 +368,6 @@ export function Singleview(props) {
                       nextMemeId();
                       setButtonClicked("Next") // For Voice Control
                     }}
-
                     disabled={currentIndex === memesfromServer.length - 1}
                   >
                     Next
@@ -496,16 +468,7 @@ export function Singleview(props) {
             <p> <b>CreatorMail </b><br></br>{memefromServer.CreatorMail} </p>
             <p> <b>imageDescription</b> <br></br>{memefromServer.imageDescription} </p>
             <p> <b>Likes  <br></br></b>{memefromServer.likes} </p> <br />
-
-            {/*} <TextareaValidator onFocus={() => setIsTextFieldSelected(true)}
-              onBlur={() => {
-                setIsTextFieldSelected(false);
-                setTextFieldText(transcript);
-              }
-              }
-              value={isTextFieldSelected ? transcript : textFieldText}
-              style={isTextFieldSelected ? { borderColor: "blue" } : {}} />
-            */}
+            
             <div>
               <h2>Livestream this view</h2>
               <button onClick={startStream} disabled={streaming}>Start streaming</button>

@@ -10,8 +10,7 @@ export const Meme=({template, onClick, width, height, ...props}) => {
         );
       }, []);
 const [templates, setTemplates] = useState([]);
-/*const [template, setTemplate] = useState(null);*/
-/*template &&*/
+
     return(
         <>
         <img style={{maxHeight: 350, width: width, height:height}}
@@ -19,6 +18,5 @@ const [templates, setTemplates] = useState([]);
         title={template.name}
         onClick={onClick}
         />
-      {/*}  <Singleview template={props.template} />*/}
         </> )
 }

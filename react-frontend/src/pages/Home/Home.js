@@ -1,5 +1,4 @@
 import React, { useEffect, useState, Component } from "react";
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -7,10 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import InsertCommentRoundedIcon from '@mui/icons-material/InsertCommentRounded';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -21,13 +17,9 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from "react-router-dom";
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import Fab from '@mui/material/Fab';
-import { Meme } from './Meme';
 import MemeLukasOverview from '../TestLukas/MemeLukasOverview';
 import MemeLukas from '../TestLukas/MemeLukas';
-import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { useLocation } from "react-router-dom";
@@ -109,7 +101,6 @@ const Home = (props) => {
     <div>
       <h1 style={{ display: 'flex', justifyContent: 'center' }}>Check out already created memes</h1>
       <Typography style={{ display: 'flex', justifyContent: 'center' }}>Please log in to like memes. The newest memes are displayed at the bottom by default.</Typography>
-      {/*</div><div style={{paddingBottom:50, paddingRight:30}}>*/}
       <Grid container>
         <Grid item xs={4} paddingLeft={5}>
           <Typography gutterBottom>Show memes with X likes</Typography>
@@ -124,10 +115,6 @@ const Home = (props) => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               size="small"
-            /*Filterbox, erst einblenden, wenn es eine Methode gibt, da sonst Error}
-           value={}
-           label="Age"
-         onChange={handleChange} */
             >
               <MenuItem onClick={() => setMemesFromServer(sortedMemes)}>New memes first</MenuItem>
             </Select>
@@ -153,9 +140,8 @@ const Home = (props) => {
       <Grid container spacing={2} style={{ padding: 30 }}>
         {filteredTemplates2.map((meme, index) => {
           if (meme.status === "public") {
-            /* {filteredTemplates.map((template) => {*/
             return (
-              <Grid item xs={3} /*key={meme._id}*/ key={index}>
+              <Grid item xs={3} key={index}>
                 <Card style={{ maxWidth: 345, maxHeight: 600 }}>
                   <CardHeader
                     avatar={
@@ -169,8 +155,7 @@ const Home = (props) => {
                   <CardMedia style={{ alignItems: 'center' }}>
                     <Link key={meme.id} to={`/memes/${meme._id}`}>
                       <MemeLukasOverview key={meme._id} meme={meme} /*value={memeId} onClick={handleMemeClick(meme)}*/ />{/*onClick={handleMemeClick(meme)*/}
-                      { /*  setTemplate(template);*/}
-                    </Link>
+                     </Link>
                     {console.log("meme.id", meme._id)}
                   </CardMedia>
                   <CardContent>
@@ -187,8 +172,7 @@ const Home = (props) => {
         })}
       </Grid>
       <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-      {/*}  <Button variant="contained" style={{ backgroundColor: 'red' }} onClick={handleLoadMore}>Load more Memes</Button>*/}
-        <Link to="/editor">
+         <Link to="/editor">
           <Fab color="primary" aria-label="add" style={{
             margin: 0,
             top: 'auto',
