@@ -149,7 +149,7 @@ export function Singleview(props) {
     }
 
     if (buttonClicked === "Play") {
-      handleAutoplay();
+      //handleAutoplay();
       setButtonClicked(null) // reset state
     }
 
