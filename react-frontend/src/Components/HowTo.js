@@ -57,7 +57,7 @@ const HowTo = () => {
                 <ReactMarkdown>* `creator: String`: The mail-address of the creator of the meme</ReactMarkdown>
                 <ReactMarkdown>* `limit: Int`: The maximum number of memes that should be returned</ReactMarkdown>
                 <ReactMarkdown>#### Example:</ReactMarkdown>
-                <ReactMarkdown>[http://localhost:3002/api/search?title=test&order=ascending&creator=test@gmail.com&limit=2](http://localhost:3002/api/search?title=test&order=ascending&creator=test%40gmail.com&limit=2)</ReactMarkdown>
+                <ReactMarkdown>[http://localhost:3002/api/search?title=ChatGPT&order=ascending&creator=test@gmail.com&limit=2](http://localhost:3002/api/search?title=ChatGPT&order=ascending&creator=test%40gmail.com&limit=2)</ReactMarkdown>
             </div>
         </>
     )
