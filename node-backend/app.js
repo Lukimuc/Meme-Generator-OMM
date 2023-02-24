@@ -13,17 +13,17 @@ const { ObjectId } = require('mongodb');
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
 // ### Thus copy paste this block to your project
-/* const MONGODB_PORT = process.env.DBPORT || '27017';
-const db = require('monk')(`127.0.0.1:${MONGODB_PORT}/omm-2223`); // connect to database omm-2021
-console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
+const MONGODB_PORT = process.env.DBPORT || '27017';
+// const db = require('monk')(`127.0.0.1:${MONGODB_PORT}/omm-2223`); // connect to database omm-2021
+// console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
 // ######
-console.log(db);
+// console.log(db);
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const e = require('express');
+//var indexRouter = require('./routes/index');
+//var usersRouter = require('./routes/users');
+//const e = require('express');
 
-var app = express(); */
+//var app = express();
 
 /* ------------ Alternative bc the template code doesn't work on mac -------------- */
 
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const url = 'mongodb://0.0.0.0:27017';
+const url = `mongodb://0.0.0.0:${MONGODB_PORT}`;
 
 const apiMemeRouter = require("./routes/api/meme");
 const apiSearchRouter = require("./routes/api/search");

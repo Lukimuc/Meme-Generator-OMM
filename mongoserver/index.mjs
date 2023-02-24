@@ -1,9 +1,7 @@
 //index.js
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import demodata from './data/omm-ws2223.json' assert {type: "json"};
 
-  
 
 
 
