@@ -435,7 +435,7 @@ export function Singleview(props) {
                 {isRecording ? "Stop Recording" : "Start Recording"}
               </button><br></br>
               <b>Transcript</b> <i>{transcript}</i>
-              <p><b>Activate Recording and use these Commands </b><br></br> "Play" to start the Slideshow <br></br> "Pause" to pause the Slideshow <br></br> "Next" or "Back" to move forward or backwards <br></br> "Select" to select the Textfield on the bottom, then say anything you want</p>
+              <p><b>Activate Recording and use these Commands </b><br></br> "Random" to get a random meme <br></br> "Next" or "Back" to move forward or backwards <br></br> "Select" to select the Textfield on the bottom, then say anything you want</p>
 
               Voice Textinput field:   <input
                 type="text"
