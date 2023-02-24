@@ -183,6 +183,7 @@ function Save_Form({ stageRef, user }) {
         >
           <FormControlLabel value="private" control={<Radio />} label="private" />
           <FormControlLabel value="public" control={<Radio />} label="public" />
+            <FormControlLabel value="draft" control={<Radio />} label="draft" />
         </RadioGroup>
         <p>{selectedOption}</p>
         <Button variant="contained" onClick={() => sendtoServer()}> send to server </Button>
