@@ -1,78 +1,40 @@
-# MemeMuc Launcher
+DO THIS BEFORE USING THIS WEBSITE
+Login
+user: test@gmail.com, pw: 12345
+Necessary to have the expected User Experience
+Use Google Chrome as browser - otherwise some features or pages will throw errors or won't show
+Install the server.cert certificate for the HTTPS crypted stream - otherwise it's not possible to reach the singleview
+Register on the website - after that you're automatically logged in - your data should be persistent on the mongoDB and can be reused
+Only logged in users can create and like memes as well as watch their personal profile
+To delete a element in the meme editor use control as mac user or backspace + ctrl as windows user
+Meme Creation API
+The API for creating memes is located under GET:http://localhost:3002/api/meme
 
-This repository is a _template_ to unify the meme generator bonus project submissions for the _Online Multimedia Lecture_ in the winter semester 2022/23 at LMU Munich.
+You can use the API to create one or multiple memes using a specified template.
 
-Any submission must be runnable without additional adaptions by executing
-```bash
-cd mememuc-launcher && npm run installall && npm start
-```
+Templates are pulled from the Top100 memes of imgflip.com and can be referenced by their name in this API: https://api.imgflip.com/get_memes
 
-The template contains two folders that are relevant to you. Your implementation is supposed to go in these two folders.
-* `./node-backend`: The backend of your project using NodeJS
-* `./react-frontend`: The front of your project using React
+Supply the following URL-paramters to configure n-many memes:
 
-Currently, both folder are filled with some dummy projects.
+template: String: The meme template name according to https://api.imgflip.com/get_memes
+memes[0...(n-1)]: [CaptionConfig]: The memes you want to create
+CaptionConfig: {"text": String, "x": Int, "y": Int, "size": Int} : Configuration for each meme caption
+Possible font sizes: 8, 10, 12, 14, 16, 32, 64, 128
+Example:
+http://localhost:3002/api/meme?template=Drake Hotline Bling&memes[0]=[{"text":"Read The Documentation","x":650,"y":300,"size":32},{"text":"Just Ask ChatGPT","x":650,"y":850, "size":64}]&memes[1]=[{"text":"Different Memes","x":650,"y":300,"size":32},{"text":"The Same Meme Again","x":650,"y":850, "size":32}]
 
-When you replace the `./node-backend` dummy project with your own implementation, there are two pieces of code which you need to re-include from the dummy project:
-- In _app.js_: The block at the very top, commented with `Important`
-  ```JavaScript
-  const MONGODB_PORT = process.env.DBPORT || '27017';
-  const db = require('monk')(`127.0.0.1:${MONGODB_PORT}/omm-2223`); // connect to database omm-2223
-  console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
-  ```
-- In _package.json_: The _scripts_ block
-  ```JSON
-  "scripts": {
-    "startdev": "node ./bin/www",
-    "start": "SET DBPORT=65535 && node ./bin/www"
-  },
-  ```
+Meme Retrieval API
+The API for retrieving memes is located under GET:http://localhost:3002/api/search
 
-The other two folders __must not be changed__!
-* `./mememuc-launcher` contains configuration files for installing dependencies and launching the application you implement.
-* `./mongoserver` cotains a local in-memory database server independent of any existing local installation.
-  This database is not persistent and will reset with each restart. It is meant for testing your submission with a consistent data state, independent of the computer on which it runs.
-  You _can_ add files to the `./mongoserver/data` subdirectory.
+You can use the API to search and download existing memes in the database.
 
+Just calling the API without parameters returns the ten latest public memes in descending order.
 
-## How To Use
+The following optional URL-parameters can be used to refine the search:
 
-### During Development
-
-During development we recommend to ruin the two project (`./node-backend` and `./react-frontend`) individually. However if you prefer, you can use the NodeJS scripts from `./mememuc-launcher` during development too, with the following commands:
-
-```
-cd mememuc-launcher
-```
-navigates your commandline into the mememuc launcher project
-
-```
-npm run installall
-```
-installs the dependencies of all (sub)projects
-
-```
-cd mememuc-launcher && npm run installall && npm start
-cd node-backend && npm run startdev
-```
-starts the backend project. It will connect to a local MongoDB instance (assuming any is running on your local machine) at the default port `27017`.
-
-cd mememuc-launcher ; npm run installall ; npm start
-cd node-backend ; npm run startdev
-
-### How To Prepare Your Submission
-
-- Export the MongoDB database state that you want us to user for evaluating your submission from your local MongoDB as json files. You can use, e.g., the `mongoexport` command:
-`mongoexport --uri="mongodb://localhost:27017/omm-ws2223" --collection=users --out=omm-ws2223.json`
-- Put any exportet json files into the `./mongoserver/data` folder. The in-memory database server (`./mongoserver`) will import these files as default data whenever you (re)launch the project (_not implemented yet_).
-- You can test whether you application will run in the test setup using the commands below.
-
-### How We Will Test Your Submission
-
-To evaluate your submission, we will launch the following commands:
-
-```bash
-cd mememuc-launcher # Navigates your commandline into the mememuc launcher project.
-npm run installall # Installs the dependencies of all (sub)projects.
-npm start # Starts the backend project using the non-persistent in-memory MongoDB instance.
-```
+title: String: A string the title of the meme must contain
+order: String: The order of the memes sorted by the time of creation. Can either be ascending or descending. Default is descending
+creator: String: The mail-address of the creator of the meme
+limit: Int: The maximum number of memes that should be returned
+Example:
+http://localhost:3002/api/search?title=ChatGPT&order=ascending&creator=test@gmail.com&limit=2
