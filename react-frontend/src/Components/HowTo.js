@@ -7,7 +7,8 @@ const HowTo = () => {
         <>
             <div style={{padding: "24px"}}>
                 <h2> DO THIS BEFORE USING THIS WEBSITE</h2>
-
+                <h3>Login</h3>
+                <div>user: test@gmail.com, pw: 12345</div>
                 <h3>Necessary to have the expected User Experience</h3>
                 <ol>
                     <li>Use Google Chrome as browser - otherwise some features or pages will throw errors or won't
