@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "startdev": "node ./bin/www",
-    "start": "SET DBPORT=65535 && node ./bin/www"
+    "start": "env-cmd node ./bin/www"
   },
   "dependencies": {
     "archiver": "^5.3.1",
@@ -12,6 +12,8 @@
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
+    "env-cmd": "^10.1.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
@@ -20,6 +22,7 @@
     "morgan": "~1.9.1",
     "njwt": "^1.0.0",
     "sharp": "^0.31.3",
+    "socket.io": "^4.6.1",
     "socket.io-client": "^4.5.4"
   },
   "devDependencies": {

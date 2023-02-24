@@ -8,22 +8,22 @@ var cors = require('cors');
 
 const { ObjectId } = require('mongodb');
 
-
+require('dotenv').config();
 
 // ##### IMPORTANT
 // ### Your backend project has to switch the MongoDB port like this
 // ### Thus copy paste this block to your project
-/* const MONGODB_PORT = process.env.DBPORT || '27017';
-const db = require('monk')(`127.0.0.1:${MONGODB_PORT}/omm-2223`); // connect to database omm-2021
-console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
+const MONGODB_PORT = process.env.DBPORT || '27017';
+// const db = require('monk')(`127.0.0.1:${MONGODB_PORT}/omm-2223`); // connect to database omm-2021
+// console.log(`Connected to MongoDB at port ${MONGODB_PORT}`)
 // ######
-console.log(db);
+// console.log(db);
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const e = require('express');
+//var indexRouter = require('./routes/index');
+//var usersRouter = require('./routes/users');
+//const e = require('express');
 
-var app = express(); */
+//var app = express();
 
 /* ------------ Alternative bc the template code doesn't work on mac -------------- */
 
@@ -38,12 +38,13 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const url = 'mongodb://0.0.0.0:27017';
+console.log("Starting mongodb with port: ", MONGODB_PORT);
+const url = `mongodb://0.0.0.0:${MONGODB_PORT}`;
 
 const apiMemeRouter = require("./routes/api/meme");
 const apiSearchRouter = require("./routes/api/search");
 
-const dbName = 'memeGeneratorDB';
+const dbName = 'omm-ws2223';
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect().then(() => {
   console.log("Connected successfully to server");
@@ -54,7 +55,7 @@ client.connect().then(() => {
 
 // create User Document in DB
 async function createUser(client, newUser) {
-  const result = await client.db("memeGeneratorDB").collection("users").insertOne(newUser);
+  const result = await client.db("omm-ws2223").collection("users").insertOne(newUser);
   console.log(`New User created with the ID ${result.insertedID}`);
 
   return result;
@@ -62,7 +63,7 @@ async function createUser(client, newUser) {
 
 //find Memes marked as public
 async function getPublicMemes(client) {
-  const result = await client.db("memeGeneratorDB").collection("memes").find({ status: "public" }).toArray();
+  const result = await client.db("omm-ws2223").collection("memes").find({ status: "public" }).toArray();
   if (result.length > 0) {
     console.log(`${result.length} public memes found`);
     return result;
@@ -74,7 +75,7 @@ async function getPublicMemes(client) {
 
 // get a specific User by email in DB
 async function findOneUserByEmail(client, email) {
-  const result = await client.db("memeGeneratorDB").collection("users").findOne({ 'email': email });
+  const result = await client.db("omm-ws2223").collection("users").findOne({ 'email': email });
 
   if (result) {
     console.log(`found a user in the collection with the email ${email}`);
@@ -86,7 +87,7 @@ async function findOneUserByEmail(client, email) {
 
 // get a specific User by ID in DB
 async function findOneUserByID(client, id) {
-  const result = await client.db("memeGeneratorDB").collection("users").findOne({ _id: new ObjectID(id) });
+  const result = await client.db("omm-ws2223").collection("users").findOne({ _id: new ObjectID(id) });
 
   if (result) {
     console.log(`found a user in the collection with the id ${id}`);
@@ -99,7 +100,7 @@ async function findOneUserByID(client, id) {
 
 // update a specific User by email in DB
 async function updateOneUserByEmail(client, email, updatedUser) {
-  const result = await client.db("memeGeneratorDB").collection("users").updateOne({ email: email }, { $set: updatedUser });
+  const result = await client.db("omm-ws2223").collection("users").updateOne({ email: email }, { $set: updatedUser });
 
   console.log(`${result.matchedCount} documents matched the query criteria`);
   console.log(`${result.modifiedCount} documents were updated`);
@@ -108,7 +109,7 @@ async function updateOneUserByEmail(client, email, updatedUser) {
 
 // update a specific user by ID
 async function updateOneUserByID(client, id, updatedUser) {
-  const result = await client.db("memeGeneratorDB").collection("users").updateOne({ _id: new ObjectID(id) }, { $set: updatedUser });
+  const result = await client.db("omm-ws2223").collection("users").updateOne({ _id: new ObjectID(id) }, { $set: updatedUser });
 
   console.log(`${result.matchedCount} documents matched the query criteria`);
   console.log(`${result.modifiedCount} documents were updated`);
@@ -117,7 +118,7 @@ async function updateOneUserByID(client, id, updatedUser) {
 
 // upsert a specific User by email in DB -> If the user exists update the attribute, otherwise create a new user
 async function upsertOneUserByEmail(client, email, updatedUser) {
-  const result = await client.db("memeGeneratorDB").collection("users").updateOne({ email: email }, { $set: updatedUser }, { upsert: true });
+  const result = await client.db("omm-ws2223").collection("users").updateOne({ email: email }, { $set: updatedUser }, { upsert: true });
 
   console.log(`${result.matchedCount} documents matched the query criteria`);
   console.log(`${result.modifiedCount} documents were updated`);
@@ -126,7 +127,7 @@ async function upsertOneUserByEmail(client, email, updatedUser) {
 
 
 async function deleteOneUserByEmail(client, email) {
-  const result = await client.db("memeGeneratorDB").collection("users").deleteOne({ email: email });
+  const result = await client.db("omm-ws2223").collection("users").deleteOne({ email: email });
   console.log(`${result.deletedCount} documents got deleted`);
   return result;
 }
@@ -135,7 +136,7 @@ async function deleteOneUserByEmail(client, email) {
 // ---- Memes ----
 // create Meme Document in DB
 async function createMeme(client, newMeme) {
-  const result = await client.db("memeGeneratorDB").collection("memes").insertOne(newMeme);
+  const result = await client.db("omm-ws2223").collection("memes").insertOne(newMeme);
   console.log(`New Meme created with the ID ${result.insertedID}`);
 
   return result;
@@ -143,7 +144,7 @@ async function createMeme(client, newMeme) {
 
 // find all created Memes on DB
 async function findAllMemes(client) {
-  const cursor = await client.db("memeGeneratorDB").collection("memes").find();
+  const cursor = await client.db("omm-ws2223").collection("memes").find();
   const result = await cursor.toArray();
 
   if (result.length > 0) {
@@ -155,7 +156,7 @@ async function findAllMemes(client) {
 }
 
 async function findMemesByUserID(client, userID) {
-  const cursor = await client.db("memeGeneratorDB").collection("memes").find({ CreatorID: ObjectID(userID) });
+  const cursor = await client.db("omm-ws2223").collection("memes").find({ CreatorID: ObjectID(userID) });
   const result = await cursor.toArray();
 
   if (result.length > 0) {
@@ -199,11 +200,11 @@ async function updateMemeByMemeID(client, memeID, req) {
 
   // like feature start - check if value in array has to be deleted 
   if (deleteLike) {
-    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    await client.db("omm-ws2223").collection("memes").updateOne({ _id: ObjectID(memeID) },
       { $pull: { likedBy: likedBy } }); // delete value in array
 
     changes.likes = likes;
-    await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    await client.db("omm-ws2223").collection("memes").updateOne({ _id: ObjectID(memeID) },
       { $set: changes }); // new likes value
     updatedMeme = findMemeByMemeID(client, memeID);
     return updatedMeme;
@@ -211,7 +212,7 @@ async function updateMemeByMemeID(client, memeID, req) {
 
   // if not then add value to array
   if (likedBy !== undefined) {
-    const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+    const result = await client.db("omm-ws2223").collection("memes").updateOne({ _id: ObjectID(memeID) },
       { $addToSet: { likedBy: likedBy } });
     updatedMeme = findMemeByMemeID(client, memeID);
     return updatedMeme;
@@ -219,7 +220,7 @@ async function updateMemeByMemeID(client, memeID, req) {
 
   console.log("changes", changes);
 
-  const result = await client.db("memeGeneratorDB").collection("memes").updateOne({ _id: ObjectID(memeID) },
+  const result = await client.db("omm-ws2223").collection("memes").updateOne({ _id: ObjectID(memeID) },
     { $set: changes });
 
   if (result.modifiedCount > 0) {
@@ -233,7 +234,7 @@ async function updateMemeByMemeID(client, memeID, req) {
 }
 
 async function findMemeByMemeID(client, memeID) {
-  const result = await client.db("memeGeneratorDB").collection("memes").findOne({ _id: ObjectID(memeID) });
+  const result = await client.db("omm-ws2223").collection("memes").findOne({ _id: ObjectID(memeID) });
 
 
   if (result.length > 0) {
@@ -247,7 +248,7 @@ async function findMemeByMemeID(client, memeID) {
 
 // logs
 async function findLogs(client) {
-  const result = await client.db("memeGeneratorDB").collection("logs").findOne({ globalIdentifier: true });
+  const result = await client.db("omm-ws2223").collection("logs").findOne({ globalIdentifier: true });
 
   if (result.length > 0) {
     console.log(`Meme found`);
@@ -281,7 +282,7 @@ async function upsertLog(client, req) {
     "globalIdentifier": true
   };
 
-  const result = await client.db("memeGeneratorDB").collection("logs").updateOne({ globalIdentifier: true }, { $set: changes }, { upsert: true });
+  const result = await client.db("omm-ws2223").collection("logs").updateOne({ globalIdentifier: true }, { $set: changes }, { upsert: true });
 
   console.log(`${result.matchedCount} documents matched the query criteria`);
   console.log(`${result.modifiedCount} documents were updated`);
@@ -303,7 +304,7 @@ app.use(cors(
 
 //Make MongoClient accessible for routes
 app.use((req, res, next) => {
-  req.mongoDB = client.db('memeGeneratorDB');
+  req.mongoDB = client.db('omm-ws2223');
   next();
 })
 // Page logs / Feature 22 - update clicks in Editor
@@ -504,11 +505,11 @@ app.put('/memes/:id/like', async (req, res) => {
 // speichern von templates
 
 async function createTemplate(client, template) {
-  const result = await client.db("memeGeneratorDB").collection("templates").insertOne(template)
+  const result = await client.db("omm-ws2223").collection("templates").insertOne(template)
 }
 
 async function findAllTemplates(client) {
-  const cursor = await client.db("memeGeneratorDB").collection("templates").find()
+  const cursor = await client.db("omm-ws2223").collection("templates").find()
   const result = await cursor.toArray();
 
   if (result.length > 0) {
@@ -520,7 +521,7 @@ async function findAllTemplates(client) {
 }
 
 async function deleteTemplate(client, id) {
-  const result = await client.db("memeGeneratorDB").collection("templates").deleteOne({ _id: ObjectId(id) });;
+  const result = await client.db("omm-ws2223").collection("templates").deleteOne({ _id: ObjectId(id) });;
   console.log(`${result.deletedCount} document(s) deleted`);
   return
 }
