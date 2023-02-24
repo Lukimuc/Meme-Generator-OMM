@@ -28,7 +28,7 @@ const fontFamilies = [
 
 const Editiere_Text = ({text_attr, onClick}) => {
 
-    const [text, setText] = useState("Beispieltext")
+    const [text, setText] = useState(text_attr.text)
     const [fontFamily, setFontFamily] = useState('Arial');
     const [fontStyle, setFontStyle] = useState('normal');
     const [color, setColor] = useState('black');
@@ -47,7 +47,7 @@ const Editiere_Text = ({text_attr, onClick}) => {
             <br/>
             <input type="color" value={color} onChange={e => setColor(e.target.value)} />
             <br/>
-            <Button onClick={() => onClick(text_attr.key, {text: text, fontFamily: fontFamily, fontStyle: fontStyle, fill: color})}> Submit </Button>
+            <Button variant="contained" onClick={() => onClick(text_attr.key, {text: text, fontFamily: fontFamily, fontStyle: fontStyle, fill: color})}> Submit </Button>
             <p style={{ fontFamily, fontStyle, color }}>{text}</p>
         </div>
     )

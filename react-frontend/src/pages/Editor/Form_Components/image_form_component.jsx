@@ -219,7 +219,7 @@ const Image_Form = ({ push_image, count, user }) => {
             })
           .catch(error => console.error(error));
         }else if (input_type === "base64"){
-            sendtoServer(input_image)
+            sendtoServer(input_image.src)
         }else{
             console.log("Es ist ein fehler aufgetreten")
         }

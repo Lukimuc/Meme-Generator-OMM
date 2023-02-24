@@ -43,17 +43,30 @@ const Third_Party = ({push}) => {
                     gridTemplateColumns: "repeat(3, 150px)",
                     gridTemplateRows: "repeat(auto-fit, minmax(150px, 1fr))",
                 }}>
-            {templates && templates.map((template) => {
+            {templates && templates.map((templ, i) => {
                 return (
+
+                    <img 
+                    src={templ.url} 
+                    alt={"Image" + i} 
+                    key={"Image" + i} 
+                    style={{maxWidth: "100%", maxHeight: "100%", border: template === templ ? "2px solid black" : "none"}}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setTemplate(templ)
+                    }}/>
+                    /**
                         <Meme
-                        template={template}
+                        template={templ}
                         //width={90}
-                        style={{maxWidth: "100%", maxHeight: "100%"}}
+                        style={{maxWidth: "100%", maxHeight: "100%", border: template == templ ? "2px solid black" : "2px solid red"}}
                         onClick={(e) => {
                             e.preventDefault();
-                            setTemplate(template);
+                            setTemplate(templ);
+                            setImageSrc(templ.url)
                         }}
                         />
+                    */
                 )})
             }
             </div>
@@ -61,7 +74,6 @@ const Third_Party = ({push}) => {
             <p> Beispielurl: https://api.imgflip.com/get_memes </p>
             <TextField style={{paddingBottom:10}} label="Add text" type="Url" value={Url || ""} onChange={(e) => {setUrl(e.target.value)}}/>
             <Button variant="contained" onClick={ () => submitUrl()} > print memes </Button>
-            {imagesrc}
             <Button variant="contained" onClick={ () => push(template.url)} > push </Button>
         </div>
     )
